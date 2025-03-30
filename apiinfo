@@ -1,0 +1,28 @@
+- monica api
+    sk-jytR5ZbI44Gz7sfxymUIKqgEaEDYCbURG_PZyW5dBZHuBc7tUnG4CbMHY32PdILF6zd5uMrsxn6Bopn5AheqyEI4L-nO
+    
+- monica api 文档
+https://platform.monica.im/docs/en/overview
+https://platform.monica.im/docs/en/image-gen/flux
+https://platform.monica.im/docs/en/image-tools/upscale
+https://platform.monica.im/docs/en/quickstart
+
+    Different image generation models have varying pricing methods. See the table below for details:
+
+model: Flux Schnell 1.0	$0.003 / image
+
+​图像生成
+模型	RPM	并发请求
+Stable Diffusion 3 Large	10	8
+Stable Diffusion 3.5 Large	10	8
+Stable Diffusion XL 1.0	10	8
+Ideogram V2	10	8
+Playground V2.5	10	8
+Flux Schnell 1.0	10	8
+Flux Dev 1.0	10	8
+DALL-E 3	10	8
+Flux Pro 1.0	10	8
+
+
+
+
