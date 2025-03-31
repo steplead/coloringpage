@@ -18,7 +18,7 @@
 import { CategoryType } from '@/types/image';
 
 export function getOptimalSeedRange(category: CategoryType): [number, number] {
-  const seedRanges = {
+  const seedRanges: { [K in CategoryType]: [number, number] } = {
     animals: [120000, 140000],
     nature: [140000, 160000],
     fantasy: [160000, 180000],
@@ -27,13 +27,13 @@ export function getOptimalSeedRange(category: CategoryType): [number, number] {
     default: [100000, 999999]
   };
   
-  return seedRanges[category] || seedRanges.default;
+  return seedRanges[category];
 }
 
 /**
  * Get optimized parameters for specific image types
  */
-export function getOptimizedParams(complexity: string) {
+export function getOptimizedParams(complexity: 'simple' | 'medium' | 'detailed') {
   const baseParams = {
     num_inference_steps: 30,
     guidance_scale: 7.5,
@@ -49,7 +49,7 @@ export function getOptimizedParams(complexity: string) {
       num_inference_steps: 32,
       guidance_scale: 8.2,
     }
-  };
+  } as const;
 
   return complexityParams[complexity] || baseParams;
 }
