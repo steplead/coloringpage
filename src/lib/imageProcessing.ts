@@ -18,16 +18,20 @@
 import { CategoryType } from '@/types/image';
 
 export function getOptimalSeedRange(category: CategoryType): [number, number] {
-  const seedRanges: { [K in CategoryType]: [number, number] } = {
-    animals: [120000, 140000],
-    nature: [140000, 160000],
-    fantasy: [160000, 180000],
-    vehicles: [180000, 200000],
-    patterns: [200000, 220000],
-    default: [100000, 999999]
-  };
-  
-  return seedRanges[category];
+  switch (category) {
+    case 'animals':
+      return [120000, 140000];
+    case 'nature':
+      return [140000, 160000];
+    case 'fantasy':
+      return [160000, 180000];
+    case 'vehicles':
+      return [180000, 200000];
+    case 'patterns':
+      return [200000, 220000];
+    default:
+      return [100000, 999999];
+  }
 }
 
 /**
