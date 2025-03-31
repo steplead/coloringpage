@@ -133,16 +133,8 @@ export function analyzeColoringPageQuality(imageData: any): {
 
 // 提示词增强引擎
 export function enhancePrompt(basePrompt: string, category: CategoryType): string {
-  const styleModifiers = {
-    animals: '(lineart:1.2), (clean lines:1.1), (single line thickness:1.05), simplified animal drawing',
-    nature: '(lineart:1.2), (clean lines:1.1), (botanical illustration:1.05)',
-    fantasy: '(lineart:1.2), (clean lines:1.1), (storybook illustration:1.05)',
-    vehicles: '(lineart:1.2), (clean lines:1.1), (technical drawing:1.05)',
-    patterns: '(lineart:1.2), (clean lines:1.1), (geometric pattern:1.05)',
-    default: '(lineart:1.2), (clean lines:1.1), (single line thickness:1.05)'
-  };
-
-  return `${basePrompt} ${styleModifiers[category] || styleModifiers.default}`;
+  // 只添加基本的线条艺术风格指示
+  return `${basePrompt}, lineart, coloring page style`;
 }
 
 // 图像后处理优化
