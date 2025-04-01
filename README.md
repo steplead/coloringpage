@@ -14,34 +14,32 @@ This project was created by JL to make it easy for anyone to generate custom col
 
 - 🎨 Generate custom coloring pages using AI
 - ✏️ Clean, black outline style perfect for coloring
-- 🎭 Multiple style options (Standard, Cute, Cartoon, Realistic, Geometric, Sketch)
-- 📊 Adjustable complexity levels for different age groups
-- 🧠 Advanced mode for complete prompt control
 - 📱 Responsive design for all devices
 - ⚡ Server-side rendering for optimal performance
 - 🔒 Secure API access and configuration
 - 🖨️ Easy to print and share
-- 📂 Save generation history in your browser
+- 🎛️ Advanced mode for complete prompt control
+- 🎭 Multiple style options (Simple, Medium, Complex, Cartoon, Realistic)
+- 📚 Category suggestions for inspiration
 
 ## How to Use
 
-1. **Basic Mode**:
-   - Enter a description of what you want to color
-   - Choose a style (Standard, Cute, Cartoon, etc.)
-   - Select complexity level (Simple, Medium, Complex)
-   - Browse category suggestions for inspiration
-   - Click "Generate Coloring Page"
+### Standard Mode
 
-2. **Advanced Mode**:
-   - Toggle "Advanced Mode" switch
-   - Enter a custom prompt with complete control
-   - Include "black outline coloring page, clean lines" for best results
-   - Click "Generate Coloring Page"
+1. Type a description of what you want to color
+2. Select a style (Simple, Medium, Complex, Cartoon, or Realistic)
+3. Optionally choose a category for suggestions
+4. Click "Generate Coloring Page"
+5. Download or print your coloring page
 
-3. **Print or Download**:
-   - View your generated coloring page
-   - Click "Download" to save as an image
-   - Click "Print" to send directly to your printer
+### Advanced Mode
+
+For experienced users who want complete control over the AI generation:
+
+1. Toggle "Advanced Mode"
+2. Enter a custom prompt with all details
+3. For best results, include "black outline coloring page, clean lines" in your prompt
+4. Click "Generate Coloring Page"
 
 ## Local Development
 
@@ -98,15 +96,17 @@ The project is deployed on Vercel. To deploy your own instance:
    - `SILICONFLOW_MODEL`
 5. Deploy!
 
-### Custom Domain Setup
+## Custom Domain Setup
 
-If you want to use a custom domain:
+To set up a custom domain like we did with `ai-coloringpage.com`:
 
-1. Purchase a domain (we used Cloudflare)
-2. In Vercel project settings, go to "Domains"
-3. Add your domain and follow the DNS configuration instructions
-4. Add the required A and CNAME records in your DNS provider
-5. Wait for DNS propagation (up to 24 hours)
+1. Purchase a domain from any domain registrar (we used Cloudflare)
+2. In your Vercel project settings, go to "Domains"
+3. Add your custom domain
+4. Follow Vercel's instructions to configure DNS settings:
+   - Add an A record pointing to Vercel's IP (76.76.21.21)
+   - Add a CNAME record for "www" pointing to cname.vercel-dns.com
+5. Set Cloudflare SSL/TLS encryption mode to "Full"
 
 ## Environment Variables
 
@@ -119,31 +119,6 @@ The following environment variables are required for the application to function
 | `SILICONFLOW_MODEL` | AI model for image generation | Yes |
 
 Additional optional environment variables can be found in `.env.example`.
-
-## Prompt Engineering
-
-The application uses a sophisticated prompt engineering system:
-
-1. **Base Format**:
-   ```
-   [User Description], [Style], [Complexity], black outline coloring page, clean lines
-   ```
-
-2. **Style Options**:
-   - Standard: Classic coloring page style
-   - Cute: Adorable, kawaii style
-   - Cartoon: Animated cartoon style
-   - Realistic: More realistic proportions and details
-   - Geometric: Composed of geometric shapes and patterns
-   - Sketch: Hand-drawn sketch appearance
-
-3. **Complexity Levels**:
-   - Simple: Fewer details, large areas to color, ideal for young children
-   - Medium: Balanced details, good for most ages
-   - Complex: More intricate details, better for older children and adults
-
-4. **Advanced Mode**:
-   For users who want complete control over prompt engineering, allowing direct input of custom prompts without automatic formatting.
 
 ## Tech Stack
 
