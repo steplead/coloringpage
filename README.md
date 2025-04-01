@@ -1,16 +1,37 @@
-# Coloringpage
+# AI Coloring Page Generator
 
-AI-powered coloring page generator
+Create custom coloring pages instantly with AI. This project uses Next.js 14 and the SiliconFlow API to generate beautiful coloring pages.
 
-## 项目配置
+## Live Demo
 
-### 环境变量
+The application is deployed and accessible at:
+https://coloringpage-boyf0kvyq-stepleads-projects.vercel.app
 
-项目使用以下环境变量：
+## Features
 
+- Generate custom coloring pages using AI
+- Clean, black outline style perfect for coloring
+- Responsive design for all devices
+- Server-side rendering for optimal performance
+- Environment variable configuration for secure API access
+
+## Local Development
+
+1. Clone the repository:
+```bash
+git clone git@github.com:steplead/coloringpage.git
+cd coloringpage
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory with the following variables:
 ```env
 # SiliconFlow API Configuration
-SILICONFLOW_API_KEY=your_api_key
+SILICONFLOW_API_KEY=your_api_key_here
 SILICONFLOW_API_URL=https://api.siliconflow.cn/v1/images/generations
 SILICONFLOW_MODEL=black-forest-labs/FLUX.1-schnell
 
@@ -22,107 +43,60 @@ MIN_QUALITY_SCORE=7.0
 # Cache Configuration
 CACHE_DURATION=3600
 MAX_CACHE_SIZE=100
+
+# SEO Configuration
+NEXT_PUBLIC_SITE_URL=http://localhost:3002
+NEXT_PUBLIC_SITE_NAME="AI Coloring Page Generator"
+NEXT_PUBLIC_SITE_DESCRIPTION="Create custom coloring pages instantly with AI. Free printable coloring pages for kids and adults."
 ```
 
-### Vercel 配置
-
-项目使用 `vercel.json` 进行部署配置：
-
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    }
-  ]
-}
+4. Start the development server:
+```bash
+npm run dev
 ```
 
-## 部署步骤
+5. Open [http://localhost:3002](http://localhost:3002) in your browser.
 
-1. **准备工作**
-   - 确保所有代码已提交到 GitHub
-   - 创建并配置 `.env.local` 文件
-   - 确保 API 密钥和 URL 配置正确
+## Deployment
 
-2. **Vercel 部署**
-   - 在 Vercel 中导入 GitHub 仓库
-   - 配置环境变量
-   - 选择部署区域（推荐选择离用户较近的区域）
-   - 等待自动部署完成
+The project is deployed on Vercel. To deploy your own instance:
 
-3. **部署后配置**
-   - 配置自定义域名（如需要）
-   - 设置安全头部（已在 vercel.json 中配置）
-   - 启用自动部署（默认启用）
+1. Fork this repository
+2. Create a new project on [Vercel](https://vercel.com)
+3. Connect your forked repository
+4. Add the following environment variables in your Vercel project settings:
+   - `SILICONFLOW_API_KEY`
+   - `SILICONFLOW_API_URL`
+   - `SILICONFLOW_MODEL`
+5. Deploy!
 
-4. **监控和维护**
-   - 监控 API 调用和使用情况
-   - 定期检查性能指标
-   - 根据需要调整缓存配置
+## Environment Variables
 
-## 技术栈
+The following environment variables are required for the application to function:
 
-- Next.js 14.2.26
-- TypeScript
-- SiliconFlow API
-- Vercel 托管
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `SILICONFLOW_API_KEY` | Your SiliconFlow API key | Yes |
+| `SILICONFLOW_API_URL` | SiliconFlow API endpoint | Yes |
+| `SILICONFLOW_MODEL` | AI model for image generation | Yes |
 
-## 开发指南
+Additional optional environment variables can be found in `.env.example`.
 
-1. **本地开发**
-   ```bash
-   npm install
-   npm run dev
-   ```
+## Tech Stack
 
-2. **构建**
-   ```bash
-   npm run build
-   ```
+- [Next.js 14](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [TailwindCSS](https://tailwindcss.com/) - Styling
+- [SiliconFlow API](https://siliconflow.cn) - AI image generation
 
-3. **生产环境运行**
-   ```bash
-   npm start
-   ```
+## Contributing
 
-## 注意事项
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- 确保 `.env.local` 文件不被提交到版本控制
-- 定期更新依赖包以修复安全问题
-- 遵循 TypeScript 类型定义以确保代码质量
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
