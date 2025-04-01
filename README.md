@@ -13,19 +13,35 @@ This project was created by JL to make it easy for anyone to generate custom col
 ## Features
 
 - 🎨 Generate custom coloring pages using AI
-- 🖌️ Multiple style options:
-  - Classic - Clean black outlines, minimal detail
-  - Detailed - More intricate patterns and texture details
-  - Simple - Bold lines, fewer details (for younger children)
-  - Cartoon - Stylized, fun character-based style
-  - Realistic - More accurate proportions and details
-- 📊 Complexity levels for different age groups
-- 💡 Example prompts in different categories to help get started
-- 📜 Generation history to revisit previous creations
+- ✏️ Clean, black outline style perfect for coloring
+- 🎭 Multiple style options (Standard, Cute, Cartoon, Realistic, Geometric, Sketch)
+- 📊 Adjustable complexity levels for different age groups
+- 🧠 Advanced mode for complete prompt control
 - 📱 Responsive design for all devices
 - ⚡ Server-side rendering for optimal performance
 - 🔒 Secure API access and configuration
-- 🖨️ Easy to download and print
+- 🖨️ Easy to print and share
+- 📂 Save generation history in your browser
+
+## How to Use
+
+1. **Basic Mode**:
+   - Enter a description of what you want to color
+   - Choose a style (Standard, Cute, Cartoon, etc.)
+   - Select complexity level (Simple, Medium, Complex)
+   - Browse category suggestions for inspiration
+   - Click "Generate Coloring Page"
+
+2. **Advanced Mode**:
+   - Toggle "Advanced Mode" switch
+   - Enter a custom prompt with complete control
+   - Include "black outline coloring page, clean lines" for best results
+   - Click "Generate Coloring Page"
+
+3. **Print or Download**:
+   - View your generated coloring page
+   - Click "Download" to save as an image
+   - Click "Print" to send directly to your printer
 
 ## Local Development
 
@@ -71,24 +87,26 @@ npm run dev
 
 ## Deployment
 
-The project is deployed on Vercel and accessible at [ai-coloringpage.com](https://ai-coloringpage.com). To deploy your own instance:
+The project is deployed on Vercel. To deploy your own instance:
 
 1. Fork this repository
 2. Create a new project on [Vercel](https://vercel.com)
 3. Connect your forked repository
-4. Add the required environment variables in your Vercel project settings
+4. Add the following environment variables in your Vercel project settings:
+   - `SILICONFLOW_API_KEY`
+   - `SILICONFLOW_API_URL`
+   - `SILICONFLOW_MODEL`
 5. Deploy!
 
-### Domain Configuration
+### Custom Domain Setup
 
 If you want to use a custom domain:
 
-1. Purchase a domain name (e.g., through Cloudflare, GoDaddy, etc.)
-2. In your Vercel project, go to Settings > Domains
-3. Add your custom domain
-4. Follow Vercel's instructions to configure DNS settings with your domain provider:
-   - A record: @ → 76.76.21.21
-   - CNAME record: www → cname.vercel-dns.com
+1. Purchase a domain (we used Cloudflare)
+2. In Vercel project settings, go to "Domains"
+3. Add your domain and follow the DNS configuration instructions
+4. Add the required A and CNAME records in your DNS provider
+5. Wait for DNS propagation (up to 24 hours)
 
 ## Environment Variables
 
@@ -102,21 +120,37 @@ The following environment variables are required for the application to function
 
 Additional optional environment variables can be found in `.env.example`.
 
+## Prompt Engineering
+
+The application uses a sophisticated prompt engineering system:
+
+1. **Base Format**:
+   ```
+   [User Description], [Style], [Complexity], black outline coloring page, clean lines
+   ```
+
+2. **Style Options**:
+   - Standard: Classic coloring page style
+   - Cute: Adorable, kawaii style
+   - Cartoon: Animated cartoon style
+   - Realistic: More realistic proportions and details
+   - Geometric: Composed of geometric shapes and patterns
+   - Sketch: Hand-drawn sketch appearance
+
+3. **Complexity Levels**:
+   - Simple: Fewer details, large areas to color, ideal for young children
+   - Medium: Balanced details, good for most ages
+   - Complex: More intricate details, better for older children and adults
+
+4. **Advanced Mode**:
+   For users who want complete control over prompt engineering, allowing direct input of custom prompts without automatic formatting.
+
 ## Tech Stack
 
 - [Next.js 14](https://nextjs.org/) - React framework
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 - [TailwindCSS](https://tailwindcss.com/) - Styling
 - [SiliconFlow API](https://siliconflow.cn) - AI image generation
-
-## Recent Updates
-
-- Added multiple coloring page styles (Classic, Detailed, Simple, Cartoon, Realistic)
-- Implemented complexity levels for different age groups
-- Added category-based example prompts to help users get started
-- Created a generation history feature to revisit previous creations
-- Added a random prompt generator for inspiration
-- Improved UI/UX with more intuitive controls and feedback
 
 ## Contributing
 

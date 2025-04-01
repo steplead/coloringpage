@@ -5,37 +5,25 @@ const API_KEY = process.env.SILICONFLOW_API_KEY;
 const API_URL = process.env.SILICONFLOW_API_URL || 'https://api.siliconflow.cn/v1/images/generations';
 const MODEL = process.env.SILICONFLOW_MODEL || 'black-forest-labs/FLUX.1-schnell';
 
-// Style prompts
-const STYLE_PROMPTS = {
-  classic: 'black outline coloring page, clean lines, minimal detail',
-  detailed: 'black outline coloring page with intricate patterns, detailed textures, fine lines',
-  simple: 'very simple black outline coloring page, bold thick lines, minimal details, suitable for young children',
-  cartoon: 'cartoon style black outline coloring page, cute, whimsical, fun character design',
-  realistic: 'realistic black outline coloring page, accurate proportions, anatomical details, clean lines'
-};
+// Basic coloring page style prompt
+const BASE_PROMPT = 'black outline coloring page, clean lines';
 
-// Complexity modifiers
+// Style modifiers based on complexity
 const COMPLEXITY_MODIFIERS = {
-  simple: { 
-    steps: 25,
-    guidance: 7.0,
-    suffix: ', simplified, fewer details, bolder lines'
-  },
-  medium: { 
-    steps: 30,
-    guidance: 7.5,
-    suffix: ''
-  },
-  complex: { 
-    steps: 35,
-    guidance: 8.0,
-    suffix: ', intricate details, fine linework'
-  }
+  simple: 'few details, large areas to color, simple shapes',
+  medium: 'balanced details, moderate complexity',
+  complex: 'intricate details, fine lines, more elaborate'
 };
 
-// Default style and complexity
-const DEFAULT_STYLE = 'classic';
-const DEFAULT_COMPLEXITY = 'medium';
+// Style modifiers
+const STYLE_MODIFIERS = {
+  standard: '',
+  cute: 'cute, kawaii style',
+  cartoon: 'cartoon style, animated',
+  realistic: 'realistic style',
+  geometric: 'geometric shapes, patterns',
+  sketch: 'hand-drawn sketch style'
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,37 +40,58 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { 
       description, 
-      style = DEFAULT_STYLE, 
-      complexity = DEFAULT_COMPLEXITY 
+      complexity = 'medium',
+      style = 'standard',
+      advancedMode = false,
+      customPrompt = '' 
     } = body;
 
-    if (!description) {
-      return NextResponse.json(
-        { error: 'Description is required' },
-        { status: 400 }
-      );
-    }
+    // In advanced mode, use the custom prompt directly
+    // Otherwise, construct prompt with modifiers
+    let finalPrompt;
+    
+    if (advancedMode && customPrompt) {
+      // Use custom prompt directly without adding base prompt
+      finalPrompt = customPrompt;
+      console.log('Using advanced mode with custom prompt:', finalPrompt);
+    } else {
+      // Require description in standard mode
+      if (!description) {
+        return NextResponse.json(
+          { error: 'Description is required' },
+          { status: 400 }
+        );
+      }
 
-    // Get the style prompt
-    const stylePrompt = STYLE_PROMPTS[style as keyof typeof STYLE_PROMPTS] || STYLE_PROMPTS[DEFAULT_STYLE];
-    
-    // Get complexity settings
-    const complexitySettings = COMPLEXITY_MODIFIERS[complexity as keyof typeof COMPLEXITY_MODIFIERS] || 
-                              COMPLEXITY_MODIFIERS[DEFAULT_COMPLEXITY];
-    
-    // Combine description with style and complexity
-    const finalPrompt = `${description}, ${stylePrompt}${complexitySettings.suffix}`;
+      // Get the complexity and style modifiers
+      const complexityModifier = COMPLEXITY_MODIFIERS[complexity as keyof typeof COMPLEXITY_MODIFIERS] || '';
+      const styleModifier = STYLE_MODIFIERS[style as keyof typeof STYLE_MODIFIERS] || '';
+      
+      // Build the final prompt with intelligent ordering and spacing
+      finalPrompt = description;
+      
+      // Add style modifier if selected
+      if (styleModifier) {
+        finalPrompt += `, ${styleModifier}`;
+      }
+      
+      // Add complexity modifier
+      if (complexityModifier) {
+        finalPrompt += `, ${complexityModifier}`;
+      }
+      
+      // Always add the base prompt to ensure it's a proper coloring page
+      finalPrompt += `, ${BASE_PROMPT}`;
+    }
     
     console.log('Generating image with prompt:', finalPrompt);
-    console.log('Style:', style);
-    console.log('Complexity:', complexity);
 
-    // Create API request data with complexity settings
+    // Create API request data
     const requestData = {
       model: MODEL,
       prompt: finalPrompt,
-      num_inference_steps: complexitySettings.steps,
-      guidance_scale: complexitySettings.guidance
+      num_inference_steps: complexity === 'complex' ? 40 : 30, // More steps for complex images
+      guidance_scale: 7.5
     };
 
     // Call SiliconFlow API
@@ -90,8 +99,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`,
-        'User-Agent': 'AI-ColoringPage-Generator/1.0'
+        'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify(requestData)
     });
@@ -124,15 +132,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Return generation result with metadata
+    // Return generation result
     return NextResponse.json({
       success: true,
       imageUrl: imageUrl,
-      metadata: {
-        style,
-        complexity,
-        prompt: finalPrompt
-      }
+      prompt: finalPrompt
     });
 
   } catch (error) {
