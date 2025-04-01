@@ -4,7 +4,7 @@ Create custom coloring pages instantly with AI. This project uses Next.js 14 and
 
 ## Live Demo
 
-🎨 Try it now: [AI Coloring Page Generator](https://coloringpage-boyf0kvyq-stepleads-projects.vercel.app)
+🎨 Try it now: [AI Coloring Page Generator](https://ai-coloringpage.com)
 
 ## About
 
@@ -13,11 +13,19 @@ This project was created by JL to make it easy for anyone to generate custom col
 ## Features
 
 - 🎨 Generate custom coloring pages using AI
-- ✏️ Clean, black outline style perfect for coloring
+- 🖌️ Multiple style options:
+  - Classic - Clean black outlines, minimal detail
+  - Detailed - More intricate patterns and texture details
+  - Simple - Bold lines, fewer details (for younger children)
+  - Cartoon - Stylized, fun character-based style
+  - Realistic - More accurate proportions and details
+- 📊 Complexity levels for different age groups
+- 💡 Example prompts in different categories to help get started
+- 📜 Generation history to revisit previous creations
 - 📱 Responsive design for all devices
 - ⚡ Server-side rendering for optimal performance
 - 🔒 Secure API access and configuration
-- 🖨️ Easy to print and share
+- 🖨️ Easy to download and print
 
 ## Local Development
 
@@ -63,16 +71,24 @@ npm run dev
 
 ## Deployment
 
-The project is deployed on Vercel. To deploy your own instance:
+The project is deployed on Vercel and accessible at [ai-coloringpage.com](https://ai-coloringpage.com). To deploy your own instance:
 
 1. Fork this repository
 2. Create a new project on [Vercel](https://vercel.com)
 3. Connect your forked repository
-4. Add the following environment variables in your Vercel project settings:
-   - `SILICONFLOW_API_KEY`
-   - `SILICONFLOW_API_URL`
-   - `SILICONFLOW_MODEL`
+4. Add the required environment variables in your Vercel project settings
 5. Deploy!
+
+### Domain Configuration
+
+If you want to use a custom domain:
+
+1. Purchase a domain name (e.g., through Cloudflare, GoDaddy, etc.)
+2. In your Vercel project, go to Settings > Domains
+3. Add your custom domain
+4. Follow Vercel's instructions to configure DNS settings with your domain provider:
+   - A record: @ → 76.76.21.21
+   - CNAME record: www → cname.vercel-dns.com
 
 ## Environment Variables
 
@@ -92,6 +108,15 @@ Additional optional environment variables can be found in `.env.example`.
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 - [TailwindCSS](https://tailwindcss.com/) - Styling
 - [SiliconFlow API](https://siliconflow.cn) - AI image generation
+
+## Recent Updates
+
+- Added multiple coloring page styles (Classic, Detailed, Simple, Cartoon, Realistic)
+- Implemented complexity levels for different age groups
+- Added category-based example prompts to help users get started
+- Created a generation history feature to revisit previous creations
+- Added a random prompt generator for inspiration
+- Improved UI/UX with more intuitive controls and feedback
 
 ## Contributing
 

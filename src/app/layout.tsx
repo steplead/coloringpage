@@ -9,8 +9,11 @@ import { Footer } from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-  description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use. Free to use!',
+  title: {
+    default: 'AI Coloring Page Generator',
+    template: '%s | AI Coloring Page Generator',
+  },
+  description: 'Create custom coloring pages in multiple styles with AI. Choose complexity levels, explore example ideas, and download high-quality printable coloring pages for kids and adults.',
   keywords: 'coloring pages, AI art, coloring book, custom coloring pages, kids activities, educational coloring, adult coloring, printable coloring pages',
   authors: [{ name: 'Your Name' }],
   creator: 'Your Name',
@@ -23,10 +26,10 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://your-domain.com',
-    siteName: 'AI Coloring Page Generator',
-    title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-    description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com',
+    siteName: process.env.NEXT_PUBLIC_SITE_NAME || 'AI Coloring Page Generator',
+    title: 'AI Coloring Page Generator',
+    description: 'Create custom coloring pages in multiple styles with AI. Choose complexity levels, explore example ideas, and download high-quality printable coloring pages.',
     images: [
       {
         url: '/og-image.jpg',
@@ -38,8 +41,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-    description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
+    title: 'AI Coloring Page Generator',
+    description: 'Create custom coloring pages in multiple styles with AI. Choose complexity levels, explore example ideas, and download high-quality printable coloring pages.',
     images: ['/og-image.jpg'],
     creator: '@yourtwitter',
   },
