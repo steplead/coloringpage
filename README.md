@@ -1,19 +1,23 @@
-# AI Coloring Page Generator
+# AI Coloring Page Generator by JL
 
-Create custom coloring pages instantly with AI. This project uses Next.js 14 and the SiliconFlow API to generate beautiful coloring pages.
+Create custom coloring pages instantly with AI. This project uses Next.js 14 and the SiliconFlow API to generate beautiful coloring pages. Perfect for parents, teachers, and anyone who loves coloring!
 
 ## Live Demo
 
-The application is deployed and accessible at:
-https://coloringpage-boyf0kvyq-stepleads-projects.vercel.app
+🎨 Try it now: [AI Coloring Page Generator](https://coloringpage-boyf0kvyq-stepleads-projects.vercel.app)
+
+## About
+
+This project was created by JL to make it easy for anyone to generate custom coloring pages using AI technology. Whether you're a teacher looking for educational materials, a parent wanting to entertain your kids, or just someone who enjoys coloring - this tool is for you!
 
 ## Features
 
-- Generate custom coloring pages using AI
-- Clean, black outline style perfect for coloring
-- Responsive design for all devices
-- Server-side rendering for optimal performance
-- Environment variable configuration for secure API access
+- 🎨 Generate custom coloring pages using AI
+- ✏️ Clean, black outline style perfect for coloring
+- 📱 Responsive design for all devices
+- ⚡ Server-side rendering for optimal performance
+- 🔒 Secure API access and configuration
+- 🖨️ Easy to print and share
 
 ## Local Development
 
@@ -97,6 +101,19 @@ Additional optional environment variables can be found in `.env.example`.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Author
+
+Created with ❤️ by JL
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+If you find this project helpful, please consider:
+- Giving it a ⭐ on GitHub
+- Sharing it with friends and colleagues
+- Following me for more projects
+
+For issues and feature requests, please [open an issue](https://github.com/steplead/coloringpage/issues).
