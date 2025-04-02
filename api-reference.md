@@ -25,6 +25,40 @@ This document provides information about the API used in the AI Coloring Page ap
 - Handles image generation with custom prompts
 - Returns image URL that is then saved to the gallery
 
+## Google Gemini API
+
+### Core Information
+- **Purpose**: AI-powered text generation and enhancement
+- **Endpoint**: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
+- **Model**: `gemini-2.0-flash`
+- **API Key**: `AIzaSyBSo6E7uZR7IvaRfiNZSdpgGwg8uzE6xow`
+
+### Request Parameters
+```json
+{
+  "contents": [
+    {
+      "parts": [
+        {
+          "text": "Your prompt text here"
+        }
+      ]
+    }
+  ],
+  "generationConfig": {
+    "temperature": 0.7,
+    "topK": 40,
+    "topP": 0.95,
+    "maxOutputTokens": 2048
+  }
+}
+```
+
+### Implementation Details
+- Can be used for prompt enhancement and optimization
+- Potential use for generating blog content for SEO
+- Helps improve user experience with better content generation
+
 ## Supabase Data Storage
 
 ### Core Information
