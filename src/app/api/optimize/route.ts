@@ -33,11 +33,11 @@ export async function POST(request: NextRequest) {
     }
     
     // Apply optimization
-    const optimizationResult = optimizeColoring(imageData, options || {});
+    const optimizationResult = await optimizeColoring(imageData, options || {});
     
     // Apply age-specific optimizations if age group is specified
     if (options?.targetAge) {
-      optimizationResult.imageData = optimizeForAgeGroup(optimizationResult.imageData, options.targetAge);
+      optimizationResult.imageData = await optimizeForAgeGroup(optimizationResult.imageData, options.targetAge);
       optimizationResult.optimizationApplied.push(`Age-specific optimization for ${options.targetAge}`);
     }
     
