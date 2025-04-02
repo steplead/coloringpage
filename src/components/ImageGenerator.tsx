@@ -178,6 +178,30 @@ export const ImageGenerator = () => {
         console.log('Image generated successfully:', data.imageUrl);
         setImage(data.imageUrl);
         
+        // Save the image to the gallery
+        try {
+          const galleryResponse = await fetch('/api/save-to-gallery', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              prompt: isAdvancedMode ? customPrompt : prompt,
+              imageUrl: data.imageUrl,
+              style: style,
+              title: prompt.substring(0, 100) // Use the first 100 chars of prompt as title
+            }),
+          });
+          
+          if (!galleryResponse.ok) {
+            console.error('Failed to save to gallery:', await galleryResponse.json());
+          } else {
+            console.log('Successfully saved to gallery');
+          }
+        } catch (error) {
+          console.error('Error saving to gallery:', error);
+        }
+        
         // Add to history (limit to last 10 items)
         setGenerationHistory(prev => {
           const newHistory = [{ 

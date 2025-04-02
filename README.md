@@ -21,6 +21,9 @@ This project was created by JL to make it easy for anyone to generate custom col
 - 🎛️ Advanced mode for complete prompt control
 - 🎭 Multiple style options (Simple, Medium, Complex, Cartoon, Realistic)
 - 📚 Category suggestions for inspiration
+- 🖼️ Browse community gallery of coloring pages
+- 📄 Print-optimized view for perfect printing results
+- 💾 Database integration for saving and sharing creations
 
 ## How to Use
 
@@ -40,6 +43,17 @@ For experienced users who want complete control over the AI generation:
 2. Enter a custom prompt with all details
 3. For best results, include "black outline coloring page, clean lines" in your prompt
 4. Click "Generate Coloring Page"
+
+### Gallery
+
+Explore a collection of community-created coloring pages:
+
+1. Navigate to the "Gallery" page from the main navigation
+2. Browse through the available coloring pages
+3. Click on any image to view details and options
+4. Use the "View" button to see the full page
+5. Use the "Print" button to open a print-optimized version
+6. Follow the printing instructions for best results
 
 ## Local Development
 
@@ -61,6 +75,10 @@ SILICONFLOW_API_KEY=your_api_key_here
 SILICONFLOW_API_URL=https://api.siliconflow.cn/v1/images/generations
 SILICONFLOW_MODEL=black-forest-labs/FLUX.1-schnell
 
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
 # Image Generation Configuration
 DEFAULT_IMAGE_SIZE=1024
 MAX_RETRY_ATTEMPTS=3
@@ -76,12 +94,29 @@ NEXT_PUBLIC_SITE_NAME="AI Coloring Page Generator"
 NEXT_PUBLIC_SITE_DESCRIPTION="Create custom coloring pages instantly with AI. Free printable coloring pages for kids and adults."
 ```
 
-4. Start the development server:
+4. Set up your Supabase database:
+   - Create a new Supabase project
+   - Create a table called `images` with the following schema:
+   ```sql
+   create table images (
+     id uuid default gen_random_uuid() primary key,
+     created_at timestamp with time zone default now(),
+     prompt text not null,
+     image_url text not null,
+     is_public boolean default true,
+     user_id uuid,
+     style text,
+     title text
+   );
+   ```
+   - Set up Row Level Security (RLS) policies as needed
+
+5. Start the development server:
 ```bash
 npm run dev
 ```
 
-5. Open [http://localhost:3002](http://localhost:3002) in your browser.
+6. Open [http://localhost:3002](http://localhost:3002) in your browser.
 
 ## Deployment
 
@@ -94,6 +129,8 @@ The project is deployed on Vercel. To deploy your own instance:
    - `SILICONFLOW_API_KEY`
    - `SILICONFLOW_API_URL`
    - `SILICONFLOW_MODEL`
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 5. Deploy!
 
 ## Custom Domain Setup
@@ -117,15 +154,18 @@ The following environment variables are required for the application to function
 | `SILICONFLOW_API_KEY` | Your SiliconFlow API key | Yes |
 | `SILICONFLOW_API_URL` | SiliconFlow API endpoint | Yes |
 | `SILICONFLOW_MODEL` | AI model for image generation | Yes |
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anonymous key | Yes |
 
 Additional optional environment variables can be found in `.env.example`.
 
 ## Tech Stack
 
-- [Next.js 14](https://nextjs.org/) - React framework
+- [Next.js 14](https://nextjs.org/) - React framework with App Router
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 - [TailwindCSS](https://tailwindcss.com/) - Styling
 - [SiliconFlow API](https://siliconflow.cn) - AI image generation
+- [Supabase](https://supabase.com/) - Database and storage
 
 ## Contributing
 

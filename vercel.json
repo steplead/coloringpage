@@ -1,4 +1,12 @@
 {
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://hjmwtgqvmqaontbjebpi.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbXd0Z3F2bXFhb250YmplYnBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NjA0NzIsImV4cCI6MjA1OTEzNjQ3Mn0.M0JVWdQk14MPtTbL-q9zyPjl36kYotRTw7L-aF9iK_A"
+  },
+  "buildCommand": "next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
   "version": 2,
   "builds": [
     {
