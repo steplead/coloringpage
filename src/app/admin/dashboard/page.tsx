@@ -84,12 +84,26 @@ export default function AdminDashboard() {
     // Fetch current auto-generation settings
     const fetchSettings = async () => {
       try {
+        // First try to get settings from localStorage
+        const localSettings = localStorage.getItem('blog_settings');
+        if (localSettings) {
+          const parsed = JSON.parse(localSettings);
+          setAutoPostCount(parsed.postCount || 1);
+          setAutoPostLength(parsed.postLength || 800);
+          console.log('Using settings from localStorage:', parsed);
+        }
+        
+        // Then try to get from API
         const response = await fetch('/api/admin/settings');
         const data = await response.json();
         
         if (data.settings) {
           setAutoPostCount(data.settings.postCount || 1);
           setAutoPostLength(data.settings.postLength || 800);
+          console.log('Using settings from API:', data.settings);
+          
+          // Update localStorage with latest from server
+          localStorage.setItem('blog_settings', JSON.stringify(data.settings));
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -142,15 +156,20 @@ export default function AdminDashboard() {
     setSettingsMessage('');
     
     try {
+      // Always save to localStorage first as a backup
+      const settings = {
+        postCount: autoPostCount,
+        postLength: autoPostLength
+      };
+      localStorage.setItem('blog_settings', JSON.stringify(settings));
+      
+      // Then try to save to API
       const response = await fetch('/api/admin/settings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          postCount: autoPostCount,
-          postLength: autoPostLength
-        }),
+        body: JSON.stringify(settings),
       });
       
       const data = await response.json();
@@ -158,11 +177,13 @@ export default function AdminDashboard() {
       if (data.success) {
         setSettingsMessage('Settings saved successfully!');
       } else {
-        setSettingsMessage(`Failed to save settings. ${data.error || ''}`);
+        // If API save failed but localStorage worked, show a modified success message
+        setSettingsMessage('Settings saved locally. Server sync failed: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setSettingsMessage('Error saving settings. Please try again.');
+      // If we can't reach the API but localStorage worked
+      setSettingsMessage('Settings saved locally. Could not connect to server.');
     } finally {
       setIsSavingSettings(false);
     }

@@ -4,40 +4,40 @@ import { supabase } from '@/lib/supabase';
 // Function to create the settings table if it doesn't exist
 async function createSettingsTable() {
   try {
-    // Check if the table already exists
-    const { data: tableExists } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_name', 'app_settings')
-      .single();
-    
-    if (tableExists) {
-      return { success: true, message: 'Settings table already exists' };
-    }
-    
-    // Create the settings table
-    const { error } = await supabase.rpc('create_table_if_not_exists', {
-      table_sql: `
-        CREATE TABLE IF NOT EXISTS app_settings (
-          id TEXT PRIMARY KEY,
-          post_count INTEGER NOT NULL DEFAULT 1,
-          post_length INTEGER NOT NULL DEFAULT 800,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
-          updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
-        );
-        
-        INSERT INTO app_settings (id, post_count, post_length) 
-        VALUES ('blog_settings', 1, 800)
-        ON CONFLICT (id) DO NOTHING;
-      `
+    // First try to insert data to see if the table exists
+    const { error: insertError } = await supabase.from('app_settings').insert({
+      id: 'blog_settings',
+      post_count: 1,
+      post_length: 800,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     });
     
-    if (error) {
-      console.error('Error creating settings table:', error);
-      return { success: false, error: error.message };
+    // If no error, the table exists and we inserted the defaults
+    if (!insertError) {
+      return { success: true, message: 'Settings table exists and initialized with defaults' };
     }
     
-    return { success: true, message: 'Settings table created successfully' };
+    // If error code is not "relation does not exist", it's another error
+    if (!insertError.message.includes('relation') && !insertError.message.includes('does not exist')) {
+      console.error('Error inserting into app_settings:', insertError);
+      return { success: false, error: insertError.message };
+    }
+    
+    // We need to create the table
+    console.log('App settings table does not exist, we need to create it');
+    
+    // For Supabase, we'll use REST API to execute an SQL function
+    // This is a workaround since we can't create tables directly from the client
+    
+    // First, let's try a simpler approach - let the API side implementation handle it
+    // We'll update the admin settings API to create the table if needed
+    
+    return { 
+      success: false, 
+      error: 'Table does not exist. Please use the admin dashboard to create the settings.',
+      message: 'The app_settings table needs to be created. When you access the admin dashboard, it will try to create it automatically.'
+    };
   } catch (error: any) {
     console.error('Error in createSettingsTable:', error);
     return { success: false, error: error.message };
