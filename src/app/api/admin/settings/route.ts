@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
-// Define the settings file path
-const settingsFile = path.join(process.cwd(), 'settings.json');
+// Define settings table name
+const SETTINGS_TABLE = 'app_settings';
 
 // Default settings
 const defaultSettings = {
@@ -11,41 +10,94 @@ const defaultSettings = {
   postLength: 800
 };
 
-// Helper function to read settings
+// Helper function to ensure settings table exists
+async function ensureSettingsTable() {
+  try {
+    // Create the table if it doesn't exist (using direct SQL)
+    const { error } = await supabase.rpc('execute_sql', {
+      sql: `
+        CREATE TABLE IF NOT EXISTS ${SETTINGS_TABLE} (
+          id TEXT PRIMARY KEY,
+          post_count INTEGER NOT NULL DEFAULT 1,
+          post_length INTEGER NOT NULL DEFAULT 800,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+        );
+      `
+    });
+    
+    if (error) {
+      console.error('Error creating settings table:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error ensuring settings table exists:', error);
+    return false;
+  }
+}
+
+// Helper function to read settings from Supabase
 async function readSettings() {
   try {
-    if (!fs.existsSync(settingsFile)) {
-      // Create default settings file if it doesn't exist
-      fs.writeFileSync(settingsFile, JSON.stringify(defaultSettings, null, 2));
+    // Ensure the table exists
+    await ensureSettingsTable();
+    
+    // Get settings
+    const { data, error } = await supabase
+      .from(SETTINGS_TABLE)
+      .select('*')
+      .eq('id', 'blog_settings')
+      .single();
+    
+    if (error || !data) {
+      // Create default settings if not found
+      await saveSettings(defaultSettings);
       return defaultSettings;
     }
-
-    const rawData = fs.readFileSync(settingsFile, 'utf8');
-    return JSON.parse(rawData);
+    
+    return {
+      postCount: data.post_count || defaultSettings.postCount,
+      postLength: data.post_length || defaultSettings.postLength
+    };
   } catch (error) {
-    console.error('Error reading settings file:', error);
+    console.error('Error reading settings:', error);
     return defaultSettings;
   }
 }
 
-// Helper function to save settings
+// Helper function to save settings to Supabase
 async function saveSettings(settings: any) {
   try {
-    const updatedSettings = {
-      ...defaultSettings,
-      ...settings
-    };
+    // Ensure the table exists
+    await ensureSettingsTable();
     
-    fs.writeFileSync(settingsFile, JSON.stringify(updatedSettings, null, 2));
+    // Insert or update settings
+    const { error } = await supabase
+      .from(SETTINGS_TABLE)
+      .upsert({
+        id: 'blog_settings',
+        post_count: settings.postCount,
+        post_length: settings.postLength,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+    
+    if (error) {
+      console.error('Error saving settings to Supabase:', error);
+      return false;
+    }
+    
     return true;
   } catch (error) {
-    console.error('Error saving settings file:', error);
+    console.error('Error saving settings:', error);
     return false;
   }
 }
 
 // GET handler to retrieve current settings
 export async function GET(request: NextRequest) {
+  console.log('GET /api/admin/settings: Fetching settings');
   try {
     const settings = await readSettings();
     
@@ -53,6 +105,7 @@ export async function GET(request: NextRequest) {
     process.env.AUTO_BLOG_POST_COUNT = String(settings.postCount);
     process.env.AUTO_BLOG_POST_LENGTH = String(settings.postLength);
     
+    console.log('GET /api/admin/settings: Returning settings', settings);
     return NextResponse.json({ success: true, settings });
   } catch (error: any) {
     console.error('Error getting settings:', error);
@@ -65,8 +118,10 @@ export async function GET(request: NextRequest) {
 
 // POST handler to update settings
 export async function POST(request: NextRequest) {
+  console.log('POST /api/admin/settings: Saving settings');
   try {
     const data = await request.json();
+    console.log('POST /api/admin/settings: Received data', data);
     
     // Validate settings
     const postCount = parseInt(data.postCount);
@@ -92,6 +147,7 @@ export async function POST(request: NextRequest) {
       postLength
     };
     
+    console.log('POST /api/admin/settings: Saving new settings', newSettings);
     const success = await saveSettings(newSettings);
     
     if (!success) {
@@ -105,6 +161,7 @@ export async function POST(request: NextRequest) {
     process.env.AUTO_BLOG_POST_COUNT = String(postCount);
     process.env.AUTO_BLOG_POST_LENGTH = String(postLength);
     
+    console.log('POST /api/admin/settings: Settings saved successfully');
     return NextResponse.json({ 
       success: true, 
       settings: newSettings,
