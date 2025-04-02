@@ -8,7 +8,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Type definitions for our database tables
-export type ImageRecord = {
+export interface ImageRecord {
   id: string;
   created_at: string;
   prompt: string;
@@ -17,6 +17,13 @@ export type ImageRecord = {
   user_id?: string;
   style?: string;
   title?: string;
+  updated_at: string;
+  // SEO Fields
+  alt_text?: string;
+  seo_description?: string;
+  seo_filename?: string;
+  caption?: string;
+  keywords?: string[];
 }
 
 // Helper functions for working with images

@@ -1,54 +1,60 @@
-import { NextResponse } from 'next/server';
-import { saveImageToGallery } from '@/lib/supabase';
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { generateImageMetadata } from '@/lib/seo';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    console.log('API: Save to gallery request received');
+    const { prompt, imageUrl, style, title } = await request.json();
     
-    const body = await request.json();
-    console.log('API: Request body:', JSON.stringify(body));
-    
-    const { prompt, imageUrl, style, title } = body;
-
     if (!prompt || !imageUrl) {
-      console.error('API: Missing required fields', { prompt: !!prompt, imageUrl: !!imageUrl });
-      return NextResponse.json(
-        { error: 'Missing required fields: prompt and imageUrl are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Prompt and image URL are required' 
+      }, { status: 400 });
     }
-
-    console.log('API: Calling saveImageToGallery with:', { 
-      promptLength: prompt.length,
-      imageUrlLength: imageUrl.length,
-      style,
-      titleLength: title?.length
+    
+    // Generate SEO-optimized metadata for the image
+    const seoMetadata = generateImageMetadata(prompt, style);
+    
+    // Get current date/time
+    const now = new Date().toISOString();
+    
+    // Insert into database with SEO metadata
+    const { data, error } = await supabase
+      .from('images')
+      .insert({
+        prompt,
+        image_url: imageUrl,
+        style: style || 'standard',
+        title: title || seoMetadata.title,
+        alt_text: seoMetadata.alt,
+        seo_description: seoMetadata.description,
+        seo_filename: seoMetadata.filename,
+        caption: seoMetadata.caption,
+        keywords: seoMetadata.keywords,
+        created_at: now,
+        updated_at: now
+      })
+      .select();
+    
+    if (error) {
+      console.error('Error saving to gallery:', error);
+      return NextResponse.json({ 
+        success: false, 
+        error: error.message 
+      }, { status: 500 });
+    }
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Image saved to gallery',
+      data: data[0]
     });
-
-    const result = await saveImageToGallery(prompt, imageUrl, style, title);
-
-    if (!result) {
-      console.error('API: Failed to save image to gallery - null result returned');
-      return NextResponse.json(
-        { error: 'Failed to save image to gallery' },
-        { status: 500 }
-      );
-    }
-
-    console.log('API: Successfully saved image to gallery');
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error in save-to-gallery API:', error);
-    if (error instanceof Error) {
-      console.error('Error details:', { 
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-    }
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    console.error('Error in save-to-gallery:', error);
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message || 'An unknown error occurred' 
+    }, { status: 500 });
   }
 } 
