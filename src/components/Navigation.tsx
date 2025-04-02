@@ -42,37 +42,38 @@ export function Navigation() {
     <nav className="bg-white dark:bg-gray-900 sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" onClick={closeMenu}>
+              <Link href="/" onClick={closeMenu} aria-label="Home">
                 <Image 
                   src="/logo.png" 
                   alt="Coloring Page Generator Logo"
                   width={40}
                   height={40}
                   className="h-8 w-auto"
+                  priority
                 />
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
+                  className={`flex items-center px-3 py-2 text-sm font-medium border-b-2 min-h-[40px] ${
                     isActive(item.href)
                       ? 'border-indigo-500 text-gray-900 dark:text-white'
                       : 'border-transparent text-gray-500 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200'
                   }`}
                 >
-                  {item.name}
+                  <span className="whitespace-nowrap">{item.name}</span>
                 </Link>
               ))}
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+          <div className="hidden sm:flex sm:items-center sm:space-x-2">
             {/* Language Selector */}
-            <LanguageSelector className="mr-2" />
+            <LanguageSelector className="relative" />
             
             {/* Theme Toggle */}
             <button
@@ -97,15 +98,15 @@ export function Navigation() {
             </button>
           </div>
           
-          <div className="flex items-center sm:hidden">
+          <div className="flex items-center space-x-1 sm:hidden">
             {/* Mobile Language Selector */}
-            <LanguageSelector className="mr-2" />
+            <LanguageSelector />
             
             {/* Mobile Theme Toggle */}
             <button
               type="button"
               aria-label="Toggle dark mode"
-              className="p-2 text-gray-500 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none mr-2"
+              className="p-2 text-gray-500 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             >
               {mounted && (
@@ -127,7 +128,8 @@ export function Navigation() {
             <button
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              aria-expanded="false"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
               onClick={toggleMenu}
             >
               <span className="sr-only">Open main menu</span>
@@ -146,13 +148,16 @@ export function Navigation() {
       </div>
 
       {/* Mobile menu, show/hide based on menu state */}
-      <div className={`sm:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
+      <div 
+        className={`sm:hidden ${isMenuOpen ? 'block' : 'hidden'}`}
+        id="mobile-menu"
+      >
         <div className="pt-2 pb-3 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+              className={`block px-3 py-2 border-l-4 text-base font-medium ${
                 isActive(item.href)
                   ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 text-indigo-700 dark:text-indigo-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-800 dark:hover:text-gray-200'
