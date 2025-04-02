@@ -1,97 +1,143 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTheme } from 'next-themes';
+import LanguageSelector from './LanguageSelector';
+import { useTranslation } from '@/lib/i18n';
 
 export function Navigation() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
+
+  // After mounting, we have access to the theme
+  useEffect(() => setMounted(true), []);
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsMenuOpen(!isMenuOpen);
   };
 
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Create', href: '/create' },
-    { name: 'Gallery', href: '/gallery' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'About', href: '/about' },
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const navItems = [
+    { name: t('common.home'), href: '/' },
+    { name: t('common.create'), href: '/create' },
+    { name: t('common.gallery'), href: '/gallery' },
+    { name: t('common.blog'), href: '/blog' },
+    { name: t('common.about'), href: '/about' },
   ];
 
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50 w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center flex-shrink-0">
-            <span className="text-xl font-bold text-blue-600 tracking-tight">Coloring AI</span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex md:items-center md:space-x-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  pathname === link.href
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
-                }`}
-              >
-                {link.name}
+    <nav className="bg-white dark:bg-gray-900 sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex">
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" onClick={closeMenu}>
+                <Image 
+                  src="/logo.png" 
+                  alt="Coloring Page Generator Logo"
+                  width={40}
+                  height={40}
+                  className="h-8 w-auto"
+                />
               </Link>
-            ))}
-            <Link 
-              href="/create" 
-              className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Create Now
-            </Link>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
+            </div>
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`inline-flex items-center px-1 pt-1 text-sm font-medium border-b-2 ${
+                    isActive(item.href)
+                      ? 'border-indigo-500 text-gray-900 dark:text-white'
+                      : 'border-transparent text-gray-500 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            {/* Language Selector */}
+            <LanguageSelector className="mr-2" />
+            
+            {/* Theme Toggle */}
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none"
+              aria-label="Toggle dark mode"
+              className="p-2 text-gray-500 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              {mounted && (
+                <>
+                  {theme === 'dark' ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </>
+              )}
+            </button>
+          </div>
+          
+          <div className="flex items-center sm:hidden">
+            {/* Mobile Language Selector */}
+            <LanguageSelector className="mr-2" />
+            
+            {/* Mobile Theme Toggle */}
+            <button
+              type="button"
+              aria-label="Toggle dark mode"
+              className="p-2 text-gray-500 dark:text-gray-300 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none mr-2"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              {mounted && (
+                <>
+                  {theme === 'dark' ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                  )}
+                </>
+              )}
+            </button>
+            
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              aria-expanded="false"
               onClick={toggleMenu}
-              aria-expanded={isOpen ? 'true' : 'false'}
             >
               <span className="sr-only">Open main menu</span>
-              {!isOpen ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+              {isMenuOpen ? (
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -99,34 +145,25 @@ export function Navigation() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 shadow-lg bg-white">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === link.href
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+      {/* Mobile menu, show/hide based on menu state */}
+      <div className={`sm:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
+        <div className="pt-2 pb-3 space-y-1">
+          {navItems.map((item) => (
             <Link
-              href="/create"
-              className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
-              onClick={() => setIsOpen(false)}
+              key={item.href}
+              href={item.href}
+              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                isActive(item.href)
+                  ? 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500 text-indigo-700 dark:text-indigo-300'
+                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-800 dark:hover:text-gray-200'
+              }`}
+              onClick={closeMenu}
             >
-              Create Now
+              {item.name}
             </Link>
-          </div>
+          ))}
         </div>
-      )}
-    </header>
+      </div>
+    </nav>
   );
 } 
