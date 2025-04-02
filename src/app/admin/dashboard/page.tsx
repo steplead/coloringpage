@@ -48,6 +48,12 @@ export default function AdminDashboard() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  
+  // Auto-generation settings
+  const [autoPostCount, setAutoPostCount] = useState(1);
+  const [autoPostLength, setAutoPostLength] = useState(800);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState('');
 
   // Fetch dashboard statistics
   useEffect(() => {
@@ -75,7 +81,24 @@ export default function AdminDashboard() {
       }
     };
     
+    // Fetch current auto-generation settings
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/settings');
+        const data = await response.json();
+        
+        if (data.settings) {
+          setAutoPostCount(data.settings.postCount || 1);
+          setAutoPostLength(data.settings.postLength || 800);
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+        // Use defaults if settings can't be fetched
+      }
+    };
+    
     fetchStats();
+    fetchSettings();
   }, []);
 
   // Generate blog posts
@@ -110,6 +133,38 @@ export default function AdminDashboard() {
       setMessage('Error generating blog posts. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  // Save auto-generation settings
+  const saveSettings = async () => {
+    setIsSavingSettings(true);
+    setSettingsMessage('');
+    
+    try {
+      const response = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          postCount: autoPostCount,
+          postLength: autoPostLength
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setSettingsMessage('Settings saved successfully!');
+      } else {
+        setSettingsMessage(`Failed to save settings. ${data.error || ''}`);
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      setSettingsMessage('Error saving settings. Please try again.');
+    } finally {
+      setIsSavingSettings(false);
     }
   };
 
@@ -154,6 +209,66 @@ export default function AdminDashboard() {
           buttonText="View Site"
           onClick={() => window.location.href = '/'}
         />
+      </div>
+      
+      {/* Auto-generation Settings */}
+      <h3 className="mt-10 text-lg font-medium leading-6 text-gray-900 mb-5">Automatic Blog Generation Settings</h3>
+      <div className="bg-white shadow-sm rounded-lg mb-8">
+        <div className="p-6">
+          {settingsMessage && (
+            <div className={`mb-6 p-4 rounded-md ${settingsMessage.includes('Error') || settingsMessage.includes('Failed') ? 'bg-red-50 text-red-800' : 'bg-green-50 text-green-800'}`}>
+              {settingsMessage}
+            </div>
+          )}
+          
+          <p className="text-sm text-gray-600 mb-6">
+            Configure how many blog posts should be automatically generated each day. Posts will be published with random topics and featured images.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label htmlFor="postCount" className="block text-sm font-medium text-gray-700 mb-1">
+                Daily Post Count
+              </label>
+              <select
+                id="postCount"
+                value={autoPostCount}
+                onChange={(e) => setAutoPostCount(Number(e.target.value))}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+              >
+                {[1, 2, 3, 5, 7, 10].map(count => (
+                  <option key={count} value={count}>{count} post{count > 1 ? 's' : ''} per day</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label htmlFor="postLength" className="block text-sm font-medium text-gray-700 mb-1">
+                Target Post Length (words)
+              </label>
+              <select
+                id="postLength"
+                value={autoPostLength}
+                onChange={(e) => setAutoPostLength(Number(e.target.value))}
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+              >
+                {[500, 800, 1000, 1500, 2000].map(length => (
+                  <option key={length} value={length}>~{length} words</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          
+          <div className="flex justify-end">
+            <button
+              onClick={saveSettings}
+              disabled={isSavingSettings}
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {isSavingSettings ? 'Saving...' : 'Save Settings'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
