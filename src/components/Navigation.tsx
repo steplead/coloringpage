@@ -16,6 +16,7 @@ export function Navigation() {
     { name: 'Home', href: '/' },
     { name: 'Create', href: '/create' },
     { name: 'Gallery', href: '/gallery' },
+    { name: 'Blog', href: '/blog' },
     { name: 'About', href: '/about' },
   ];
 
