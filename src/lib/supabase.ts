@@ -22,6 +22,24 @@ export type ImageRecord = {
 // Helper functions for working with images
 export async function saveImageToGallery(prompt: string, imageUrl: string, style?: string, title?: string) {
   try {
+    console.log('Supabase: Attempting to save image to gallery', {
+      promptLength: prompt?.length,
+      imageUrlStartsWith: imageUrl?.substring(0, 30),
+      style,
+      hasTitle: !!title
+    });
+    
+    if (!prompt || !imageUrl) {
+      console.error('Supabase: Invalid parameters for saveImageToGallery', {
+        hasPrompt: !!prompt,
+        hasImageUrl: !!imageUrl
+      });
+      return null;
+    }
+    
+    console.log('Supabase: Using URL', supabaseUrl);
+    console.log('Supabase: Has Anon Key', !!supabaseAnonKey);
+    
     const { data, error } = await supabase
       .from('images')
       .insert([
@@ -35,13 +53,27 @@ export async function saveImageToGallery(prompt: string, imageUrl: string, style
       ]);
       
     if (error) {
-      console.error('Error saving image to gallery:', error);
+      console.error('Supabase: Error saving image to gallery:', error);
+      console.error('Supabase: Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       return null;
     }
     
+    console.log('Supabase: Successfully saved image to gallery, data:', data);
     return data;
   } catch (err) {
-    console.error('Exception saving image to gallery:', err);
+    console.error('Supabase: Exception saving image to gallery:', err);
+    if (err instanceof Error) {
+      console.error('Supabase: Error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+    }
     return null;
   }
 }
