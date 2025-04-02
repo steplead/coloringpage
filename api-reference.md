@@ -54,6 +54,18 @@ This document provides information about the API used in the AI Coloring Page ap
 }
 ```
 
+### cURL Example
+```bash
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBSo6E7uZR7IvaRfiNZSdpgGwg8uzE6xow" \
+-H 'Content-Type: application/json' \
+-X POST \
+-d '{
+  "contents": [{
+    "parts":[{"text": "Explain how AI works"}]
+    }]
+   }'
+```
+
 ### Implementation Details
 - Can be used for prompt enhancement and optimization
 - Potential use for generating blog content for SEO
@@ -86,4 +98,9 @@ This document provides information about the API used in the AI Coloring Page ap
 ### Image Optimization
 - **Endpoint**: `/api/optimize`
 - **Method**: POST
-- **Purpose**: Optimize images for better coloring experience 
+- **Purpose**: Optimize images for better coloring experience
+
+### Text Generation (Gemini)
+- **Endpoint**: `/api/gemini`
+- **Method**: POST
+- **Purpose**: Generate or enhance text content using Google Gemini AI 
