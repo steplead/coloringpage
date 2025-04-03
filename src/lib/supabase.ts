@@ -87,6 +87,15 @@ export async function saveImageToGallery(prompt: string, imageUrl: string, style
 
 export async function getGalleryImages(limit = 20, offset = 0) {
   try {
+    console.log('Supabase: Fetching gallery images with params:', { limit, offset });
+    console.log('Supabase: Using URL:', supabaseUrl);
+    console.log('Supabase: Has Anon Key:', !!supabaseAnonKey);
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase: Missing configuration - URL or Anon Key is empty');
+      return [];
+    }
+    
     const { data, error } = await supabase
       .from('images')
       .select('*')
@@ -95,19 +104,41 @@ export async function getGalleryImages(limit = 20, offset = 0) {
       .range(offset, offset + limit - 1);
       
     if (error) {
-      console.error('Error fetching gallery images:', error);
+      console.error('Supabase: Error fetching gallery images:', error);
+      console.error('Supabase: Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       return [];
     }
     
+    console.log(`Supabase: Successfully fetched ${data?.length || 0} gallery images`);
+    
     return data as ImageRecord[];
   } catch (err) {
-    console.error('Exception fetching gallery images:', err);
+    console.error('Supabase: Exception fetching gallery images:', err);
+    if (err instanceof Error) {
+      console.error('Supabase: Error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+    }
     return [];
   }
 }
 
 export async function getImageById(id: string): Promise<ImageRecord | null> {
   try {
+    console.log(`Supabase: Fetching image with ID: ${id}`);
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase: Missing configuration - URL or Anon Key is empty');
+      return null;
+    }
+    
     const { data, error } = await supabase
       .from('images')
       .select('*')
@@ -115,19 +146,45 @@ export async function getImageById(id: string): Promise<ImageRecord | null> {
       .single();
       
     if (error) {
-      console.error('Error fetching image by ID:', error);
+      console.error(`Supabase: Error fetching image with ID ${id}:`, error);
+      console.error('Supabase: Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       return null;
     }
     
+    if (!data) {
+      console.log(`Supabase: No image found with ID: ${id}`);
+      return null;
+    }
+    
+    console.log(`Supabase: Successfully fetched image with ID: ${id}`);
     return data as ImageRecord;
   } catch (err) {
-    console.error('Exception fetching image by ID:', err);
+    console.error(`Supabase: Exception fetching image with ID ${id}:`, err);
+    if (err instanceof Error) {
+      console.error('Supabase: Error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+    }
     return null;
   }
 }
 
 export async function getRelatedImages(id: string, limit = 4): Promise<ImageRecord[]> {
   try {
+    console.log(`Supabase: Fetching related images for ID: ${id}, limit: ${limit}`);
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase: Missing configuration - URL or Anon Key is empty');
+      return [];
+    }
+    
     // In a real application, you would use a more sophisticated algorithm
     // to find related images based on tags, similarity, etc.
     const { data, error } = await supabase
@@ -139,13 +196,27 @@ export async function getRelatedImages(id: string, limit = 4): Promise<ImageReco
       .limit(limit);
       
     if (error) {
-      console.error('Error fetching related images:', error);
+      console.error(`Supabase: Error fetching related images for ID ${id}:`, error);
+      console.error('Supabase: Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
       return [];
     }
     
+    console.log(`Supabase: Successfully fetched ${data?.length || 0} related images for ID: ${id}`);
     return data as ImageRecord[];
   } catch (err) {
-    console.error('Exception fetching related images:', err);
+    console.error(`Supabase: Exception fetching related images for ID ${id}:`, err);
+    if (err instanceof Error) {
+      console.error('Supabase: Error details:', {
+        name: err.name,
+        message: err.message,
+        stack: err.stack
+      });
+    }
     return [];
   }
 } 
