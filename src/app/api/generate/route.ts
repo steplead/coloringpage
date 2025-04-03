@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { storeImageFromUrl } from '@/lib/storage';
+import { saveImageToGallery } from '@/lib/supabase';
 
 // SiliconFlow API configuration from environment variables
 const API_KEY = process.env.SILICONFLOW_API_KEY;
@@ -105,20 +106,36 @@ export async function POST(request: NextRequest) {
       
       console.log('Image successfully stored in Supabase:', storedImageUrl);
       
+      // 自动保存到Gallery
+      console.log('Automatically saving to gallery...');
+      const title = prompt.substring(0, 100); // 使用前100个字符作为标题
+      const galleryResult = await saveImageToGallery(prompt, storedImageUrl, style, title);
+      console.log('Save to gallery result:', galleryResult ? 'Success' : 'Failed');
+      
       // 返回Supabase存储的URL，而不是原始的阿里云URL
       return NextResponse.json({
         success: true,
         imageUrl: storedImageUrl,
-        originalUrl: imageUrl // 保留原始URL用于调试
+        originalUrl: imageUrl, // 保留原始URL用于调试
+        savedToGallery: !!galleryResult
       });
     } catch (storageError) {
       console.error('Error storing image in Supabase:', storageError);
       // 如果存储失败，回退到使用原始URL
       console.log('Falling back to original SiliconFlow URL');
+      
+      // 尝试使用原始URL保存到Gallery
+      console.log('Trying to save original URL to gallery...');
+      const prompt = isAdvancedMode ? customPrompt : description;
+      const title = prompt.substring(0, 100);
+      const galleryResult = await saveImageToGallery(prompt, imageUrl, style, title);
+      console.log('Save to gallery result (original URL):', galleryResult ? 'Success' : 'Failed');
+      
       return NextResponse.json({
         success: true,
         imageUrl: imageUrl,
-        storageError: 'Failed to store in Supabase, using original URL'
+        storageError: 'Failed to store in Supabase, using original URL',
+        savedToGallery: !!galleryResult
       });
     }
 
