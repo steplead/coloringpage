@@ -56,27 +56,43 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
     const fetchImageDetails = async () => {
       try {
         setLoading(true);
+        console.log(`Fetching image details for ID: ${params.id}`);
         
         // Fetch the main image
         const response = await fetch(`/api/gallery/${params.id}`);
         
         if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`API error ${response.status}:`, errorText);
+          
           if (response.status === 404) {
+            console.log('Image not found, redirecting to not-found page');
             router.push('/gallery/not-found');
             return;
           }
-          throw new Error(`Failed to fetch image details: ${response.status}`);
+          throw new Error(`Failed to fetch image details: ${response.status} - ${errorText || 'No error details'}`);
         }
         
         const data = await response.json();
+        console.log('Received image data:', data);
+        
+        if (!data.image) {
+          throw new Error('Invalid API response: missing image data');
+        }
+        
         setImage(data.image);
         
         // Fetch related images
+        console.log(`Fetching related images for ID: ${params.id}`);
         const relatedResponse = await fetch(`/api/gallery/${params.id}/related`);
         
         if (relatedResponse.ok) {
           const relatedData = await relatedResponse.json();
+          console.log(`Found ${relatedData.images?.length || 0} related images`);
           setRelatedImages(relatedData.images || []);
+        } else {
+          console.warn(`Failed to fetch related images: ${relatedResponse.status}`);
+          // Don't throw here - we can still show the main image without related images
         }
         
         setError(null);

@@ -215,15 +215,43 @@ export async function getRelatedImages(id: string, limit = 4): Promise<ImageReco
       return [];
     }
     
-    // In a real application, you would use a more sophisticated algorithm
-    // to find related images based on tags, similarity, etc.
-    const { data, error } = await supabase
+    // First build the basic query
+    let query = supabase
       .from('images')
       .select('*')
       .neq('id', id) // Don't include the current image
-      .eq('is_public', true)
       .order('created_at', { ascending: false })
       .limit(limit);
+    
+    // Check schema to determine which field to use for filtering
+    try {
+      // First try to get one record to check schema
+      const { data: sampleData } = await supabase
+        .from('images')
+        .select('status, is_public')
+        .limit(1);
+      
+      if (sampleData && sampleData.length > 0) {
+        const record = sampleData[0];
+        
+        // Check which field exists in the schema
+        if ('status' in record) {
+          console.log('Using status field for filtering related images');
+          query = query.eq('status', 'published');
+        } else if ('is_public' in record) {
+          console.log('Using is_public field for filtering related images');
+          query = query.eq('is_public', true);
+        } else {
+          console.log('No publishing status field found in related images query');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking schema for related images:', error);
+      // Default to is_public if we can't determine schema
+      query = query.eq('is_public', true);
+    }
+    
+    const { data, error } = await query;
       
     if (error) {
       console.error(`Supabase: Error fetching related images for ID ${id}:`, error);
