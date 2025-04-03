@@ -93,14 +93,14 @@ export default function LanguageSelector({
     <div ref={selectorRef} className={`relative ${className}`}>
       <button
         onClick={toggleDropdown}
-        className="flex items-center space-x-1 px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex items-center space-x-1 px-2 py-1.5 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-haspopup="true"
         aria-expanded={isOpen ? 'true' : 'false'}
       >
-        <span className="text-lg">{currentLanguage.flag}</span>
+        <span className="text-base">{currentLanguage.flag}</span>
         <span className="text-sm hidden sm:inline">{currentLanguage.nativeName}</span>
         <svg
-          className={`h-5 w-5 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
+          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -111,7 +111,7 @@ export default function LanguageSelector({
 
       {isOpen && (
         <div 
-          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200"
+          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="language-selector"
@@ -120,12 +120,12 @@ export default function LanguageSelector({
             <button
               key={language.code}
               onClick={() => handleLanguageSelect(language.code)}
-              className={`flex items-center px-4 py-3 text-sm w-full text-left hover:bg-gray-50 ${
+              className={`flex items-center px-4 py-2 text-sm w-full text-left hover:bg-gray-50 ${
                 selectedLang === language.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
               }`}
               role="menuitem"
             >
-              <span className="text-lg mr-2">{language.flag}</span>
+              <span className="text-base mr-2">{language.flag}</span>
               <span>{language.nativeName}</span>
             </button>
           ))}
