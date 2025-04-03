@@ -26,6 +26,14 @@ export interface ImageRecord {
   keywords?: string[];
 }
 
+// Define the interface for gallery image options
+export interface GalleryImageOptions {
+  page?: number;
+  limit?: number;
+  category?: string;
+  style?: string;
+}
+
 // Helper functions for working with images
 export async function saveImageToGallery(prompt: string, imageUrl: string, style?: string, title?: string) {
   try {
@@ -85,48 +93,40 @@ export async function saveImageToGallery(prompt: string, imageUrl: string, style
   }
 }
 
-export async function getGalleryImages(limit = 20, offset = 0) {
+// Update getGalleryImages to accept options object
+export async function getGalleryImages(options: GalleryImageOptions = {}): Promise<ImageRecord[]> {
   try {
-    console.log('Supabase: Fetching gallery images with params:', { limit, offset });
-    console.log('Supabase: Using URL:', supabaseUrl);
-    console.log('Supabase: Has Anon Key:', !!supabaseAnonKey);
+    const { page = 1, limit = 12, category, style } = options;
+    const offset = (page - 1) * limit;
     
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Supabase: Missing configuration - URL or Anon Key is empty');
-      return [];
-    }
+    console.log(`Getting gallery images with options:`, { page, limit, offset, category, style });
     
-    const { data, error } = await supabase
+    let query = supabase
       .from('images')
       .select('*')
-      .eq('is_public', true)
+      .eq('status', 'published')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
-      
-    if (error) {
-      console.error('Supabase: Error fetching gallery images:', error);
-      console.error('Supabase: Error details:', {
-        code: error.code,
-        message: error.message,
-        details: error.details,
-        hint: error.hint
-      });
-      return [];
+    
+    if (category) {
+      query = query.eq('category', category);
     }
     
-    console.log(`Supabase: Successfully fetched ${data?.length || 0} gallery images`);
+    if (style) {
+      query = query.eq('style', style);
+    }
+    
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error('Error fetching gallery images:', error);
+      throw new Error(`Failed to fetch gallery images: ${error.message}`);
+    }
     
     return data as ImageRecord[];
-  } catch (err) {
-    console.error('Supabase: Exception fetching gallery images:', err);
-    if (err instanceof Error) {
-      console.error('Supabase: Error details:', {
-        name: err.name,
-        message: err.message,
-        stack: err.stack
-      });
-    }
-    return [];
+  } catch (error) {
+    console.error('Error in getGalleryImages:', error);
+    throw error;
   }
 }
 
