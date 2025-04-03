@@ -54,6 +54,13 @@ export default async function GalleryPage() {
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onError={(e) => {
+                      console.error('Error loading gallery image:', image.image_url);
+                      if (e.target instanceof HTMLImageElement) {
+                        e.target.onerror = null; // Prevent infinite fallback loop
+                        e.target.src = '/placeholder-image.svg'; // Fallback to a placeholder image
+                      }
+                    }}
                   />
                 </div>
                 <div className="p-4">

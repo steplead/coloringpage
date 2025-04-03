@@ -64,6 +64,14 @@ export default async function ColoringPageDetail({ params }: { params: { id: str
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
+                onError={(e) => {
+                  // Handle image loading error by showing a placeholder
+                  console.error('Error loading image:', image.image_url);
+                  if (e.target instanceof HTMLImageElement) {
+                    e.target.onerror = null; // Prevent infinite fallback loop
+                    e.target.src = '/placeholder-image.svg'; // Fallback to a placeholder image
+                  }
+                }}
               />
             </div>
             
@@ -156,6 +164,13 @@ export default async function ColoringPageDetail({ params }: { params: { id: str
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        onError={(e) => {
+                          console.error('Error loading related image:', relatedImage.image_url);
+                          if (e.target instanceof HTMLImageElement) {
+                            e.target.onerror = null;
+                            e.target.src = '/placeholder-image.svg';
+                          }
+                        }}
                       />
                     </div>
                     <div className="p-4">
