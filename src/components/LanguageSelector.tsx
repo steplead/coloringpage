@@ -1,101 +1,113 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation, supportedLanguages, LanguageCode } from '@/lib/i18n';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
-type LanguageSelectorProps = {
+interface LanguageSelectorProps {
+  currentLang?: string;
+  onLanguageChange?: (lang: string) => void;
   className?: string;
-  dropdownClassName?: string;
-};
+  dropdownPosition?: 'top' | 'bottom';
+}
 
-const LanguageSelector: React.FC<LanguageSelectorProps> = ({ 
+export default function LanguageSelector({ 
+  currentLang = 'en', 
+  onLanguageChange,
   className = '',
-  dropdownClassName = '' 
-}) => {
-  const { lang, setLang, getSupportedLanguages } = useTranslation();
+  dropdownPosition = 'bottom'
+}: LanguageSelectorProps) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const languages = getSupportedLanguages();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  
-  // Close the dropdown when clicking outside
+  const [selectedLang, setSelectedLang] = useState(currentLang);
+  const [isChanging, setIsChanging] = useState(false);
+
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+    setSelectedLang(currentLang);
+  }, [currentLang]);
+
+  // Get the current language info
+  const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLang) || SUPPORTED_LANGUAGES[0];
+
+  const handleLanguageSelect = async (languageCode: string) => {
+    if (languageCode === selectedLang || isChanging) return;
+    
+    setIsChanging(true);
+    
+    try {
+      const response = await fetch('/api/i18n', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lang: languageCode }),
+      });
+
+      if (response.ok) {
+        setSelectedLang(languageCode);
+        
+        // Call the onLanguageChange callback if provided
+        if (onLanguageChange) {
+          onLanguageChange(languageCode);
+        }
+        
+        // Refresh the page to apply the new language
+        router.refresh();
       }
-    };
-    
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, []);
-  
-  // Toggle dropdown
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-  
-  // Change language
-  const changeLanguage = (code: LanguageCode) => {
-    setLang(code);
-    setIsOpen(false);
-    
-    // Update HTML lang attribute for SEO
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = code;
+    } catch (error) {
+      console.error('Failed to change language:', error);
+    } finally {
+      setIsChanging(false);
+      setIsOpen(false);
     }
   };
-  
+
   return (
-    <div 
-      ref={dropdownRef}
-      className={`language-selector relative ${className}`}
-      aria-expanded={isOpen}
-    >
-      <button 
-        onClick={toggleDropdown}
-        className="flex items-center text-sm font-medium px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors min-h-[40px] min-w-[80px] justify-center sm:justify-start"
+    <div className={`relative inline-block text-left ${className}`}>
+      <button
+        type="button"
+        className="inline-flex items-center justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+        onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-label={`Select language. Current: ${languages[lang].name}`}
+        disabled={isChanging}
       >
-        <span className="mr-1 truncate max-w-[100px]">{languages[lang].nativeName}</span>
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''} flex-shrink-0`} 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <span className="mr-2">{currentLanguage.flag}</span>
+        <span className="hidden sm:inline">{currentLanguage.nativeName}</span>
+        <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path
+            fillRule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+            clipRule="evenodd"
+          />
         </svg>
       </button>
-      
+
       {isOpen && (
         <div 
-          className={`absolute right-0 mt-2 py-1 w-48 bg-white dark:bg-gray-900 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-[calc(100vh-100px)] overflow-y-auto ${dropdownClassName}`}
+          className={`absolute ${dropdownPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'} right-0 z-10 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="language-menu"
+          aria-labelledby="menu-button"
         >
-          {Object.entries(languages).map(([code, language]) => (
-            <button
-              key={code}
-              onClick={() => changeLanguage(code as LanguageCode)}
-              className={`block w-full text-left px-4 py-3 text-sm ${
-                code === lang 
-                  ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-              }`}
-              role="menuitem"
-            >
-              {language.nativeName}
-            </button>
-          ))}
+          <div className="py-1" role="none">
+            {SUPPORTED_LANGUAGES.map((language) => (
+              <button
+                key={language.code}
+                onClick={() => handleLanguageSelect(language.code)}
+                className={`flex w-full items-center px-4 py-2 text-sm ${
+                  selectedLang === language.code
+                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium'
+                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
+                }`}
+                role="menuitem"
+              >
+                <span className="mr-3">{language.flag}</span>
+                <span>{language.nativeName}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
-};
-
-export default LanguageSelector; 
+} 

@@ -1,13 +1,12 @@
-import './globals.css';
+import '@/styles/globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { headers } from 'next/headers';
 import React from 'react';
 
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { Providers } from './providers';
-
-import { getUserLanguagePreference } from '@/lib/i18n';
+import { detectLanguage } from '@/lib/i18n';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -77,22 +76,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Language detection happens on the client side through React hooks
-  // We default to 'en' for server-side rendering
-  // The HTML lang attribute will be updated on client side by useTranslation hook in i18n.ts
-  
+  // Get the detected language from headers (set by middleware)
+  const headersList = headers();
+  const detectedLang = headersList.get('x-language') || 'en';
+
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased min-h-screen`}>
-        <Providers>
-          <div className="flex flex-col min-h-screen">
-            <Navigation />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </Providers>
+    <html lang={detectedLang} className="scroll-smooth">
+      <body className={`${inter.className} antialiased`}>
+        <div className="flex flex-col min-h-screen">
+          <Navigation currentLang={detectedLang} />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

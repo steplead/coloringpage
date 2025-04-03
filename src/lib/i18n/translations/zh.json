@@ -1,0 +1,295 @@
+{
+  "common": {
+    "languageName": "简体中文",
+    "appName": "AI涂色页面生成器",
+    "error": "错误",
+    "loading": "加载中...",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "share": "分享",
+    "download": "下载",
+    "print": "打印",
+    "language": "语言",
+    "moreInfo": "更多信息",
+    "backToHome": "返回首页"
+  },
+  "nav": {
+    "home": "首页",
+    "create": "创建",
+    "gallery": "画廊",
+    "blog": "博客",
+    "about": "关于",
+    "login": "登录",
+    "signup": "注册",
+    "admin": "管理",
+    "createNow": "立即创建"
+  },
+  "home": {
+    "hero": {
+      "title": "用AI创建精美涂色页面",
+      "subtitle": "几秒钟内将您的创意变成精美的涂色页面。完美适合儿童、教师和涂色爱好者。",
+      "cta": "立即创建",
+      "learnMore": "了解更多",
+      "stats": "已创建超过5,000个涂色页面"
+    },
+    "examples": {
+      "cartoonElephant": "卡通大象",
+      "spaceRocket": "太空火箭",
+      "friendlyDragon": "友好的龙"
+    },
+    "howItWorks": {
+      "title": "按您的方式创建涂色页面",
+      "methods": {
+        "describe": {
+          "title": "描述它",
+          "description": "输入您想要的内容，我们的AI将创建它",
+          "cta": "试一试"
+        },
+        "style": {
+          "title": "选择风格",
+          "description": "从多种艺术风格中选择",
+          "cta": "试一试"
+        },
+        "advanced": {
+          "title": "高级控制",
+          "description": "微调涂色页面的各个方面",
+          "cta": "试一试"
+        }
+      }
+    },
+    "styles": {
+      "title": "选择您的风格",
+      "subtitle": "从多种艺术风格中选择，创建完美的涂色页面",
+      "simple": "简单",
+      "medium": "中等",
+      "complex": "复杂",
+      "cartoon": "卡通",
+      "realistic": "写实"
+    },
+    "testimonials": {
+      "title": "用户评价",
+      "feedback": [
+        {
+          "text": "我的孩子们喜欢我为他们创建的涂色页面！非常容易使用。",
+          "author": "莎拉 T."
+        },
+        {
+          "text": "我一直在为我的幼儿园班级使用这个。孩子们非常兴奋！",
+          "author": "马克 L., 教师"
+        },
+        {
+          "text": "高级模式让我能够为我的艺术治疗课程创建我需要的内容。",
+          "author": "杰西卡 P. 博士"
+        }
+      ],
+      "cta": "立即开始创建"
+    },
+    "features": {
+      "title": "为什么选择我们的AI涂色页面生成器？",
+      "list": [
+        {
+          "icon": "🚀",
+          "title": "快速生成",
+          "desc": "几秒钟内创建涂色页面"
+        },
+        {
+          "icon": "🎨",
+          "title": "多种风格",
+          "desc": "从各种艺术风格中选择"
+        },
+        {
+          "icon": "📱",
+          "title": "随处可用",
+          "desc": "手机、平板或电脑"
+        },
+        {
+          "icon": "🔄",
+          "title": "无限页面",
+          "desc": "创建您需要的任意数量"
+        },
+        {
+          "icon": "🖨️",
+          "title": "打印就绪",
+          "desc": "适合任何尺寸打印"
+        },
+        {
+          "icon": "🎮",
+          "title": "易于使用",
+          "desc": "无需设计技能"
+        },
+        {
+          "icon": "🔒",
+          "title": "私密安全",
+          "desc": "您的创作属于您"
+        },
+        {
+          "icon": "✏️",
+          "title": "高级控制",
+          "desc": "微调每一个细节"
+        }
+      ]
+    },
+    "cta": {
+      "title": "准备好创建您的涂色页面了吗？",
+      "subtitle": "几秒钟内开始。无需信用卡。",
+      "button": "免费开始创建"
+    }
+  },
+  "create": {
+    "title": "创建您的涂色页面",
+    "subtitle": "描述您想要的内容，我们的AI将为您生成一个美丽的涂色页面",
+    "promptLabel": "您想创建什么？",
+    "promptPlaceholder": "例如，一只友好的卡通大象玩球",
+    "styleLabel": "风格",
+    "generateButton": "生成涂色页面",
+    "regenerateButton": "重试",
+    "saveToGalleryButton": "保存到画廊",
+    "printButton": "打印此页面",
+    "downloadButton": "下载图片",
+    "suggestions": "建议",
+    "categories": {
+      "title": "类别",
+      "animals": "动物",
+      "fantasy": "奇幻",
+      "nature": "自然",
+      "vehicles": "交通工具",
+      "characters": "角色",
+      "space": "太空"
+    },
+    "styleOptions": {
+      "simple": "简单",
+      "medium": "中等",
+      "complex": "复杂",
+      "cartoon": "卡通",
+      "realistic": "写实"
+    },
+    "advancedMode": {
+      "toggle": "高级模式",
+      "customPrompt": "自定义提示",
+      "helpText": "微调您的提示以获得更多控制"
+    },
+    "errors": {
+      "emptyPrompt": "请输入描述",
+      "generationFailed": "生成图像失败。请重试。",
+      "saveFailed": "保存到画廊失败。请重试。"
+    },
+    "success": {
+      "generated": "您的涂色页面已生成！",
+      "saved": "您的涂色页面已保存到画廊！"
+    }
+  },
+  "gallery": {
+    "title": "涂色页面画廊",
+    "subtitle": "浏览我们社区创建的AI生成涂色页面集合",
+    "recentCreations": "最近创作",
+    "createYourOwnButton": "创建您自己的",
+    "viewMoreButton": "加载更多",
+    "noImages": {
+      "title": "暂无图像",
+      "message": "成为第一个添加涂色页面到我们画廊的人！",
+      "button": "创建涂色页面"
+    },
+    "detail": {
+      "printButton": "打印此页面",
+      "downloadButton": "下载图片",
+      "shareButton": "分享",
+      "createYourOwnButton": "创建您自己的",
+      "details": "详情",
+      "style": "风格",
+      "created": "创建于",
+      "description": "描述",
+      "aboutThisPage": "关于此涂色页面",
+      "aboutText": "此涂色页面是基于以下提示使用AI生成的：",
+      "printInstructions": "您可以通过点击"打印此页面"按钮来打印此页面，这将打开一个适合打印的版本。",
+      "similarPages": "类似涂色页面"
+    }
+  },
+  "blog": {
+    "title": "涂色页面博客",
+    "subtitle": "发现涂色活动的技巧、创意和灵感",
+    "readMore": "阅读更多",
+    "backToList": "返回博客",
+    "publishedOn": "发布于",
+    "author": "作者",
+    "relatedPosts": "相关文章",
+    "tags": "标签",
+    "noPosts": "暂无博客文章。请稍后再来！"
+  },
+  "about": {
+    "title": "关于AI涂色页面生成器",
+    "subtitle": "了解我们的使命以及我们如何帮助人们创建美丽的涂色页面",
+    "missionTitle": "我们的使命",
+    "missionText": "我们相信创造力的力量和涂色对各年龄段人群的益处。我们的使命是让任何人都能使用最新的AI技术轻松创建高质量、定制化的涂色页面。",
+    "howItWorks": "工作原理",
+    "technologyTitle": "我们的技术",
+    "technologyText": "我们使用专门为创建涂色页面而微调的高级AI图像生成模型。我们的技术理解自然语言描述，并将其转换成适合涂色的精美黑白轮廓。",
+    "team": "我们的团队",
+    "contactUs": "联系我们",
+    "faq": "常见问题"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "管理仪表板",
+      "stats": {
+        "totalBlogPosts": "博客文章总数",
+        "totalImages": "涂色页面总数"
+      },
+      "quickActions": {
+        "title": "快捷操作",
+        "generateBlogPost": {
+          "title": "生成博客文章",
+          "description": "使用AI自动生成关于涂色页面的新博客文章。",
+          "button": "生成文章",
+          "generating": "正在生成..."
+        },
+        "manageBlogPosts": {
+          "title": "管理博客文章",
+          "description": "在博客管理界面中查看、编辑或删除现有博客文章。",
+          "button": "管理文章"
+        },
+        "viewWebsite": {
+          "title": "查看网站",
+          "description": "前往面向公众的网站查看您的更改。",
+          "button": "查看网站"
+        }
+      },
+      "blogGeneration": {
+        "title": "自动博客生成设置",
+        "description": "配置每天应自动生成多少博客文章。文章将使用随机主题和精选图片发布。",
+        "dailyPostCount": "每日文章数量",
+        "targetPostLength": "目标文章长度（字数）",
+        "saveButton": "保存设置",
+        "savingButton": "正在保存..."
+      }
+    },
+    "blog": {
+      "title": "博客文章管理",
+      "generateNew": "生成新博客文章",
+      "numberOfPosts": "要生成的文章数量",
+      "generateButton": "生成博客文章",
+      "published": "已发布",
+      "created": "创建于",
+      "slug": "链接别名",
+      "viewButton": "查看",
+      "unpublishButton": "取消发布",
+      "deleteButton": "删除",
+      "confirmDelete": "您确定要删除此博客文章吗？"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "页面未找到",
+      "message": "您查找的页面不存在。",
+      "button": "前往首页"
+    },
+    "serverError": {
+      "title": "服务器错误",
+      "message": "我们这边出了点问题。请稍后再试。",
+      "button": "重试"
+    }
+  }
+} 
