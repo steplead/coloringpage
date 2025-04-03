@@ -13,53 +13,39 @@ const routes = [
   '/about',
 ];
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default async function sitemap({ params }: { params: { lang: string } }): Promise<MetadataRoute.Sitemap> {
+  const { lang } = params;
   const currentDate = new Date().toISOString();
   
   let sitemapEntries: MetadataRoute.Sitemap = [];
   
-  // Add language-specific routes
-  SUPPORTED_LANGUAGES.forEach(language => {
-    routes.forEach(route => {
-      // For root path, just use language code
-      const localizedPath = route === '/' 
-        ? `/${language.code}` 
-        : `/${language.code}${route}`;
-      
-      sitemapEntries.push({
-        url: `${BASE_URL}${localizedPath}`,
-        lastModified: currentDate,
-        changeFrequency: 'daily',
-        priority: route === '/' ? 1 : 0.8,
-        // Add language information for better SEO
-        alternates: {
-          languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES
-              .filter(lang => lang.code !== language.code)
-              .map(lang => [
-                lang.code,
-                `${BASE_URL}/${lang.code}${route === '/' ? '' : route}`
-              ])
-          )
-        }
-      });
-    });
-  });
+  // Validate that this is a supported language
+  if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    // Return empty sitemap for unsupported languages
+    return [];
+  }
   
-  // Add default routes as well (without language prefix)
+  // Add routes for this specific language
   routes.forEach(route => {
+    // For root path, just use language code
+    const localizedPath = route === '/' 
+      ? `/${lang}` 
+      : `/${lang}${route}`;
+    
     sitemapEntries.push({
-      url: `${BASE_URL}${route}`,
+      url: `${BASE_URL}${localizedPath}`,
       lastModified: currentDate,
       changeFrequency: 'daily',
       priority: route === '/' ? 1 : 0.8,
-      // Add default route alternates
+      // Add language alternates for SEO
       alternates: {
         languages: Object.fromEntries(
-          SUPPORTED_LANGUAGES.map(lang => [
-            lang.code,
-            `${BASE_URL}/${lang.code}${route === '/' ? '' : route}`
-          ])
+          SUPPORTED_LANGUAGES
+            .filter(l => l.code !== lang)
+            .map(l => [
+              l.code,
+              `${BASE_URL}/${l.code}${route === '/' ? '' : route}`
+            ])
         )
       }
     });
@@ -73,20 +59,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .order('created_at', { ascending: false })
     .limit(100);
 
-  // Add blog post URLs to sitemap
+  // Add blog post URLs to sitemap with this language prefix
   const blogRoutes = blogPosts
     ? blogPosts.map((post) => ({
-        url: `${BASE_URL}/blog/${post.slug}`,
+        url: `${BASE_URL}/${lang}/blog/${post.slug}`,
         lastModified: new Date(post.updated_at || post.created_at),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
         // Add language alternates for blog posts
         alternates: {
           languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES.map(lang => [
-              lang.code,
-              `${BASE_URL}/${lang.code}/blog/${post.slug}`
-            ])
+            SUPPORTED_LANGUAGES
+              .filter(l => l.code !== lang)
+              .map(l => [
+                l.code,
+                `${BASE_URL}/${l.code}/blog/${post.slug}`
+              ])
           )
         }
       }))
@@ -100,25 +88,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .order('created_at', { ascending: false })
     .limit(100);
 
-  // Add gallery images to sitemap
+  // Add gallery images to sitemap with this language prefix
   const galleryRoutes = galleryImages
     ? galleryImages.map((image) => ({
-        url: `${BASE_URL}/gallery/${image.id}`,
+        url: `${BASE_URL}/${lang}/gallery/${image.id}`,
         lastModified: new Date(image.created_at),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
         // Add language alternates for gallery items
         alternates: {
           languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES.map(lang => [
-              lang.code,
-              `${BASE_URL}/${lang.code}/gallery/${image.id}`
-            ])
+            SUPPORTED_LANGUAGES
+              .filter(l => l.code !== lang)
+              .map(l => [
+                l.code,
+                `${BASE_URL}/${l.code}/gallery/${image.id}`
+              ])
           )
         }
       }))
     : [];
 
-  // Combine all routes
+  // Combine all routes for this language
   return [...sitemapEntries, ...blogRoutes, ...galleryRoutes];
+}
+
+// Generate static params for all supported languages
+export async function generateStaticParams() {
+  return SUPPORTED_LANGUAGES.map(lang => ({
+    lang: lang.code,
+  }));
 } 
