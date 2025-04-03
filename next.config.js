@@ -1,12 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['sc-maas.oss-cn-shanghai.aliyuncs.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'sc-maas.oss-cn-shanghai.aliyuncs.com',
         port: '',
-        pathname: '/outputs/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
