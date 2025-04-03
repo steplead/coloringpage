@@ -29,7 +29,8 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
   return (
     <header className="bg-white shadow-md sticky top-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex justify-between items-center h-16">
+        {/* First Row: Logo and Menu Button */}
+        <div className="flex justify-between items-center h-14 md:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">
             <span className="text-xl font-bold text-blue-600 tracking-tight">
@@ -109,9 +110,16 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
             </button>
           </div>
         </div>
+
+        {/* Second Row: Language Selector (Mobile Only) */}
+        <div className="md:hidden border-t border-gray-100">
+          <div className="px-2 py-2">
+            <LanguageSelector currentLang={currentLang} className="w-full" />
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation Menu */}
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 shadow-lg bg-white">
@@ -136,16 +144,6 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
             >
               <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
             </Link>
-            
-            {/* Language Selector - Mobile */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="px-3 py-2">
-                <span className="text-sm font-medium text-gray-500 block mb-2">
-                  <TranslatedText translationKey="common.language" fallback="Language" lang={currentLang} />
-                </span>
-                <LanguageSelector currentLang={currentLang} className="w-full" />
-              </div>
-            </div>
           </div>
         </div>
       )}
