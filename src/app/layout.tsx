@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
   description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use. Free to use!',
-  keywords: 'coloring pages, AI art, coloring book, custom coloring pages, kids activities, educational coloring, adult coloring, printable coloring pages',
+  keywords: 'coloring pages, AI art, coloring book, custom coloring pages, kids activities, educational coloring, adult coloring, printable coloring pages, mobile coloring',
   authors: [{ name: 'Your Name' }],
   creator: 'Your Name',
   publisher: 'Your Company',
@@ -23,10 +23,18 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
+  themeColor: '#ffffff',
+  colorScheme: 'light',
+  applicationName: 'AI Coloring Page Generator',
+  appleWebApp: {
+    capable: true,
+    title: 'AI Coloring Page Generator',
+    statusBarStyle: 'default',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://your-domain.com',
+    url: 'https://ai-coloringpage.com',
     siteName: 'AI Coloring Page Generator',
     title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
     description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
@@ -61,15 +69,26 @@ export const metadata: Metadata = {
     google: 'your-google-site-verification',
   },
   alternates: {
-    canonical: 'https://your-domain.com',
+    canonical: 'https://ai-coloringpage.com',
+    languages: {
+      'en': 'https://ai-coloringpage.com',
+      'zh': 'https://ai-coloringpage.com?lang=zh',
+      'es': 'https://ai-coloringpage.com?lang=es',
+      'fr': 'https://ai-coloringpage.com?lang=fr',
+      'de': 'https://ai-coloringpage.com?lang=de',
+      'ja': 'https://ai-coloringpage.com?lang=ja',
+      'ko': 'https://ai-coloringpage.com?lang=ko',
+      'ru': 'https://ai-coloringpage.com?lang=ru',
+    },
   },
+  metadataBase: new URL('https://ai-coloringpage.com'),
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 // 初始化Supabase Storage

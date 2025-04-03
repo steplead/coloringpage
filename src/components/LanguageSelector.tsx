@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
@@ -21,6 +21,7 @@ export default function LanguageSelector({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState(currentLang);
   const [isChanging, setIsChanging] = useState(false);
+  const selectorRef = useRef<HTMLDivElement>(null);
 
   // Update selected language when currentLang prop changes
   useEffect(() => {
@@ -84,50 +85,50 @@ export default function LanguageSelector({
     };
   }, [isOpen]);
 
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className={`relative inline-block text-left language-selector ${className}`}>
+    <div ref={selectorRef} className={`relative ${className}`}>
       <button
-        type="button"
-        className="inline-flex items-center justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        disabled={isChanging}
+        onClick={toggleDropdown}
+        className="flex items-center space-x-1 px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-haspopup="true"
+        aria-expanded={isOpen ? 'true' : 'false'}
       >
-        <span className="mr-2">{currentLanguage.flag}</span>
-        <span className="hidden sm:inline">{currentLanguage.nativeName}</span>
-        <svg className="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path
-            fillRule="evenodd"
-            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-            clipRule="evenodd"
-          />
+        <span className="text-lg">{currentLanguage.flag}</span>
+        <span className="text-sm hidden sm:inline">{currentLanguage.nativeName}</span>
+        <svg
+          className={`h-5 w-5 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
         </svg>
       </button>
 
       {isOpen && (
         <div 
-          className={`absolute ${dropdownPosition === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'} right-0 z-10 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-200"
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button"
+          aria-labelledby="language-selector"
         >
-          <div className="py-1" role="none">
-            {SUPPORTED_LANGUAGES.map((language) => (
-              <button
-                key={language.code}
-                onClick={() => handleLanguageSelect(language.code)}
-                className={`flex w-full items-center px-4 py-2 text-sm ${
-                  selectedLang === language.code
-                    ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium'
-                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'
-                }`}
-                role="menuitem"
-              >
-                <span className="mr-3">{language.flag}</span>
-                <span>{language.nativeName}</span>
-              </button>
-            ))}
-          </div>
+          {SUPPORTED_LANGUAGES.map((language) => (
+            <button
+              key={language.code}
+              onClick={() => handleLanguageSelect(language.code)}
+              className={`flex items-center px-4 py-3 text-sm w-full text-left hover:bg-gray-50 ${
+                selectedLang === language.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+              }`}
+              role="menuitem"
+            >
+              <span className="text-lg mr-2">{language.flag}</span>
+              <span>{language.nativeName}</span>
+            </button>
+          ))}
         </div>
       )}
     </div>

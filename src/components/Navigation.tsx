@@ -71,14 +71,14 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
             
             <button
               type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-3 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               onClick={toggleMenu}
               aria-expanded={isOpen ? 'true' : 'false'}
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
                 <svg
-                  className="block h-6 w-6"
+                  className="block h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                 </svg>
               ) : (
                 <svg
-                  className="block h-6 w-6"
+                  className="block h-7 w-7"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

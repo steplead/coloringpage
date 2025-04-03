@@ -118,16 +118,48 @@ body {
 
 /* Make printing specific elements better */
 @media print {
+  @page {
+    margin: 0.5cm;
+  }
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
   .no-print {
     display: none !important;
   }
-  
   .print-only {
     display: block !important;
   }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch target size for better mobile UX */
+  button, 
+  a,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  select,
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
   
+  /* Add additional spacing for touch devices */
+  .nav-link {
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Adjust font size for better readability on mobile */
   body {
-    background: none;
-    color: black;
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Prevent zooming when focusing on inputs */
+  input, select, textarea {
+    font-size: 16px;
   }
 } 

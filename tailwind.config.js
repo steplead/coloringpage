@@ -63,4 +63,21 @@ module.exports = {
     },
   },
   plugins: [],
+  safelist: [
+    // 为移动触摸目标添加更多样式
+    'p-3',
+    'p-4',
+    'min-h-[44px]',
+    'min-w-[44px]',
+    'min-h-[48px]',
+    'min-w-[48px]',
+    'h-7',
+    'w-7',
+    'h-8',
+    'w-8',
+    'text-lg',
+    'gap-3',
+    'space-x-3',
+    'touch-manipulation',
+  ],
 } 
