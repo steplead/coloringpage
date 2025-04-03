@@ -93,7 +93,7 @@ export async function saveImageToGallery(prompt: string, imageUrl: string, style
   }
 }
 
-// Update getGalleryImages to accept options object
+// Update getGalleryImages to handle missing status field
 export async function getGalleryImages(options: GalleryImageOptions = {}): Promise<ImageRecord[]> {
   try {
     const { page = 1, limit = 12, category, style } = options;
@@ -101,12 +101,41 @@ export async function getGalleryImages(options: GalleryImageOptions = {}): Promi
     
     console.log(`Getting gallery images with options:`, { page, limit, offset, category, style });
     
+    // Build the query
     let query = supabase
       .from('images')
       .select('*')
-      .eq('status', 'published')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
+    
+    // Add filters if provided
+    // We check for 'status' field or fallback to 'is_public' for backwards compatibility
+    // with older database schemas
+    try {
+      // First try to get one record to check schema
+      const { data: sampleData } = await supabase
+        .from('images')
+        .select('status, is_public')
+        .limit(1);
+      
+      if (sampleData && sampleData.length > 0) {
+        const record = sampleData[0];
+        
+        // Check which field exists in the schema
+        if ('status' in record) {
+          console.log('Using status field for filtering published images');
+          query = query.eq('status', 'published');
+        } else if ('is_public' in record) {
+          console.log('Using is_public field for filtering published images');
+          query = query.eq('is_public', true);
+        } else {
+          console.log('No publishing status field found, returning all images');
+        }
+      }
+    } catch (error) {
+      console.error('Error checking schema:', error);
+      // Default to including all images if we can't determine schema
+    }
     
     if (category) {
       query = query.eq('category', category);
@@ -116,6 +145,7 @@ export async function getGalleryImages(options: GalleryImageOptions = {}): Promi
       query = query.eq('style', style);
     }
     
+    // Execute the query
     const { data, error } = await query;
     
     if (error) {
