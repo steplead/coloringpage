@@ -101,37 +101,22 @@ function getFileExtension(contentType: string): string {
  */
 export async function initializeStorage(): Promise<void> {
   try {
-    // 检查images存储桶是否存在
+    // 只检查存储桶是否存在，不尝试创建
     const { data: buckets, error } = await supabase.storage.listBuckets();
     
     if (error) {
       console.error('Error listing storage buckets:', error);
-      throw error;
+      return;
     }
     
     const imagesBucketExists = buckets.some(bucket => bucket.name === 'images');
     
-    // 如果不存在，创建images存储桶
-    if (!imagesBucketExists) {
-      console.log('Creating images bucket in Supabase Storage');
-      
-      const { error: createError } = await supabase.storage.createBucket('images', {
-        public: true,
-        fileSizeLimit: 50 * 1024 * 1024, // 50MB
-        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif', 'image/svg+xml']
-      });
-      
-      if (createError) {
-        console.error('Error creating images bucket:', createError);
-        throw createError;
-      }
-      
-      console.log('Successfully created images bucket');
+    if (imagesBucketExists) {
+      console.log('Images bucket exists in Supabase Storage');
     } else {
-      console.log('Images bucket already exists in Supabase Storage');
+      console.error('Images bucket does not exist - please create it manually');
     }
   } catch (error) {
-    console.error('Error initializing Supabase Storage:', error);
-    throw error;
+    console.error('Error checking Supabase Storage:', error);
   }
 } 
