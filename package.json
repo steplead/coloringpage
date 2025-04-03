@@ -3,11 +3,19 @@
   "version": "1.0.0",
   "description": "A black outline coloring page generator using AI",
   "main": "index.js",
+  "bin": {
+    "cursor-deploy": "./bin/cursor-deploy"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "node deploy.js",
+    "deploy:auto": "node deploy-auto.js",
+    "quick-deploy": "node src/lib/cursor-deploy.js",
+    "deploy:now": "node src/lib/cursor-deploy.js",
+    "deploy-now": "node deploy-now.js"
   },
   "keywords": [
     "coloring page",

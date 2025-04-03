@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+/**
+ * Cursor部署CLI
+ * 用法: cursor-deploy [auto|interactive]
+ */
+
+const path = require('path');
+const deployModule = require('../src/lib/cursor-deploy');
+
+// 解析命令行参数
+const args = process.argv.slice(2);
+const deployType = args[0] === 'interactive' ? 'deploy' : 'autoDeploy';
+
+// 执行相应的部署命令
+if (deployType === 'deploy') {
+  deployModule.deploy();
+} else {
+  deployModule.autoDeploy();
+} 
