@@ -12,9 +12,9 @@ import { initializeStorage } from '@/lib/storage';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-  description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use. Free to use!',
-  keywords: 'coloring pages, AI art, coloring book, custom coloring pages, kids activities, educational coloring, adult coloring, printable coloring pages, mobile coloring',
+  title: 'AI Coloring Page - Create & Color Beautiful Drawings',
+  description: 'Create beautiful coloring pages with AI. Transform your ideas into stunning drawings ready to color. Perfect for all ages and artistic abilities.',
+  keywords: 'AI coloring, coloring pages, AI drawing, coloring book, digital coloring, custom coloring pages',
   authors: [{ name: 'Your Name' }],
   creator: 'Your Name',
   publisher: 'Your Company',
@@ -103,15 +103,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Get the detected language from headers (set by middleware)
+  // Get the current language from headers (set by middleware)
   const headersList = headers();
-  const detectedLang = headersList.get('x-language') || 'en';
+  const currentLang = headersList.get('x-locale') || 'en';
 
   return (
-    <html lang={detectedLang} className="scroll-smooth">
+    <html lang={currentLang} className="scroll-smooth">
       <body className={`${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
-          <Navigation currentLang={detectedLang} />
+          <Navigation currentLang={currentLang} />
           <main className="flex-1">
             {children}
           </main>

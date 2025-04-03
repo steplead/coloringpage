@@ -19,12 +19,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const lang = searchParams.get('lang') || 'en';
 
+  console.log(`GET /api/i18n - Requested language: ${lang}`);
+
   // Validate language
   if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    console.error(`GET /api/i18n - Unsupported language: ${lang}`);
     return NextResponse.json({ error: 'Unsupported language' }, { status: 400 });
   }
 
   // Return translations for the requested language
+  console.log(`GET /api/i18n - Returning translations for: ${lang}`);
   return NextResponse.json(translations[lang as keyof typeof translations]);
 }
 
@@ -36,10 +40,14 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
-    const { lang } = await request.json();
+    const body = await request.json();
+    const lang = body.lang;
+
+    console.log(`POST /api/i18n - Setting language to: ${lang}`);
 
     // Validate language
     if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+      console.error(`POST /api/i18n - Unsupported language: ${lang}`);
       return NextResponse.json({ error: 'Unsupported language' }, { status: 400 });
     }
 
@@ -49,10 +57,15 @@ export async function POST(request: Request) {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      httpOnly: false, // Allow JavaScript access to see the cookie
     });
 
-    return NextResponse.json({ success: true });
+    console.log(`POST /api/i18n - Successfully set language cookie to: ${lang}`);
+    return NextResponse.json({ 
+      success: true, 
+      message: `Language set to ${lang}`,
+      cookieSet: true
+    });
   } catch (error) {
     console.error('Error setting language:', error);
     return NextResponse.json({ error: 'Failed to set language' }, { status: 500 });

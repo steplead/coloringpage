@@ -41,6 +41,8 @@ export default function LanguageSelector({
     setIsOpen(false);
     
     try {
+      console.log('Changing language to:', languageCode);
+      
       // First, set the language cookie
       const response = await fetch('/api/i18n', {
         method: 'POST',
@@ -51,6 +53,7 @@ export default function LanguageSelector({
       });
 
       if (response.ok) {
+        console.log('Language change API response:', await response.json());
         setSelectedLang(languageCode);
         
         // Call the onLanguageChange callback if provided
@@ -61,8 +64,14 @@ export default function LanguageSelector({
         // Clear translation cache
         clearTranslationCache();
         
-        // Force a complete page reload to ensure all content is updated
-        window.location.reload();
+        // Get the current path without the query string
+        const currentPath = window.location.pathname;
+        
+        // Force a complete page reload with the same path
+        // Add a timestamp to force a fresh reload and bypass caches
+        const reloadUrl = `${currentPath}?lang=${languageCode}&t=${Date.now()}`;
+        console.log('Reloading page with URL:', reloadUrl);
+        window.location.href = reloadUrl;
       } else {
         console.error('Failed to change language: Server returned an error');
       }
