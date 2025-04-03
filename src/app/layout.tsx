@@ -3,13 +3,28 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import React from 'react';
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { detectLanguage } from '@/lib/i18n';
 import { initializeStorage } from '@/lib/storage';
+import LanguageDetectionBanner from '@/components/LanguageDetectionBanner';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Base URL
+const SITE_URL = 'https://ai-coloringpage.com';
+
+// Helper to build language alternates for SEO
+function buildLanguageAlternates() {
+  const alternates: Record<string, string> = {};
+  
+  SUPPORTED_LANGUAGES.forEach(lang => {
+    alternates[lang.code] = `${SITE_URL}/${lang.code}`;
+  });
+  
+  return alternates;
+}
 
 export const metadata: Metadata = {
   title: 'AI Coloring Page - Create & Color Beautiful Drawings',
@@ -34,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://ai-coloringpage.com',
+    url: SITE_URL,
     siteName: 'AI Coloring Page Generator',
     title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
     description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
@@ -69,19 +84,10 @@ export const metadata: Metadata = {
     google: 'your-google-site-verification',
   },
   alternates: {
-    canonical: 'https://ai-coloringpage.com',
-    languages: {
-      'en': 'https://ai-coloringpage.com',
-      'zh': 'https://ai-coloringpage.com?lang=zh',
-      'es': 'https://ai-coloringpage.com?lang=es',
-      'fr': 'https://ai-coloringpage.com?lang=fr',
-      'de': 'https://ai-coloringpage.com?lang=de',
-      'ja': 'https://ai-coloringpage.com?lang=ja',
-      'ko': 'https://ai-coloringpage.com?lang=ko',
-      'ru': 'https://ai-coloringpage.com?lang=ru',
-    },
+    canonical: SITE_URL,
+    languages: buildLanguageAlternates(),
   },
-  metadataBase: new URL('https://ai-coloringpage.com'),
+  metadataBase: new URL(SITE_URL),
 };
 
 export const viewport: Viewport = {
@@ -91,7 +97,7 @@ export const viewport: Viewport = {
   userScalable: true,
 };
 
-// 初始化Supabase Storage
+// Initialize Supabase Storage
 if (typeof window === 'undefined') {
   initializeStorage().catch(error => {
     console.error('Failed to initialize Supabase Storage:', error);
@@ -100,15 +106,30 @@ if (typeof window === 'undefined') {
 
 export default function RootLayout({
   children,
+  params,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
+  params: { lang?: string };
 }) {
-  // Get the current language from headers (set by middleware)
+  // Determine language from URL params (set by middleware) or default to English
   const headersList = headers();
-  const currentLang = headersList.get('x-locale') || 'en';
+  const localeFromCookie = headersList.get('x-locale');
+  const currentLang = params.lang || localeFromCookie || 'en';
 
   return (
     <html lang={currentLang} className="scroll-smooth">
+      <head>
+        {/* Add hreflang tags for better SEO */}
+        {SUPPORTED_LANGUAGES.map(lang => (
+          <link 
+            key={lang.code}
+            rel="alternate" 
+            hrefLang={lang.code} 
+            href={`${SITE_URL}/${lang.code}`} 
+          />
+        ))}
+        <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
           <Navigation currentLang={currentLang} />
@@ -116,6 +137,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <LanguageDetectionBanner />
         </div>
       </body>
     </html>

@@ -69,23 +69,21 @@ This application supports multiple languages to make it accessible to users worl
 - 🇫🇷 French (Français)
 - 🇩🇪 German (Deutsch)
 - 🇯🇵 Japanese (日本語)
-- 🇰🇷 Korean (한국어)
+- 🇰🇷 Korean (한国어)
 - 🇷🇺 Russian (Русский)
 
-### Language Selection
+### Enhanced Language Features
 
-- The application automatically detects your preferred language based on browser settings
-- You can manually change the language using the language selector in the navigation bar
-- Language preference is saved in a cookie for future visits
+The application now uses URL-based language paths for improved SEO and user experience:
 
-### Adding New Languages
+- **URL-Based Routing**: Languages are part of the URL path (e.g., `/en/create`, `/zh/gallery`)
+- **Automatic Detection**: First-time visitors are offered their preferred language based on browser settings
+- **SEO Optimization**: Complete with `hreflang` tags and language-specific sitemaps
+- **Persistent Selection**: Language preferences are saved for returning visitors
 
-To add a new language to the application:
+**Note**: While the main UI interface supports multiple languages, blog content is currently available in English only. The internationalization system is focused on providing a localized user experience for the core application features.
 
-1. Create a new translation file in `src/lib/i18n/translations/` (e.g., `fr.json`)
-2. Add language details to `src/lib/i18n/locales.ts`
-3. Follow the existing translation structure and provide all necessary translations
-4. The new language will be automatically available in the language selector
+For detailed documentation on the internationalization system, see [docs/internationalization.md](./docs/internationalization.md).
 
 ## Local Development
 

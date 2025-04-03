@@ -18,6 +18,15 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
     setIsOpen(!isOpen);
   };
 
+  // Helper function to get the correct localized URL path
+  const getLocalizedHref = (path: string): string => {
+    if (path === '/') {
+      return `/${currentLang}`;
+    }
+    return `/${currentLang}${path}`;
+  };
+
+  // Basic navigation links without the language prefix
   const navLinks = [
     { name: 'nav.home', href: '/' },
     { name: 'nav.create', href: '/create' },
@@ -32,7 +41,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
         {/* First Row: Logo and Menu Button */}
         <div className="flex justify-between items-center h-14 md:h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center flex-shrink-0">
+          <Link href={getLocalizedHref('/')} className="flex items-center flex-shrink-0">
             <span className="text-xl font-bold text-blue-600 tracking-tight">
               <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={currentLang} />
             </span>
@@ -40,25 +49,28 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex md:items-center md:space-x-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  pathname === link.href
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
-                }`}
-              >
-                <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const localizedHref = getLocalizedHref(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={localizedHref}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    pathname === localizedHref || pathname === link.href
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                  }`}
+                >
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
+                </Link>
+              );
+            })}
             
             {/* Language Selector - Desktop */}
             <LanguageSelector currentLang={currentLang} className="ml-2" />
             
             <Link 
-              href="/create" 
+              href={getLocalizedHref('/create')} 
               className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
@@ -123,22 +135,25 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
       {isOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 shadow-lg bg-white">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === link.href
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const localizedHref = getLocalizedHref(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={localizedHref}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === localizedHref || pathname === link.href
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
+                </Link>
+              );
+            })}
             <Link
-              href="/create"
+              href={getLocalizedHref('/create')}
               className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsOpen(false)}
             >

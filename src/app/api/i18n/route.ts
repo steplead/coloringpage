@@ -7,6 +7,7 @@ import zhTranslations from '@/lib/i18n/translations/zh.json';
 const translations = {
   en: enTranslations,
   zh: zhTranslations,
+  // Add other translations here as they become available
 };
 
 /**
@@ -27,9 +28,19 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unsupported language' }, { status: 400 });
   }
 
-  // Return translations for the requested language
+  // Return translations for the requested language, falling back to English if not available
   console.log(`GET /api/i18n - Returning translations for: ${lang}`);
-  return NextResponse.json(translations[lang as keyof typeof translations]);
+  
+  // Check if we have translations for the requested language
+  const langTranslations = translations[lang as keyof typeof translations];
+  
+  // If no translations exist for the requested language, fall back to English
+  if (!langTranslations) {
+    console.log(`GET /api/i18n - No translations for ${lang}, falling back to English`);
+    return NextResponse.json(translations.en);
+  }
+  
+  return NextResponse.json(langTranslations);
 }
 
 /**

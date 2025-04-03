@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { clearTranslationCache } from './TranslatedText';
 
@@ -19,6 +19,7 @@ export default function LanguageSelector({
   dropdownPosition = 'bottom'
 }: LanguageSelectorProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState(currentLang);
   const [isChanging, setIsChanging] = useState(false);
@@ -33,6 +34,27 @@ export default function LanguageSelector({
 
   // Get the current language info
   const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLang) || SUPPORTED_LANGUAGES[0];
+
+  // Helper to get path without language prefix
+  const getPathWithoutLocale = (path: string): string => {
+    // If the path is just '/' return it
+    if (path === '/') return '';
+    
+    // Split path into segments
+    const segments = path.split('/');
+    
+    // Check if the first segment is a language code
+    if (segments.length > 1) {
+      const potentialLocale = segments[1];
+      if (SUPPORTED_LANGUAGES.some(lang => lang.code === potentialLocale)) {
+        // Remove the language segment
+        segments.splice(1, 1);
+        return segments.join('/') || '/';
+      }
+    }
+    
+    return path;
+  };
 
   const handleLanguageSelect = async (languageCode: string) => {
     if (languageCode === selectedLang || isChanging) return;
@@ -64,14 +86,13 @@ export default function LanguageSelector({
         // Clear translation cache
         clearTranslationCache();
         
-        // Get the current path without the query string
-        const currentPath = window.location.pathname;
+        // Build the new URL with the updated language code
+        const pathWithoutLocale = getPathWithoutLocale(pathname);
+        const newPath = `/${languageCode}${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
         
-        // Force a complete page reload with the same path
-        // Add a timestamp to force a fresh reload and bypass caches
-        const reloadUrl = `${currentPath}?lang=${languageCode}&t=${Date.now()}`;
-        console.log('Reloading page with URL:', reloadUrl);
-        window.location.href = reloadUrl;
+        // Use the router to navigate to the new URL
+        router.push(newPath);
+        router.refresh();
       } else {
         console.error('Failed to change language: Server returned an error');
       }
@@ -127,7 +148,7 @@ export default function LanguageSelector({
 
       {isOpen && (
         <div 
-          className="absolute right-0 mt-1 w-full bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
+          className={`absolute ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'} right-0 w-full bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200`}
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="language-selector"

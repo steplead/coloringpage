@@ -50,7 +50,11 @@ const BASE_PROMPT = 'black outline coloring page, clean lines';
 
 const MAX_RETRIES = 3;
 
-export const ImageGenerator = () => {
+interface ImageGeneratorProps {
+  currentLang?: string;
+}
+
+export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'en' }) => {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

@@ -16,6 +16,11 @@ export interface BlogPost {
   is_published: boolean;
   created_at?: string;
   updated_at?: string;
+  translations?: Record<string, {
+    title: string;
+    content: string;
+    description: string;
+  }>;
 }
 
 /**

@@ -20,10 +20,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
-  // Get the current language from headers (set by middleware)
+export default function Home({ params }: { params?: { lang?: string } }) {
+  // Get the current language from params or headers
   const headersList = headers();
-  const currentLang = headersList.get('x-locale') || 'en';
+  const headerLang = headersList.get('x-locale'); 
+  const currentLang = params?.lang || headerLang || 'en';
 
   // Example coloring pages to showcase in hero section
   const examplePages = [

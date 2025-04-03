@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         results.push({ 
           topic, 
           success: true, 
-          slug: data[0].slug 
+          slug: data[0].slug
         });
 
         console.log(`Successfully generated blog post for topic: ${topic}, slug: ${data[0].slug}`);
