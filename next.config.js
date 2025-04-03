@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['sc-maas.oss-cn-shanghai.aliyuncs.com'],
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
