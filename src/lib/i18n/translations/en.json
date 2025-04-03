@@ -15,7 +15,8 @@
     "print": "Print",
     "language": "Language",
     "moreInfo": "More Information",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "tryIt": "Try It"
   },
   "nav": {
     "home": "Home",
@@ -32,33 +33,30 @@
     "hero": {
       "title": "Create Beautiful Coloring Pages with AI",
       "subtitle": "Turn your ideas into stunning coloring pages in seconds. Perfect for kids, teachers, and coloring enthusiasts.",
-      "cta": "Create Now",
-      "learnMore": "Learn More",
+      "createButton": "Create Now",
+      "learnButton": "Learn More",
       "stats": "Over 5,000 coloring pages created"
     },
     "examples": {
-      "cartoonElephant": "Cartoon Elephant",
-      "spaceRocket": "Space Rocket",
-      "friendlyDragon": "Friendly Dragon"
+      "elephant": "Cartoon Elephant",
+      "rocket": "Space Rocket",
+      "dragon": "Friendly Dragon"
     },
     "howItWorks": {
-      "title": "Create Coloring Pages Your Way",
-      "methods": {
-        "describe": {
-          "title": "Describe It",
-          "description": "Type what you want and our AI will create it",
-          "cta": "Try It"
-        },
-        "style": {
-          "title": "Choose a Style",
-          "description": "Select from multiple artistic styles",
-          "cta": "Try It"
-        },
-        "advanced": {
-          "title": "Advanced Control",
-          "description": "Fine-tune every aspect of your coloring page",
-          "cta": "Try It"
-        }
+      "title": "Create Coloring Pages Your Way"
+    },
+    "methods": {
+      "describe": {
+        "title": "Describe It",
+        "description": "Type what you want and our AI will create it"
+      },
+      "style": {
+        "title": "Choose a Style",
+        "description": "Select from multiple artistic styles"
+      },
+      "advanced": {
+        "title": "Advanced Control",
+        "description": "Fine-tune every aspect of your coloring page"
       }
     },
     "styles": {
@@ -72,66 +70,54 @@
     },
     "testimonials": {
       "title": "What Our Users Say",
-      "feedback": [
-        {
-          "text": "My kids love the coloring pages I create for them! So easy to use.",
-          "author": "Sarah T."
-        },
-        {
-          "text": "I've been using this for my kindergarten class. The children are thrilled!",
-          "author": "Mark L., Teacher"
-        },
-        {
-          "text": "The advanced mode lets me create exactly what I need for my art therapy sessions.",
-          "author": "Dr. Jessica P."
-        }
-      ],
+      "1": {
+        "text": "My kids love the coloring pages I create for them! So easy to use.",
+        "author": "Sarah T."
+      },
+      "2": {
+        "text": "I've been using this for my kindergarten class. The children are thrilled!",
+        "author": "Mark L., Teacher"
+      },
+      "3": {
+        "text": "The advanced mode lets me create exactly what I need for my art therapy sessions.",
+        "author": "Dr. Jessica P."
+      },
       "cta": "Start Creating Now"
     },
     "features": {
       "title": "Why Choose Our AI Coloring Page Generator?",
-      "list": [
-        {
-          "icon": "🚀",
-          "title": "Fast Generation",
-          "desc": "Create coloring pages in seconds"
-        },
-        {
-          "icon": "🎨",
-          "title": "Multiple Styles",
-          "desc": "Choose from various artistic styles"
-        },
-        {
-          "icon": "📱",
-          "title": "Works Everywhere",
-          "desc": "Mobile, tablet, or desktop"
-        },
-        {
-          "icon": "🔄",
-          "title": "Unlimited Pages",
-          "desc": "Create as many as you need"
-        },
-        {
-          "icon": "🖨️",
-          "title": "Print Ready",
-          "desc": "Perfect for printing at any size"
-        },
-        {
-          "icon": "🎮",
-          "title": "Easy to Use",
-          "desc": "No design skills required"
-        },
-        {
-          "icon": "🔒",
-          "title": "Private & Secure",
-          "desc": "Your creations belong to you"
-        },
-        {
-          "icon": "✏️",
-          "title": "Advanced Control",
-          "desc": "Fine-tune every detail"
-        }
-      ]
+      "fast": {
+        "title": "Fast Generation",
+        "desc": "Create coloring pages in seconds"
+      },
+      "styles": {
+        "title": "Multiple Styles",
+        "desc": "Choose from various artistic styles"
+      },
+      "everywhere": {
+        "title": "Works Everywhere",
+        "desc": "Mobile, tablet, or desktop"
+      },
+      "unlimited": {
+        "title": "Unlimited Pages",
+        "desc": "Create as many as you need"
+      },
+      "print": {
+        "title": "Print Ready",
+        "desc": "Perfect for printing at any size"
+      },
+      "easy": {
+        "title": "Easy to Use",
+        "desc": "No design skills required"
+      },
+      "secure": {
+        "title": "Private & Secure",
+        "desc": "Your creations belong to you"
+      },
+      "control": {
+        "title": "Advanced Control",
+        "desc": "Fine-tune every detail"
+      }
     },
     "cta": {
       "title": "Ready to Create Your Coloring Pages?",
@@ -239,45 +225,8 @@
         "totalImages": "Total Coloring Pages"
       },
       "quickActions": {
-        "title": "Quick Actions",
-        "generateBlogPost": {
-          "title": "Generate Blog Post",
-          "description": "Automatically generate a new blog post about coloring pages using AI.",
-          "button": "Generate Post",
-          "generating": "Generating..."
-        },
-        "manageBlogPosts": {
-          "title": "Manage Blog Posts",
-          "description": "View, edit, or delete existing blog posts in the blog management interface.",
-          "button": "Manage Posts"
-        },
-        "viewWebsite": {
-          "title": "View Website",
-          "description": "Go to the public-facing website to see your changes.",
-          "button": "View Site"
-        }
-      },
-      "blogGeneration": {
-        "title": "Automatic Blog Generation Settings",
-        "description": "Configure how many blog posts should be automatically generated each day. Posts will be published with random topics and featured images.",
-        "dailyPostCount": "Daily Post Count",
-        "targetPostLength": "Target Post Length (words)",
-        "saveButton": "Save Settings",
-        "savingButton": "Saving..."
+        "title": "Quick Actions"
       }
-    },
-    "blog": {
-      "title": "Blog Post Management",
-      "generateNew": "Generate New Blog Posts",
-      "numberOfPosts": "Number of Posts to Generate",
-      "generateButton": "Generate Blog Posts",
-      "published": "Published",
-      "created": "Created",
-      "slug": "Slug",
-      "viewButton": "View",
-      "unpublishButton": "Unpublish",
-      "deleteButton": "Delete",
-      "confirmDelete": "Are you sure you want to delete this blog post?"
     }
   },
   "errors": {

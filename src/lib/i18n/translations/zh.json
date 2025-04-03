@@ -15,7 +15,8 @@
     "print": "打印",
     "language": "语言",
     "moreInfo": "更多信息",
-    "backToHome": "返回首页"
+    "backToHome": "返回首页",
+    "tryIt": "试一试"
   },
   "nav": {
     "home": "首页",
@@ -32,33 +33,30 @@
     "hero": {
       "title": "用AI创建精美涂色页面",
       "subtitle": "几秒钟内将您的创意变成精美的涂色页面。完美适合儿童、教师和涂色爱好者。",
-      "cta": "立即创建",
-      "learnMore": "了解更多",
+      "createButton": "立即创建",
+      "learnButton": "了解更多",
       "stats": "已创建超过5,000个涂色页面"
     },
     "examples": {
-      "cartoonElephant": "卡通大象",
-      "spaceRocket": "太空火箭",
-      "friendlyDragon": "友好的龙"
+      "elephant": "卡通大象",
+      "rocket": "太空火箭",
+      "dragon": "友好的龙"
     },
     "howItWorks": {
-      "title": "按您的方式创建涂色页面",
-      "methods": {
-        "describe": {
-          "title": "描述它",
-          "description": "输入您想要的内容，我们的AI将创建它",
-          "cta": "试一试"
-        },
-        "style": {
-          "title": "选择风格",
-          "description": "从多种艺术风格中选择",
-          "cta": "试一试"
-        },
-        "advanced": {
-          "title": "高级控制",
-          "description": "微调涂色页面的各个方面",
-          "cta": "试一试"
-        }
+      "title": "按您的方式创建涂色页面"
+    },
+    "methods": {
+      "describe": {
+        "title": "描述它",
+        "description": "输入您想要的内容，我们的AI将创建它"
+      },
+      "style": {
+        "title": "选择风格",
+        "description": "从多种艺术风格中选择"
+      },
+      "advanced": {
+        "title": "高级控制",
+        "description": "微调涂色页面的各个方面"
       }
     },
     "styles": {
@@ -72,66 +70,54 @@
     },
     "testimonials": {
       "title": "用户评价",
-      "feedback": [
-        {
-          "text": "我的孩子们喜欢我为他们创建的涂色页面！非常容易使用。",
-          "author": "莎拉 T."
-        },
-        {
-          "text": "我一直在为我的幼儿园班级使用这个。孩子们非常兴奋！",
-          "author": "马克 L., 教师"
-        },
-        {
-          "text": "高级模式让我能够为我的艺术治疗课程创建我需要的内容。",
-          "author": "杰西卡 P. 博士"
-        }
-      ],
+      "1": {
+        "text": "我的孩子们喜欢我为他们创建的涂色页面！非常容易使用。",
+        "author": "莎拉 T."
+      },
+      "2": {
+        "text": "我一直在为我的幼儿园班级使用这个。孩子们非常兴奋！",
+        "author": "马克 L., 教师"
+      },
+      "3": {
+        "text": "高级模式让我能够为我的艺术治疗课程创建我需要的内容。",
+        "author": "杰西卡 P. 博士"
+      },
       "cta": "立即开始创建"
     },
     "features": {
       "title": "为什么选择我们的AI涂色页面生成器？",
-      "list": [
-        {
-          "icon": "🚀",
-          "title": "快速生成",
-          "desc": "几秒钟内创建涂色页面"
-        },
-        {
-          "icon": "🎨",
-          "title": "多种风格",
-          "desc": "从各种艺术风格中选择"
-        },
-        {
-          "icon": "📱",
-          "title": "随处可用",
-          "desc": "手机、平板或电脑"
-        },
-        {
-          "icon": "🔄",
-          "title": "无限页面",
-          "desc": "创建您需要的任意数量"
-        },
-        {
-          "icon": "🖨️",
-          "title": "打印就绪",
-          "desc": "适合任何尺寸打印"
-        },
-        {
-          "icon": "🎮",
-          "title": "易于使用",
-          "desc": "无需设计技能"
-        },
-        {
-          "icon": "🔒",
-          "title": "私密安全",
-          "desc": "您的创作属于您"
-        },
-        {
-          "icon": "✏️",
-          "title": "高级控制",
-          "desc": "微调每一个细节"
-        }
-      ]
+      "fast": {
+        "title": "快速生成",
+        "desc": "几秒钟内创建涂色页面"
+      },
+      "styles": {
+        "title": "多种风格",
+        "desc": "从各种艺术风格中选择"
+      },
+      "everywhere": {
+        "title": "随处可用",
+        "desc": "手机、平板或电脑"
+      },
+      "unlimited": {
+        "title": "无限页面",
+        "desc": "创建您需要的任意数量"
+      },
+      "print": {
+        "title": "打印就绪",
+        "desc": "适合任何尺寸打印"
+      },
+      "easy": {
+        "title": "易于使用",
+        "desc": "无需设计技能"
+      },
+      "secure": {
+        "title": "私密安全",
+        "desc": "您的创作属于您"
+      },
+      "control": {
+        "title": "高级控制",
+        "desc": "微调每一个细节"
+      }
     },
     "cta": {
       "title": "准备好创建您的涂色页面了吗？",
@@ -239,45 +225,8 @@
         "totalImages": "涂色页面总数"
       },
       "quickActions": {
-        "title": "快捷操作",
-        "generateBlogPost": {
-          "title": "生成博客文章",
-          "description": "使用AI自动生成关于涂色页面的新博客文章。",
-          "button": "生成文章",
-          "generating": "正在生成..."
-        },
-        "manageBlogPosts": {
-          "title": "管理博客文章",
-          "description": "在博客管理界面中查看、编辑或删除现有博客文章。",
-          "button": "管理文章"
-        },
-        "viewWebsite": {
-          "title": "查看网站",
-          "description": "前往面向公众的网站查看您的更改。",
-          "button": "查看网站"
-        }
-      },
-      "blogGeneration": {
-        "title": "自动博客生成设置",
-        "description": "配置每天应自动生成多少博客文章。文章将使用随机主题和精选图片发布。",
-        "dailyPostCount": "每日文章数量",
-        "targetPostLength": "目标文章长度（字数）",
-        "saveButton": "保存设置",
-        "savingButton": "正在保存..."
+        "title": "快捷操作"
       }
-    },
-    "blog": {
-      "title": "博客文章管理",
-      "generateNew": "生成新博客文章",
-      "numberOfPosts": "要生成的文章数量",
-      "generateButton": "生成博客文章",
-      "published": "已发布",
-      "created": "创建于",
-      "slug": "链接别名",
-      "viewButton": "查看",
-      "unpublishButton": "取消发布",
-      "deleteButton": "删除",
-      "confirmDelete": "您确定要删除此博客文章吗？"
     }
   },
   "errors": {
