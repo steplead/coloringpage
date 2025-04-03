@@ -7,6 +7,7 @@ import React from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { detectLanguage } from '@/lib/i18n';
+import { initializeStorage } from '@/lib/storage';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -70,6 +71,13 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
 };
+
+// 初始化Supabase Storage
+if (typeof window === 'undefined') {
+  initializeStorage().catch(error => {
+    console.error('Failed to initialize Supabase Storage:', error);
+  });
+}
 
 export default function RootLayout({
   children,

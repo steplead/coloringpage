@@ -15,6 +15,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Supabase Storage URLs
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
       // Add storage.googleapis.com for Supabase storage
       {
         protocol: 'https',

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { storeImageFromUrl } from '@/lib/storage';
 
 // SiliconFlow API configuration from environment variables
 const API_KEY = process.env.SILICONFLOW_API_KEY;
@@ -96,11 +97,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Return generation result
-    return NextResponse.json({
-      success: true,
-      imageUrl: imageUrl
-    });
+    try {
+      // 存储图片到Supabase Storage
+      console.log('Storing image from SiliconFlow to Supabase Storage');
+      const prompt = isAdvancedMode ? customPrompt : description;
+      const storedImageUrl = await storeImageFromUrl(imageUrl, prompt);
+      
+      console.log('Image successfully stored in Supabase:', storedImageUrl);
+      
+      // 返回Supabase存储的URL，而不是原始的阿里云URL
+      return NextResponse.json({
+        success: true,
+        imageUrl: storedImageUrl,
+        originalUrl: imageUrl // 保留原始URL用于调试
+      });
+    } catch (storageError) {
+      console.error('Error storing image in Supabase:', storageError);
+      // 如果存储失败，回退到使用原始URL
+      console.log('Falling back to original SiliconFlow URL');
+      return NextResponse.json({
+        success: true,
+        imageUrl: imageUrl,
+        storageError: 'Failed to store in Supabase, using original URL'
+      });
+    }
 
   } catch (error) {
     console.error('Error generating image:', error);
