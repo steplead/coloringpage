@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { cookies } from 'next/headers';
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import enTranslations from '@/lib/i18n/translations/en.json';
+import zhTranslations from '@/lib/i18n/translations/zh.json';
 
-// Cookie name for storing language preference
-const LANGUAGE_COOKIE = 'preferred_language';
+const translations = {
+  en: enTranslations,
+  zh: zhTranslations,
+};
 
 /**
  * Handle GET requests to retrieve translations for a specific language
@@ -11,45 +15,17 @@ const LANGUAGE_COOKIE = 'preferred_language';
  * @param request - The incoming request object
  * @returns A JSON response with translations for the requested language
  */
-export async function GET(request: NextRequest) {
-  try {
-    // Get the requested language from the URL query parameters
-    const { searchParams } = new URL(request.url);
-    const requestedLang = searchParams.get('lang') || 'en';
-    
-    // Path to the translations directory
-    const translationsDir = path.join(process.cwd(), 'src', 'lib', 'i18n', 'translations');
-    
-    // Try to load the requested language file
-    let translations;
-    try {
-      const filePath = path.join(translationsDir, `${requestedLang}.json`);
-      const fileContent = fs.readFileSync(filePath, 'utf8');
-      translations = JSON.parse(fileContent);
-    } catch (err) {
-      // If the requested language file doesn't exist, fall back to English
-      console.error(`Failed to load translations for ${requestedLang}, falling back to English`, err);
-      const fallbackPath = path.join(translationsDir, 'en.json');
-      const fallbackContent = fs.readFileSync(fallbackPath, 'utf8');
-      translations = JSON.parse(fallbackContent);
-    }
-    
-    // Return the translations as JSON
-    return NextResponse.json({ 
-      success: true, 
-      language: requestedLang,
-      translations 
-    });
-  } catch (error) {
-    console.error('Error in i18n API route:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to load translations' 
-      }, 
-      { status: 500 }
-    );
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const lang = searchParams.get('lang') || 'en';
+
+  // Validate language
+  if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    return NextResponse.json({ error: 'Unsupported language' }, { status: 400 });
   }
+
+  // Return translations for the requested language
+  return NextResponse.json(translations[lang as keyof typeof translations]);
 }
 
 /**
@@ -58,34 +34,27 @@ export async function GET(request: NextRequest) {
  * @param request - The incoming request object
  * @returns A JSON response indicating success or failure
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    // Parse the request body to get the language preference
-    const body = await request.json();
-    const lang = body.lang || 'en';
-    
-    // Create a response
-    const response = NextResponse.json({ 
-      success: true, 
-      message: `Language set to ${lang}` 
-    });
-    
-    // Set a cookie with the language preference
-    response.cookies.set(LANGUAGE_COOKIE, lang, {
+    const { lang } = await request.json();
+
+    // Validate language
+    if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+      return NextResponse.json({ error: 'Unsupported language' }, { status: 400 });
+    }
+
+    // Set language cookie
+    const cookieStore = cookies();
+    cookieStore.set('NEXT_LOCALE', lang, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
-      httpOnly: false, // Allow JavaScript access
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
     });
-    
-    return response;
+
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error setting language preference:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to set language preference' 
-      }, 
-      { status: 500 }
-    );
+    console.error('Error setting language:', error);
+    return NextResponse.json({ error: 'Failed to set language' }, { status: 500 });
   }
 } 

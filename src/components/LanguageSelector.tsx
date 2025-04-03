@@ -56,8 +56,8 @@ export default function LanguageSelector({
           onLanguageChange(languageCode);
         }
         
-        // Refresh the page to apply the new language
-        router.refresh();
+        // Force a hard refresh to ensure all content is updated
+        window.location.reload();
       } else {
         console.error('Failed to change language: Server returned an error');
       }
