@@ -41,6 +41,7 @@ export default function LanguageSelector({
     setIsOpen(false);
     
     try {
+      // First, set the language cookie
       const response = await fetch('/api/i18n', {
         method: 'POST',
         headers: {
@@ -60,8 +61,8 @@ export default function LanguageSelector({
         // Clear translation cache
         clearTranslationCache();
         
-        // Force a hard refresh to ensure all content is updated
-        window.location.href = window.location.pathname;
+        // Force a complete page reload to ensure all content is updated
+        window.location.reload();
       } else {
         console.error('Failed to change language: Server returned an error');
       }

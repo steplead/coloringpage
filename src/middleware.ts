@@ -8,28 +8,29 @@ const locales = SUPPORTED_LANGUAGES.map(lang => lang.code);
 const defaultLocale = 'en';
 
 function getLocale(request: NextRequest): string {
-  const negotiatorHeaders: Record<string, string> = {};
-  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
-
-  const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
-  const locale = matchLocale(languages, locales, defaultLocale);
-
-  // Check if we have a language cookie
+  // First check if we have a language cookie
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
   if (cookieLocale && locales.includes(cookieLocale)) {
     return cookieLocale;
   }
 
-  // If no cookie or invalid cookie, set the detected locale
+  // If no cookie, detect from browser preferences
+  const negotiatorHeaders: Record<string, string> = {};
+  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
+
+  const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
+  const detectedLocale = matchLocale(languages, locales, defaultLocale);
+
+  // Set the detected locale in a cookie
   const response = NextResponse.next();
-  response.cookies.set('NEXT_LOCALE', locale, {
+  response.cookies.set('NEXT_LOCALE', detectedLocale, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
   });
 
-  return locale;
+  return detectedLocale;
 }
 
 export function middleware(request: NextRequest) {
