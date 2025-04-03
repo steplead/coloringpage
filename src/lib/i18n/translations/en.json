@@ -127,7 +127,22 @@
   },
   "create": {
     "title": "Create Your Coloring Page",
-    "subtitle": "Describe what you want and our AI will generate a beautiful coloring page for you",
+    "subtitle": "Choose a creation method below and let our AI generate a beautiful coloring page for you",
+    "tabs": {
+      "describe": "Describe It",
+      "photo": "Convert Photo",
+      "draw": "Draw & Enhance"
+    },
+    "photo": {
+      "title": "Convert Photo to Coloring Page",
+      "description": "This feature is coming soon! Upload and convert your photos into coloring pages.",
+      "fallbackButton": "Try Describe It Instead"
+    },
+    "draw": {
+      "title": "Draw & Enhance",
+      "description": "Coming soon! Draw a basic sketch and let our AI enhance it into a beautiful coloring page.",
+      "fallbackButton": "Try Describe It Instead"
+    },
     "promptLabel": "What would you like to create?",
     "promptPlaceholder": "e.g., A friendly cartoon elephant playing with a ball",
     "styleLabel": "Style",

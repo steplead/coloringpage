@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { ImageRecord } from '@/lib/supabase';
+import TranslatedText from '@/components/TranslatedText';
+import Cookies from 'js-cookie';
+import { ArrowLeftIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 interface ColoringPageDetailProps {
   params: { 
@@ -19,6 +22,13 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [currentLang, setCurrentLang] = useState('en');
+
+  // Get language from cookie on client side
+  useEffect(() => {
+    const lang = Cookies.get('NEXT_LOCALE') || 'en';
+    setCurrentLang(lang);
+  }, []);
 
   useEffect(() => {
     const fetchImageDetails = async () => {
@@ -75,18 +85,45 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
     fetchImageDetails();
   }, [params.id, router]);
 
+  const handleDownload = async () => {
+    if (!image?.image_url) return;
+    
+    try {
+      const response = await fetch(image.image_url);
+      const blob = await response.blob();
+      
+      // Create a download link and trigger it
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `coloring-page-${params.id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('Error downloading image:', err);
+      alert('Failed to download image. Please try again later.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title="Loading Coloring Page"
-          description="Please wait while we load your coloring page..."
+          title={<TranslatedText translationKey="gallery.detail.loading.title" fallback="Loading Coloring Page" lang={currentLang} />}
+          description={<TranslatedText translationKey="gallery.detail.loading.description" fallback="Please wait while we retrieve the coloring page details..." lang={currentLang} />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading coloring page details...</p>
+            <p className="mt-4 text-gray-600">
+              <TranslatedText translationKey="common.loading" fallback="Loading..." lang={currentLang} />
+            </p>
           </div>
         </div>
       </div>
@@ -97,8 +134,8 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title="Coloring Page Details"
-          description="View and print this AI-generated coloring page."
+          title={<TranslatedText translationKey="gallery.detail.error.title" fallback="Error Loading Coloring Page" lang={currentLang} />}
+          description={<TranslatedText translationKey="gallery.detail.error.description" fallback="We couldn't find the coloring page you're looking for." lang={currentLang} />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -106,20 +143,25 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h2 className="text-xl font-bold text-gray-700 mb-2">Unable to Load Coloring Page</h2>
-            <p className="text-gray-600 mb-6">We encountered an issue retrieving this coloring page. The image may have been removed or there's a temporary issue with our database.</p>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">
+              <TranslatedText translationKey="gallery.detail.error.message" fallback="Coloring Page Not Found" lang={currentLang} />
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {error || <TranslatedText translationKey="gallery.detail.error.notFound" fallback="The coloring page you requested could not be found or is no longer available." lang={currentLang} />}
+            </p>
             <div className="flex justify-center space-x-4">
               <Link 
                 href="/gallery" 
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Back to Gallery
+                <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                <TranslatedText translationKey="gallery.backToGallery" fallback="Back to Gallery" lang={currentLang} />
               </Link>
               <Link 
                 href="/create" 
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Create a Coloring Page
+                <TranslatedText translationKey="gallery.createAColoringPage" fallback="Create a Coloring Page" lang={currentLang} />
               </Link>
             </div>
           </div>
@@ -128,11 +170,15 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
     );
   }
 
+  const title = image.title || image.prompt.substring(0, 50);
+  const description = image.alt_text || image.prompt;
+  const dateCreated = image.created_at ? new Date(image.created_at).toLocaleDateString() : '';
+
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title={image.title || image.prompt.substring(0, 50)}
-        description={image.seo_description || image.prompt}
+        title={title}
+        description={description}
       />
 
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -141,7 +187,7 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
             <div className="relative aspect-square w-full mb-6">
               <Image
                 src={image.image_url}
-                alt={image.alt_text || image.prompt}
+                alt={description}
                 fill
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -159,25 +205,26 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
             </div>
             
             <div className="flex justify-between items-center">
-              <Link 
-                href={`/gallery/${params.id}/print`}
+              <button
+                onClick={handleDownload}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Print This Page
-              </Link>
+                <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
+                <TranslatedText translationKey="gallery.detail.downloadButton" fallback="Download Coloring Page" lang={currentLang} />
+              </button>
               
               <Link 
                 href="/create"
                 className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Create Your Own
+                <TranslatedText translationKey="gallery.createAColoringPage" fallback="Create Your Own" lang={currentLang} />
               </Link>
             </div>
           </div>
           
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {image.title || image.prompt}
+              {title}
             </h1>
             
             {image.caption && (
@@ -187,18 +234,32 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
             )}
             
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Details</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                <TranslatedText translationKey="gallery.detail.details" fallback="Details" lang={currentLang} />
+              </h2>
               <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Style</dt>
+                  <dt className="text-sm font-medium text-gray-500">
+                    <TranslatedText translationKey="gallery.detail.category" fallback="Category" lang={currentLang} />
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">{image.category}</dd>
+                </div>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    <TranslatedText translationKey="gallery.detail.style" fallback="Style" lang={currentLang} />
+                  </dt>
                   <dd className="mt-1 text-sm text-gray-900">{image.style || 'Standard'}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Created</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{new Date(image.created_at).toLocaleDateString()}</dd>
+                  <dt className="text-sm font-medium text-gray-500">
+                    <TranslatedText translationKey="gallery.detail.created" fallback="Created" lang={currentLang} />
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">{dateCreated}</dd>
                 </div>
                 <div className="sm:col-span-2">
-                  <dt className="text-sm font-medium text-gray-500">Description</dt>
+                  <dt className="text-sm font-medium text-gray-500">
+                    <TranslatedText translationKey="gallery.detail.prompt" fallback="AI Prompt" lang={currentLang} />
+                  </dt>
                   <dd className="mt-1 text-sm text-gray-900">{image.prompt}</dd>
                 </div>
               </dl>
@@ -218,12 +279,14 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
             )}
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">About This Coloring Page</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                <TranslatedText translationKey="gallery.detail.howToUse.title" fallback="How to Use" lang={currentLang} />
+              </h2>
               <p className="text-gray-600 mb-4">
-                This coloring page was generated with AI based on the prompt: <span className="font-medium">{image.prompt}</span>
+                <TranslatedText translationKey="gallery.detail.howToUse.step1" fallback="Download the coloring page using the download button." lang={currentLang} />
               </p>
               <p className="text-gray-600">
-                You can print this page by clicking the "Print This Page" button, which will open a printer-friendly version.
+                <TranslatedText translationKey="gallery.detail.howToUse.step2" fallback="Print the image on standard letter-sized paper." lang={currentLang} />
               </p>
             </div>
           </div>
@@ -231,7 +294,9 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
         
         {relatedImages.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Coloring Pages</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <TranslatedText translationKey="gallery.detail.similarColoringPages" fallback="Similar Coloring Pages" lang={currentLang} />
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {relatedImages.map((relatedImage) => (
                 <Link 

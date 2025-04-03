@@ -16,7 +16,18 @@
     "language": "语言",
     "moreInfo": "更多信息",
     "backToHome": "返回首页",
-    "tryIt": "试一试"
+    "tryIt": "试一试",
+    "navigation": {
+      "home": "首页",
+      "create": "创建",
+      "gallery": "画廊",
+      "about": "关于"
+    },
+    "footer": {
+      "copyright": "版权所有",
+      "privacyPolicy": "隐私政策",
+      "termsOfService": "服务条款"
+    }
   },
   "nav": {
     "home": "首页",
@@ -30,168 +41,164 @@
     "createNow": "立即创建"
   },
   "home": {
-    "hero": {
-      "title": "用AI创建精美涂色页面",
-      "subtitle": "几秒钟内将您的创意变成精美的涂色页面。完美适合儿童、教师和涂色爱好者。",
-      "createButton": "立即创建",
-      "learnButton": "了解更多",
-      "stats": "已创建超过5,000个涂色页面"
-    },
-    "examples": {
-      "elephant": "卡通大象",
-      "rocket": "太空火箭",
-      "dragon": "友好的龙"
-    },
-    "howItWorks": {
-      "title": "按您的方式创建涂色页面"
-    },
-    "methods": {
-      "describe": {
-        "title": "描述它",
-        "description": "输入您想要的内容，我们的AI将创建它"
+    "title": "AI涂色页生成器",
+    "subtitle": "使用人工智能创建精美的涂色页",
+    "getStarted": "开始使用",
+    "viewGallery": "查看画廊",
+    "features": {
+      "title": "特点",
+      "description": "发挥创意，创造独特的涂色页",
+      "feature1": {
+        "title": "AI生成",
+        "description": "使用人工智能技术从文本描述创建独特的涂色页"
       },
-      "style": {
-        "title": "选择风格",
-        "description": "从多种艺术风格中选择"
+      "feature2": {
+        "title": "高质量设计",
+        "description": "所有涂色页都经过优化，可打印并提供出色的彩色体验"
       },
-      "advanced": {
-        "title": "高级控制",
-        "description": "微调涂色页面的各个方面"
+      "feature3": {
+        "title": "免费使用",
+        "description": "无需注册，即可开始创建您自己的涂色页"
       }
     },
-    "styles": {
-      "title": "选择您的风格",
-      "subtitle": "从多种艺术风格中选择，创建完美的涂色页面",
-      "simple": "简单",
-      "medium": "中等",
-      "complex": "复杂",
-      "cartoon": "卡通",
-      "realistic": "写实"
+    "howItWorks": {
+      "title": "使用方法",
+      "description": "只需三个简单步骤即可创建您自己的涂色页",
+      "step1": {
+        "title": "描述您想要的图像",
+        "description": "输入您想要涂色页的描述，例如"在花园里的小猫""
+      },
+      "step2": {
+        "title": "让AI创建图像",
+        "description": "我们的AI将根据您的描述生成一个独特的涂色页"
+      },
+      "step3": {
+        "title": "下载并打印",
+        "description": "准备好后，下载并打印您的涂色页"
+      }
+    },
+    "examples": {
+      "title": "示例",
+      "description": "查看我们的AI生成的涂色页示例",
+      "viewMore": "在画廊中查看更多"
+    },
+    "hero": {
+      "title": "用AI创建精美涂色页面",
+      "subtitle": "在几秒钟内从文本描述中生成高质量涂色页面",
+      "button": "免费试用",
+      "stats": "已创建超过5,000个涂色页面"
     },
     "testimonials": {
       "title": "用户评价",
-      "1": {
-        "text": "我的孩子们喜欢我为他们创建的涂色页面！非常容易使用。",
-        "author": "莎拉 T."
-      },
-      "2": {
-        "text": "我一直在为我的幼儿园班级使用这个。孩子们非常兴奋！",
-        "author": "马克 L., 教师"
-      },
-      "3": {
-        "text": "高级模式让我能够为我的艺术治疗课程创建我需要的内容。",
-        "author": "杰西卡 P. 博士"
-      },
-      "cta": "立即开始创建"
-    },
-    "features": {
-      "title": "为什么选择我们的AI涂色页面生成器？",
-      "fast": {
-        "title": "快速生成",
-        "desc": "几秒钟内创建涂色页面"
-      },
-      "styles": {
-        "title": "多种风格",
-        "desc": "从各种艺术风格中选择"
-      },
-      "everywhere": {
-        "title": "随处可用",
-        "desc": "手机、平板或电脑"
-      },
-      "unlimited": {
-        "title": "无限页面",
-        "desc": "创建您需要的任意数量"
-      },
-      "print": {
-        "title": "打印就绪",
-        "desc": "适合任何尺寸打印"
-      },
-      "easy": {
-        "title": "易于使用",
-        "desc": "无需设计技能"
-      },
-      "secure": {
-        "title": "私密安全",
-        "desc": "您的创作属于您"
-      },
-      "control": {
-        "title": "高级控制",
-        "desc": "微调每一个细节"
-      }
+      "subtitle": "看看人们如何使用我们的涂色页面"
     },
     "cta": {
       "title": "准备好创建您的涂色页面了吗？",
-      "subtitle": "几秒钟内开始。无需信用卡。",
-      "button": "免费开始创建"
+      "subtitle": "现在就开始使用我们简单易用的工具",
+      "button": "免费创建涂色页面",
+      "cta": "立即开始创建"
     }
   },
   "create": {
-    "title": "创建您的涂色页面",
-    "subtitle": "描述您想要的内容，我们的AI将为您生成一个美丽的涂色页面",
-    "promptLabel": "您想创建什么？",
-    "promptPlaceholder": "例如，一只友好的卡通大象玩球",
-    "styleLabel": "风格",
-    "generateButton": "生成涂色页面",
-    "regenerateButton": "重试",
-    "saveToGalleryButton": "保存到画廊",
-    "printButton": "打印此页面",
-    "downloadButton": "下载图片",
-    "suggestions": "建议",
+    "title": "创建涂色页",
+    "subtitle": "选择下面的创作方式，让我们的AI为您生成精美的涂色页",
+    "tabs": {
+      "describe": "描述它",
+      "photo": "转换照片",
+      "draw": "绘制和增强"
+    },
+    "photo": {
+      "title": "上传照片转换为涂色页",
+      "description": "上传一张照片，我们的AI将把它转换为可打印的涂色页",
+      "dragDrop": "拖放图片到这里或点击上传",
+      "fallback": "您的浏览器不支持拖放上传，请点击下面的按钮上传文件"
+    },
+    "draw": {
+      "title": "绘制和增强",
+      "description": "在画布上绘制您的想法，然后让AI将其转换为精美的涂色页",
+      "clearCanvas": "清空画布",
+      "fallback": "您的浏览器不支持画布绘图，请尝试其他创建方式"
+    },
+    "prompt": {
+      "label": "描述您想要的涂色页",
+      "placeholder": "例如：在花园里的小猫"
+    },
     "categories": {
-      "title": "类别",
       "animals": "动物",
-      "fantasy": "奇幻",
+      "fantasy": "幻想",
       "nature": "自然",
-      "vehicles": "交通工具",
-      "characters": "角色",
-      "space": "太空"
+      "holidays": "节日",
+      "characters": "角色"
     },
     "styleOptions": {
-      "simple": "简单",
-      "medium": "中等",
-      "complex": "复杂",
       "cartoon": "卡通",
-      "realistic": "写实"
+      "realistic": "写实",
+      "line-art": "线条艺术",
+      "watercolor": "水彩"
     },
-    "advancedMode": {
-      "toggle": "高级模式",
-      "customPrompt": "自定义提示",
-      "helpText": "微调您的提示以获得更多控制"
-    },
-    "errors": {
-      "emptyPrompt": "请输入描述",
-      "generationFailed": "生成图像失败。请重试。",
-      "saveFailed": "保存到画廊失败。请重试。"
-    },
-    "success": {
-      "generated": "您的涂色页面已生成！",
-      "saved": "您的涂色页面已保存到画廊！"
-    }
+    "generate": "生成涂色页",
+    "regenerate": "重新生成",
+    "download": "下载涂色页",
+    "saveToGallery": "保存到画廊",
+    "generatingMessage": "正在生成您的涂色页...",
+    "generationError": "生成涂色页时出错。请重试。",
+    "emptyPromptError": "请输入描述以生成涂色页"
   },
   "gallery": {
-    "title": "涂色页面画廊",
-    "subtitle": "浏览我们社区创建的AI生成涂色页面集合",
-    "recentCreations": "最近创作",
-    "createYourOwnButton": "创建您自己的",
-    "viewMoreButton": "加载更多",
-    "noImages": {
-      "title": "暂无图像",
-      "message": "成为第一个添加涂色页面到我们画廊的人！",
-      "button": "创建涂色页面"
+    "title": "涂色页画廊",
+    "subtitle": "浏览我们的AI生成的涂色页集合",
+    "filters": {
+      "category": "分类：",
+      "style": "风格：",
+      "allCategories": "所有分类",
+      "allStyles": "所有风格",
+      "clearFilters": "清除筛选"
     },
+    "styles": {
+      "manga": "漫画",
+      "abstract": "抽象"
+    },
+    "noImages": {
+      "title": "未找到涂色页",
+      "message": "我们找不到符合您当前筛选条件的涂色页"
+    },
+    "errors": {
+      "title": "无法加载画廊",
+      "message": "我们在检索涂色页集合时遇到问题。请稍后再试。"
+    },
+    "refreshButton": "刷新页面",
+    "createButton": "创建涂色页",
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页"
+    },
+    "backToGallery": "返回画廊",
+    "createAColoringPage": "创建涂色页",
     "detail": {
-      "printButton": "打印此页面",
-      "downloadButton": "下载图片",
-      "shareButton": "分享",
-      "createYourOwnButton": "创建您自己的",
+      "loading": {
+        "title": "加载涂色页",
+        "description": "请等待，我们正在检索涂色页详情..."
+      },
+      "error": {
+        "title": "加载涂色页出错",
+        "description": "我们找不到您正在查找的涂色页",
+        "message": "涂色页未找到",
+        "notFound": "您请求的涂色页找不到或不再可用"
+      },
       "details": "详情",
+      "category": "分类",
       "style": "风格",
       "created": "创建于",
-      "description": "描述",
-      "aboutThisPage": "关于此涂色页面",
-      "aboutText": "此涂色页面是基于以下提示使用AI生成的：",
-      "printInstructions": "您可以通过点击\"打印此页面\"按钮来打印此页面，这将打开一个适合打印的版本。",
-      "similarPages": "类似涂色页面"
+      "prompt": "AI提示",
+      "downloadButton": "下载涂色页",
+      "howToUse": {
+        "title": "如何使用",
+        "step1": "使用下载按钮下载涂色页",
+        "step2": "在标准信纸大小的纸张上打印图像",
+        "step3": "使用彩色铅笔、记号笔或蜡笔给图像上色",
+        "step4": "与朋友和家人分享您的创作！"
+      },
+      "similarColoringPages": "类似的涂色页"
     }
   },
   "blog": {

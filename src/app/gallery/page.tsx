@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
 import { ImageRecord } from '@/lib/supabase';
+import TranslatedText from '@/components/TranslatedText';
+import Cookies from 'js-cookie';
 
 export default function GalleryPage() {
   const [images, setImages] = useState<ImageRecord[]>([]);
@@ -14,6 +16,13 @@ export default function GalleryPage() {
   const [limit] = useState(12);
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [style, setStyle] = useState<string | undefined>(undefined);
+  const [currentLang, setCurrentLang] = useState('en');
+  
+  // Get language from cookie on client side
+  useEffect(() => {
+    const lang = Cookies.get('NEXT_LOCALE') || 'en';
+    setCurrentLang(lang);
+  }, []);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -69,14 +78,16 @@ export default function GalleryPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title="Coloring Page Gallery"
-          description="Browse our collection of AI-generated coloring pages."
+          title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" lang={currentLang} />}
+          description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." lang={currentLang} />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-gray-600">Loading coloring pages...</p>
+            <p className="mt-4 text-gray-600">
+              <TranslatedText translationKey="common.loading" fallback="Loading coloring pages..." lang={currentLang} />
+            </p>
           </div>
         </div>
       </div>
@@ -87,8 +98,8 @@ export default function GalleryPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title="Coloring Page Gallery"
-          description="Browse our collection of AI-generated coloring pages."
+          title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" lang={currentLang} />}
+          description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." lang={currentLang} />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -96,20 +107,24 @@ export default function GalleryPage() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <h2 className="text-xl font-bold text-gray-700 mb-2">Unable to Load Gallery</h2>
-            <p className="text-gray-600 mb-6">We encountered an issue retrieving our coloring pages collection. Please try again later.</p>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">
+              <TranslatedText translationKey="gallery.errors.title" fallback="Unable to Load Gallery" lang={currentLang} />
+            </h2>
+            <p className="text-gray-600 mb-6">
+              <TranslatedText translationKey="gallery.errors.message" fallback="We encountered an issue retrieving our coloring pages collection. Please try again later." lang={currentLang} />
+            </p>
             <div className="flex justify-center space-x-4">
               <button 
                 onClick={() => window.location.reload()}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Refresh Page
+                <TranslatedText translationKey="gallery.refreshButton" fallback="Refresh Page" lang={currentLang} />
               </button>
               <Link 
                 href="/create" 
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Create a Coloring Page
+                <TranslatedText translationKey="gallery.createButton" fallback="Create a Coloring Page" lang={currentLang} />
               </Link>
             </div>
           </div>
@@ -121,8 +136,8 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title="Coloring Page Gallery"
-        description="Browse our collection of AI-generated coloring pages."
+        title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" lang={currentLang} />}
+        description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." lang={currentLang} />}
       />
 
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -130,7 +145,7 @@ export default function GalleryPage() {
         <div className="mb-8 flex flex-wrap gap-4 items-center bg-white p-4 rounded-lg shadow-sm">
           <div>
             <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mr-2">
-              Category:
+              <TranslatedText translationKey="gallery.filters.category" fallback="Category:" lang={currentLang} />
             </label>
             <select
               id="category-filter"
@@ -138,18 +153,18 @@ export default function GalleryPage() {
               onChange={(e) => handleFilterChange('category', e.target.value || undefined)}
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              <option value="">All Categories</option>
-              <option value="animals">Animals</option>
-              <option value="fantasy">Fantasy</option>
-              <option value="nature">Nature</option>
-              <option value="holidays">Holidays</option>
-              <option value="characters">Characters</option>
+              <option value=""><TranslatedText translationKey="gallery.filters.allCategories" fallback="All Categories" lang={currentLang} /></option>
+              <option value="animals"><TranslatedText translationKey="create.categories.animals" fallback="Animals" lang={currentLang} /></option>
+              <option value="fantasy"><TranslatedText translationKey="create.categories.fantasy" fallback="Fantasy" lang={currentLang} /></option>
+              <option value="nature"><TranslatedText translationKey="create.categories.nature" fallback="Nature" lang={currentLang} /></option>
+              <option value="holidays"><TranslatedText translationKey="create.categories.holidays" fallback="Holidays" lang={currentLang} /></option>
+              <option value="characters"><TranslatedText translationKey="create.categories.characters" fallback="Characters" lang={currentLang} /></option>
             </select>
           </div>
           
           <div>
             <label htmlFor="style-filter" className="block text-sm font-medium text-gray-700 mr-2">
-              Style:
+              <TranslatedText translationKey="gallery.filters.style" fallback="Style:" lang={currentLang} />
             </label>
             <select
               id="style-filter"
@@ -157,11 +172,11 @@ export default function GalleryPage() {
               onChange={(e) => handleFilterChange('style', e.target.value || undefined)}
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              <option value="">All Styles</option>
-              <option value="cartoon">Cartoon</option>
-              <option value="realistic">Realistic</option>
-              <option value="manga">Manga</option>
-              <option value="abstract">Abstract</option>
+              <option value=""><TranslatedText translationKey="gallery.filters.allStyles" fallback="All Styles" lang={currentLang} /></option>
+              <option value="cartoon"><TranslatedText translationKey="create.styleOptions.cartoon" fallback="Cartoon" lang={currentLang} /></option>
+              <option value="realistic"><TranslatedText translationKey="create.styleOptions.realistic" fallback="Realistic" lang={currentLang} /></option>
+              <option value="manga"><TranslatedText translationKey="gallery.styles.manga" fallback="Manga" lang={currentLang} /></option>
+              <option value="abstract"><TranslatedText translationKey="gallery.styles.abstract" fallback="Abstract" lang={currentLang} /></option>
             </select>
           </div>
           
@@ -173,7 +188,7 @@ export default function GalleryPage() {
               }}
               className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Clear Filters
+              <TranslatedText translationKey="gallery.filters.clearFilters" fallback="Clear Filters" lang={currentLang} />
               <svg className="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
@@ -186,8 +201,12 @@ export default function GalleryPage() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <h2 className="text-xl font-bold text-gray-700 mb-2">No Coloring Pages Found</h2>
-            <p className="text-gray-600 mb-6">We couldn't find any coloring pages matching your current filters.</p>
+            <h2 className="text-xl font-bold text-gray-700 mb-2">
+              <TranslatedText translationKey="gallery.noImages.title" fallback="No Coloring Pages Found" lang={currentLang} />
+            </h2>
+            <p className="text-gray-600 mb-6">
+              <TranslatedText translationKey="gallery.noImages.message" fallback="We couldn't find any coloring pages matching your current filters." lang={currentLang} />
+            </p>
             <button
               onClick={() => {
                 setCategory(undefined);
@@ -195,7 +214,7 @@ export default function GalleryPage() {
               }}
               className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Clear Filters
+              <TranslatedText translationKey="gallery.filters.clearFilters" fallback="Clear Filters" lang={currentLang} />
             </button>
           </div>
         ) : (
@@ -248,24 +267,21 @@ export default function GalleryPage() {
                     page === 1 ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'
                   }`}
                 >
-                  <span className="sr-only">Previous</span>
+                  <span className="sr-only">
+                    <TranslatedText translationKey="gallery.pagination.previous" fallback="Previous" lang={currentLang} />
+                  </span>
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </button>
                 
-                <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                  Page {page}
-                </span>
-                
                 <button
                   onClick={() => handlePageChange(page + 1)}
-                  disabled={images.length < limit}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
-                    images.length < limit ? 'text-gray-300' : 'text-gray-500 hover:bg-gray-50'
-                  }`}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
-                  <span className="sr-only">Next</span>
+                  <span className="sr-only">
+                    <TranslatedText translationKey="gallery.pagination.next" fallback="Next" lang={currentLang} />
+                  </span>
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                   </svg>
