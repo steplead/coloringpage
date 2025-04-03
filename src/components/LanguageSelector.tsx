@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import { clearTranslationCache } from './TranslatedText';
 
 interface LanguageSelectorProps {
   currentLang?: string;
@@ -56,8 +57,11 @@ export default function LanguageSelector({
           onLanguageChange(languageCode);
         }
         
+        // Clear translation cache
+        clearTranslationCache();
+        
         // Force a hard refresh to ensure all content is updated
-        window.location.reload();
+        window.location.href = window.location.pathname;
       } else {
         console.error('Failed to change language: Server returned an error');
       }
@@ -90,7 +94,7 @@ export default function LanguageSelector({
   };
 
   return (
-    <div ref={selectorRef} className={`relative ${className}`}>
+    <div ref={selectorRef} className={`relative language-selector ${className}`}>
       <button
         onClick={toggleDropdown}
         className="flex items-center justify-between w-full px-2 py-1.5 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"

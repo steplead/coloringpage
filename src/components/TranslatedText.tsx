@@ -11,6 +11,11 @@ interface TranslatedTextProps {
 // Cache for translations
 const translationCache = new Map<string, string>();
 
+// Function to clear the translation cache
+export function clearTranslationCache() {
+  translationCache.clear();
+}
+
 export default function TranslatedText({ 
   translationKey, 
   fallback = translationKey.split('.').pop() || translationKey,
