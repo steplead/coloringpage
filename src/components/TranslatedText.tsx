@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getTranslation } from '@/lib/i18n';
+
+// Cache for storing translations to avoid unnecessary API calls
+const translationCache: Record<string, any> = {};
 
 interface TranslatedTextProps {
   translationKey: string;
@@ -31,68 +33,63 @@ export default function TranslatedText({
   const [translated, setTranslated] = useState<string>(fallback || translationKey);
   
   useEffect(() => {
-    // Function to fetch translations from the API
+    // Get the most accurate language value
+    const htmlLang = typeof document !== 'undefined' ? document.documentElement.lang : null;
+    const effectiveLang = propLang || htmlLang || currentLang;
+    
+    // Update state if needed
+    if (effectiveLang !== currentLang) {
+      setCurrentLang(effectiveLang);
+    }
+    
     const fetchTranslation = async () => {
       try {
-        // If language is provided as a prop, use it
-        if (propLang) {
-          setCurrentLang(propLang);
-          return;
+        // Check if we already have this language's translations in cache
+        if (!translationCache[effectiveLang]) {
+          // If not, fetch them
+          const response = await fetch(`/api/i18n?lang=${effectiveLang}`);
+          if (response.ok) {
+            const data = await response.json();
+            translationCache[effectiveLang] = data.translations;
+          } else {
+            console.error('Failed to fetch translations');
+            return;
+          }
         }
         
-        // Otherwise try to get the language from the HTML lang attribute
-        const htmlLang = document.documentElement.lang;
-        if (htmlLang) {
-          setCurrentLang(htmlLang);
+        // Now get the specific translation from cache
+        const keyParts = translationKey.split('.');
+        let value: any = translationCache[effectiveLang];
+        
+        for (const part of keyParts) {
+          if (!value || typeof value !== 'object') {
+            value = undefined;
+            break;
+          }
+          value = value[part];
+        }
+        
+        // Set the translated text
+        if (value && typeof value === 'string') {
+          setTranslated(value);
+        } else if (fallback) {
+          setTranslated(fallback);
+        } else {
+          // If not found in the target language and we have no fallback,
+          // use the last part of the key as fallback
+          const lastKeyPart = keyParts[keyParts.length - 1];
+          setTranslated(lastKeyPart);
         }
       } catch (error) {
         console.error('Error fetching translation:', error);
+        if (fallback) {
+          setTranslated(fallback);
+        }
       }
     };
     
     fetchTranslation();
-  }, [propLang]);
-  
-  useEffect(() => {
-    // If we're running client-side
-    if (typeof window !== 'undefined') {
-      // Fetch the translation for this specific key
-      const fetchSpecificTranslation = async () => {
-        try {
-          // Fetch the translation for the current key
-          const response = await fetch(`/api/i18n?lang=${currentLang}`);
-          if (response.ok) {
-            const data = await response.json();
-            // Split the key by dots to navigate the translations object
-            const keyParts = translationKey.split('.');
-            let value = data.translations;
-            
-            // Navigate through the object
-            for (const part of keyParts) {
-              if (!value || typeof value !== 'object') {
-                value = undefined;
-                break;
-              }
-              value = value[part];
-            }
-            
-            if (value && typeof value === 'string') {
-              setTranslated(value);
-            } else if (fallback) {
-              setTranslated(fallback);
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching specific translation:', error);
-          if (fallback) {
-            setTranslated(fallback);
-          }
-        }
-      };
-      
-      fetchSpecificTranslation();
-    }
-  }, [translationKey, currentLang, fallback]);
+  }, [translationKey, propLang, fallback, currentLang]);
   
   return <Component className={className}>{translated}</Component>;
 } 

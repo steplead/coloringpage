@@ -204,7 +204,7 @@
       "description": "描述",
       "aboutThisPage": "关于此涂色页面",
       "aboutText": "此涂色页面是基于以下提示使用AI生成的：",
-      "printInstructions": "您可以通过点击"打印此页面"按钮来打印此页面，这将打开一个适合打印的版本。",
+      "printInstructions": "您可以通过点击\"打印此页面\"按钮来打印此页面，这将打开一个适合打印的版本。",
       "similarPages": "类似涂色页面"
     }
   },

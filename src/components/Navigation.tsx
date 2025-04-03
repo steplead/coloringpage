@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LanguageSelector from './LanguageSelector';
+import TranslatedText from './TranslatedText';
 
 interface NavigationProps {
   currentLang?: string;
@@ -18,11 +19,11 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
   };
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Create', href: '/create' },
-    { name: 'Gallery', href: '/gallery' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'About', href: '/about' },
+    { name: 'nav.home', href: '/' },
+    { name: 'nav.create', href: '/create' },
+    { name: 'nav.gallery', href: '/gallery' },
+    { name: 'nav.blog', href: '/blog' },
+    { name: 'nav.about', href: '/about' },
   ];
 
   return (
@@ -31,7 +32,9 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">
-            <span className="text-xl font-bold text-blue-600 tracking-tight">Coloring AI</span>
+            <span className="text-xl font-bold text-blue-600 tracking-tight">
+              <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={currentLang} />
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -46,7 +49,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                     : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
                 }`}
               >
-                {link.name}
+                <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
               </Link>
             ))}
             
@@ -57,7 +60,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
               href="/create" 
               className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
-              Create Now
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
             </Link>
           </nav>
 
@@ -126,7 +129,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                 }`}
                 onClick={() => setIsOpen(false)}
               >
-                {link.name}
+                <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
               </Link>
             ))}
             <Link
@@ -134,7 +137,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
               className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsOpen(false)}
             >
-              Create Now
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
             </Link>
           </div>
         </div>

@@ -22,9 +22,12 @@ export default function LanguageSelector({
   const [selectedLang, setSelectedLang] = useState(currentLang);
   const [isChanging, setIsChanging] = useState(false);
 
+  // Update selected language when currentLang prop changes
   useEffect(() => {
-    setSelectedLang(currentLang);
-  }, [currentLang]);
+    if (currentLang && currentLang !== selectedLang) {
+      setSelectedLang(currentLang);
+    }
+  }, [currentLang, selectedLang]);
 
   // Get the current language info
   const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLang) || SUPPORTED_LANGUAGES[0];
@@ -33,6 +36,7 @@ export default function LanguageSelector({
     if (languageCode === selectedLang || isChanging) return;
     
     setIsChanging(true);
+    setIsOpen(false);
     
     try {
       const response = await fetch('/api/i18n', {
@@ -53,17 +57,35 @@ export default function LanguageSelector({
         
         // Refresh the page to apply the new language
         router.refresh();
+      } else {
+        console.error('Failed to change language: Server returned an error');
       }
     } catch (error) {
       console.error('Failed to change language:', error);
     } finally {
       setIsChanging(false);
-      setIsOpen(false);
     }
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!(target as Element).closest('.language-selector')) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className={`relative inline-block text-left ${className}`}>
+    <div className={`relative inline-block text-left language-selector ${className}`}>
       <button
         type="button"
         className="inline-flex items-center justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"

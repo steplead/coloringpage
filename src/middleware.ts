@@ -39,15 +39,18 @@ function detectLanguage(request: NextRequest): string {
   const acceptLanguage = request.headers.get('accept-language') || '';
   
   if (acceptLanguage) {
-    // Parse the Accept-Language header (we're using negotiator but in a non-Node environment)
-    // Create a mock headers object for Negotiator
-    const headers = { 'accept-language': acceptLanguage };
-    const negotiatorHeaders = {
-      get: (name: string) => (name.toLowerCase() === 'accept-language' ? acceptLanguage : undefined),
-    };
-    
-    const negotiator = new Negotiator({ headers: negotiatorHeaders as any });
-    languages = negotiator.languages();
+    // Parse the Accept-Language header manually since we can't use Negotiator fully
+    try {
+      languages = acceptLanguage
+        .split(',')
+        .map(lang => {
+          const [code] = lang.trim().split(';');
+          return code;
+        });
+    } catch (e) {
+      console.error('Error parsing accept-language header:', e);
+      languages = ['en'];
+    }
   }
 
   // Ensure we have at least the default language
@@ -58,7 +61,12 @@ function detectLanguage(request: NextRequest): string {
   // Match the preferred language against our supported ones
   const supportedLanguageCodes = SUPPORTED_LANGUAGES.map(lang => lang.code);
   
-  return match(languages, supportedLanguageCodes, 'en');
+  try {
+    return match(languages, supportedLanguageCodes, 'en');
+  } catch (e) {
+    console.error('Error matching languages:', e);
+    return 'en';
+  }
 }
 
 export function middleware(request: NextRequest) {
@@ -72,11 +80,19 @@ export function middleware(request: NextRequest) {
   // Detect the user's preferred language
   const detectedLanguage = detectLanguage(request);
   
-  // Create a rewrite URL that includes the language information in the header
+  // Create a response that carries forward the language information
   const response = NextResponse.next();
   
   // Add the detected language to response headers for the application to use
   response.headers.set('x-language', detectedLanguage);
+  
+  // If there's no language cookie yet, set it to the detected language
+  if (!request.cookies.has(LANGUAGE_COOKIE)) {
+    response.cookies.set(LANGUAGE_COOKIE, detectedLanguage, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+    });
+  }
   
   return response;
 }
