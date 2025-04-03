@@ -1,79 +1,91 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { setLanguage, getTranslations, getTranslation, LANGUAGE_COOKIE } from '@/lib/i18n';
-import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import fs from 'fs';
+import path from 'path';
+
+// Cookie name for storing language preference
+const LANGUAGE_COOKIE = 'preferred_language';
 
 /**
- * API route to handle language switching and retrieval
+ * Handle GET requests to retrieve translations for a specific language
  * 
- * GET /api/i18n?lang=en - Returns all translations for a specific language
- * POST /api/i18n { lang: "en" } - Sets the language cookie and returns all translations
+ * @param request - The incoming request object
+ * @returns A JSON response with translations for the requested language
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get the language from the query parameters
-    const searchParams = request.nextUrl.searchParams;
-    const lang = searchParams.get('lang') || 'en';
+    // Get the requested language from the URL query parameters
+    const { searchParams } = new URL(request.url);
+    const requestedLang = searchParams.get('lang') || 'en';
     
-    // Validate language code
-    if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
-      return NextResponse.json({ 
-        error: 'Unsupported language code' 
-      }, { status: 400 });
+    // Path to the translations directory
+    const translationsDir = path.join(process.cwd(), 'src', 'lib', 'i18n', 'translations');
+    
+    // Try to load the requested language file
+    let translations;
+    try {
+      const filePath = path.join(translationsDir, `${requestedLang}.json`);
+      const fileContent = fs.readFileSync(filePath, 'utf8');
+      translations = JSON.parse(fileContent);
+    } catch (err) {
+      // If the requested language file doesn't exist, fall back to English
+      console.error(`Failed to load translations for ${requestedLang}, falling back to English`, err);
+      const fallbackPath = path.join(translationsDir, 'en.json');
+      const fallbackContent = fs.readFileSync(fallbackPath, 'utf8');
+      translations = JSON.parse(fallbackContent);
     }
     
-    // Return translations for the requested language
-    const translations = getTranslations(lang);
-    
-    return NextResponse.json({
-      lang,
-      translations,
-      languageName: getTranslation(lang, 'common.languageName'),
+    // Return the translations as JSON
+    return NextResponse.json({ 
+      success: true, 
+      language: requestedLang,
+      translations 
     });
   } catch (error) {
-    console.error('Error handling i18n GET request:', error);
-    return NextResponse.json({ 
-      error: 'Failed to get translations' 
-    }, { status: 500 });
+    console.error('Error in i18n API route:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Failed to load translations' 
+      }, 
+      { status: 500 }
+    );
   }
 }
 
+/**
+ * Handle POST requests to set a language preference
+ * 
+ * @param request - The incoming request object
+ * @returns A JSON response indicating success or failure
+ */
 export async function POST(request: NextRequest) {
   try {
-    // Get the language from the request body
+    // Parse the request body to get the language preference
     const body = await request.json();
+    const lang = body.lang || 'en';
     
-    if (!body.lang) {
-      return NextResponse.json({ 
-        error: 'Missing language code' 
-      }, { status: 400 });
-    }
-    
-    const lang = body.lang;
-    
-    // Validate language code
-    if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
-      return NextResponse.json({ 
-        error: 'Unsupported language code' 
-      }, { status: 400 });
-    }
-    
-    // Set the language cookie
-    setLanguage(lang);
-    
-    // Return translations for the new language
-    const translations = getTranslations(lang);
-    
-    return NextResponse.json({
-      success: true,
-      lang,
-      translations,
-      languageName: getTranslation(lang, 'common.languageName'),
-      message: getTranslation(lang, 'common.languageChanged', 'Language changed successfully')
+    // Create a response
+    const response = NextResponse.json({ 
+      success: true, 
+      message: `Language set to ${lang}` 
     });
+    
+    // Set a cookie with the language preference
+    response.cookies.set(LANGUAGE_COOKIE, lang, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      httpOnly: false, // Allow JavaScript access
+    });
+    
+    return response;
   } catch (error) {
-    console.error('Error handling i18n POST request:', error);
-    return NextResponse.json({ 
-      error: 'Failed to set language' 
-    }, { status: 500 });
+    console.error('Error setting language preference:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Failed to set language preference' 
+      }, 
+      { status: 500 }
+    );
   }
 } 
