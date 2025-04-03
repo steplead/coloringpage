@@ -27,13 +27,17 @@ export default function GalleryPage() {
         if (category) params.append('category', category);
         if (style) params.append('style', style);
         
+        console.log(`Fetching gallery images with params: ${params.toString()}`);
         const response = await fetch(`/api/gallery?${params.toString()}`);
         
         if (!response.ok) {
-          throw new Error(`Failed to fetch gallery images: ${response.status}`);
+          const errorText = await response.text();
+          console.error(`API error ${response.status}:`, errorText);
+          throw new Error(`Failed to fetch gallery images: ${response.status} - ${errorText || 'Unknown error'}`);
         }
         
         const data = await response.json();
+        console.log(`Received ${data.images?.length || 0} images from API`);
         setImages(data.images || []);
         setError(null);
       } catch (err) {
@@ -211,6 +215,7 @@ export default function GalleryPage() {
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        unoptimized={true}
                         onError={(e) => {
                           console.error('Error loading image:', image.image_url);
                           if (e.target instanceof HTMLImageElement) {

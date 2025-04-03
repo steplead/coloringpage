@@ -146,6 +146,7 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
+                unoptimized={true}
                 onError={(e) => {
                   // Handle image loading error by showing a placeholder
                   console.error('Error loading image:', image.image_url);
@@ -246,6 +247,7 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        unoptimized={true}
                         onError={(e) => {
                           console.error('Error loading related image:', relatedImage.image_url);
                           if (e.target instanceof HTMLImageElement) {
