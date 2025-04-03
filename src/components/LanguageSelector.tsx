@@ -93,12 +93,14 @@ export default function LanguageSelector({
     <div ref={selectorRef} className={`relative ${className}`}>
       <button
         onClick={toggleDropdown}
-        className="flex items-center space-x-1 px-2 py-1.5 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex items-center justify-between w-full px-3 py-2 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-haspopup="true"
         aria-expanded={isOpen ? 'true' : 'false'}
       >
-        <span className="text-base">{currentLanguage.flag}</span>
-        <span className="text-sm hidden sm:inline">{currentLanguage.nativeName}</span>
+        <div className="flex items-center space-x-2">
+          <span className="text-base">{currentLanguage.flag}</span>
+          <span className="text-sm font-medium">{currentLanguage.nativeName}</span>
+        </div>
         <svg
           className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +113,7 @@ export default function LanguageSelector({
 
       {isOpen && (
         <div 
-          className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
+          className="absolute right-0 mt-2 w-full bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="language-selector"
