@@ -24,6 +24,8 @@ This project was created by JL to make it easy for anyone to generate custom col
 - 🖼️ Browse community gallery of coloring pages
 - 📄 Print-optimized view for perfect printing results
 - 💾 Database integration for saving and sharing creations
+- 🌐 Internationalization (i18n) with support for multiple languages
+- 🔄 Automatic language detection based on browser settings
 
 ## How to Use
 
@@ -54,6 +56,36 @@ Explore a collection of community-created coloring pages:
 4. Use the "View" button to see the full page
 5. Use the "Print" button to open a print-optimized version
 6. Follow the printing instructions for best results
+
+## Internationalization (i18n)
+
+This application supports multiple languages to make it accessible to users worldwide.
+
+### Supported Languages
+
+- 🇺🇸 English (Default)
+- 🇨🇳 Chinese (简体中文)
+- 🇪🇸 Spanish (Español)
+- 🇫🇷 French (Français)
+- 🇩🇪 German (Deutsch)
+- 🇯🇵 Japanese (日本語)
+- 🇰🇷 Korean (한국어)
+- 🇷🇺 Russian (Русский)
+
+### Language Selection
+
+- The application automatically detects your preferred language based on browser settings
+- You can manually change the language using the language selector in the navigation bar
+- Language preference is saved in a cookie for future visits
+
+### Adding New Languages
+
+To add a new language to the application:
+
+1. Create a new translation file in `src/lib/i18n/translations/` (e.g., `fr.json`)
+2. Add language details to `src/lib/i18n/locales.ts`
+3. Follow the existing translation structure and provide all necessary translations
+4. The new language will be automatically available in the language selector
 
 ## Local Development
 
@@ -133,6 +165,30 @@ The project is deployed on Vercel. To deploy your own instance:
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 5. Deploy!
 
+## Automated Deployment
+
+This project includes built-in automated deployment scripts to simplify the update process. These scripts handle git operations and Vercel deployment in a single command.
+
+### Deployment Methods
+
+1. **Quick One-Command Deployment**:
+   ```bash
+   npm run deploy-now
+   ```
+   This command automatically adds all changes, commits with a timestamp, pushes to GitHub, and deploys to Vercel production.
+
+2. **Interactive Deployment** (with custom commit message):
+   ```bash
+   npm run deploy
+   ```
+   This will prompt you for a commit message before proceeding.
+
+3. **Other Deployment Options**:
+   - `npm run deploy:auto` - Automatic deployment without prompts
+   - `npm run quick-deploy` - Alternative to deploy-now
+
+For more detailed information about the deployment process, refer to the [DEPLOY.md](./DEPLOY.md) file.
+
 ## Custom Domain Setup
 
 To set up a custom domain like we did with `ai-coloringpage.com`:
@@ -166,6 +222,8 @@ Additional optional environment variables can be found in `.env.example`.
 - [TailwindCSS](https://tailwindcss.com/) - Styling
 - [SiliconFlow API](https://siliconflow.cn) - AI image generation
 - [Supabase](https://supabase.com/) - Database and storage
+- [Vercel](https://vercel.com/) - Hosting and continuous deployment
+- [Custom Deployment Scripts](./DEPLOY.md) - Automated deployment workflow
 
 ## Contributing
 
