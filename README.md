@@ -27,6 +27,39 @@ This project was created by JL to make it easy for anyone to generate custom col
 - 🌐 Internationalization (i18n) with support for multiple languages
 - 🔄 Automatic language detection based on browser settings
 
+## Enhanced Features
+
+The application has been enhanced with several powerful features to improve user experience and performance:
+
+### PDF Export & Printing
+- **Multiple Paper Sizes**: Export coloring pages to PDF in various formats (A4, Letter, A5, A3)
+- **Print-Ready PDFs**: Optimized for printing with proper margins and titles
+- **High-Quality Output**: Maintains image quality while ensuring optimal print results
+
+### Performance Optimizations
+- **Progressive Web App (PWA)**: Install directly to your device for offline access
+- **Image Optimization**: Efficient loading with Next.js Image component and proper sizing
+- **Route-Based Code Splitting**: Loads only the necessary code for each page
+- **Loading States**: Skeleton screens and smooth transitions between pages
+- **Error Boundaries**: Graceful error handling with user-friendly messages
+
+### Social Integration
+- **Social Sharing**: Share coloring pages directly to Facebook, Twitter, WhatsApp, Pinterest and more
+- **Direct Link Copying**: Easily copy links to share with friends and family
+- **Email Sharing**: Send coloring pages via email with pre-populated subject and body
+
+### Multilingual SEO
+- **Language-Specific Sitemaps**: Dedicated sitemaps for each supported language
+- **Structured Data**: JSON-LD implementation for rich search results
+- **Canonical URLs**: Proper handling of language alternatives with hreflang tags
+- **Open Graph Support**: Enhanced social media previews with language-specific metadata
+
+### Accessibility Improvements
+- **Screen Reader Support**: Proper ARIA labels and semantic HTML
+- **Keyboard Navigation**: Full keyboard accessibility for all features
+- **Focus Management**: Clear visual indicators for focused elements
+- **Error Announcements**: Accessible error messages for assistive technologies
+
 ## How to Use
 
 ### Standard Mode
