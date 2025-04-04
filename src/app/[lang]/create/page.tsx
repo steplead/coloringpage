@@ -18,7 +18,6 @@ export default function LanguageCreatePage({ params }: { params: { lang: string 
     redirect('/en/create');
   }
   
-  // The CreatePage component doesn't expect params as a prop
-  // It gets the language from cookies on the client side
-  return <CreatePage />;
+  // Pass language parameter to the original page
+  return <CreatePage params={{ lang }} />;
 } 

@@ -18,7 +18,6 @@ export default function LanguageGalleryPage({ params }: { params: { lang: string
     redirect('/en/gallery');
   }
   
-  // The GalleryPage component doesn't expect params as a prop
-  // It gets the language from cookies on the client side
-  return <GalleryPage />;
+  // Pass language parameter to the original page
+  return <GalleryPage params={{ lang }} />;
 } 

@@ -20,10 +20,16 @@ export async function getTranslations(lang: string): Promise<any> {
     return translationsCache[lang];
   }
 
-  // Only allow English and Chinese for now as those are the only translation files we have
-  if (lang !== 'en' && lang !== 'zh') {
-    console.warn(`Translation file for ${lang} not available, falling back to English`);
-    return translationsCache['en'] || en;
+  // Try to dynamically load the translations
+  try {
+    // For languages other than English and Chinese, load them dynamically
+    if (lang !== 'en' && lang !== 'zh') {
+      const module = await import(`./translations/${lang}.json`);
+      translationsCache[lang] = module.default;
+      return module.default;
+    }
+  } catch (error) {
+    console.error(`Error loading translations for ${lang}:`, error);
   }
 
   // Fall back to English if the requested language is not available

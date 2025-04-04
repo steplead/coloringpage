@@ -1,55 +1,52 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enables React strict mode
-  reactStrictMode: true,
-  
-  // Configure image domains
   images: {
-    domains: [
-      'ykvizklixbwpwsvlxgzv.supabase.co',
-      'avatar.vercel.sh',
-      'placehold.co',
-      'via.placeholder.com',
-      'encrypted-tbn0.gstatic.com',
-      'cdnaijncmgbikflihjld.supabase.co',
-      'lh3.googleusercontent.com',
-      'uploadthing.com',
-      'utfs.io'
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'sc-maas.oss-cn-shanghai.aliyuncs.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hjmwtgqvmqaontbjebpi.supabase.co',
+        port: '',
+        pathname: '/**',
+      },
+      // Supabase Storage URLs
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+      // Add storage.googleapis.com for Supabase storage
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Allow images from Vercel blob storage
+      {
+        protocol: 'https',
+        hostname: '*.vercel.app',
+        port: '',
+        pathname: '/**',
+      },
+      // Add localhost for development
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
-  
-  // Environment variable configuration
-  env: {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  },
-  
-  // Specify paths that use static generation during production build
-  experimental: {
-    outputFileTracingIncludes: {
-      '/*': ['node_modules/**/*.wasm'],
-    },
-  },
-  
-  // Skip building certain paths during deployment
-  // because they depend on Supabase during build time
-  output: 'standalone',
-  
-  // Exclude dynamic routes from being statically generated at build time
-  generateBuildId: async () => {
-    return `build-${new Date().toISOString()}`;
-  },
-
-  // Configure which routes are excluded from static generation
-  unstable_excludeFiles: [
-    '**/node_modules/next/dist/compiled/react-server-dom-webpack/client.browser.js',
-    '**/app/api/**',
-    '**/app/gallery/**',
-    '**/app/blog/**',
-    '**/app/[lang]/gallery/**',
-    '**/app/[lang]/blog/**',
-    '**/app/[lang]/sitemap.xml/**',
-  ],
+  // The i18n config is removed as it's not compatible with App Router
+  // App Router uses middleware and the Link component for i18n instead
 };
 
 module.exports = nextConfig; 

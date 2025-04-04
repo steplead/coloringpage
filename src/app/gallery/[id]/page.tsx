@@ -271,9 +271,7 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
                   <dt className="text-sm font-medium text-gray-500">
                     <TranslatedText translationKey="gallery.detail.category" fallback="Category" lang={currentLang} />
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
-                    {image.style || 'General'}
-                  </dd>
+                  <dd className="mt-1 text-sm text-gray-900">{image.category}</dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">
