@@ -9,10 +9,13 @@ import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
 import { ArrowLeftIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import PDFExportButton from '@/components/PDFExportButton';
+import SocialShareButtons from '@/components/SocialShareButtons';
 
 interface ColoringPageDetailProps {
   params: { 
-    id: string 
+    id: string;
+    lang?: string;
   };
 }
 
@@ -204,14 +207,24 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
               />
             </div>
             
-            <div className="flex justify-between items-center">
-              <button
-                onClick={handleDownload}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
-                <TranslatedText translationKey="gallery.detail.downloadButton" fallback="Download Coloring Page" lang={currentLang} />
-              </button>
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleDownload}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
+                  <TranslatedText translationKey="gallery.detail.downloadButton" fallback="Download Coloring Page" lang={currentLang} />
+                </button>
+                
+                {image?.image_url && (
+                  <PDFExportButton 
+                    imageUrl={image.image_url} 
+                    title={title}
+                    className="inline-flex"
+                  />
+                )}
+              </div>
               
               <Link 
                 href="/create"
@@ -219,6 +232,22 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
               >
                 <TranslatedText translationKey="gallery.createAColoringPage" fallback="Create Your Own" lang={currentLang} />
               </Link>
+            </div>
+
+            {/* Social sharing buttons */}
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">
+                <TranslatedText translationKey="gallery.detail.shareButton" fallback="Share" lang={currentLang} />
+              </h3>
+              {image && (
+                <SocialShareButtons 
+                  url={typeof window !== 'undefined' ? window.location.href : `https://ai-coloringpage.com/gallery/${params.id}`}
+                  title={title}
+                  imageUrl={image.image_url}
+                  description={description}
+                  lang={currentLang}
+                />
+              )}
             </div>
           </div>
           

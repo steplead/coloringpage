@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import { Suspense } from 'react';
+import Loading from './loading';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   // Get the current language
@@ -37,5 +39,9 @@ export default function LanguageLayout({
   children: React.ReactNode;
   params: { lang: string };
 }) {
-  return <>{children}</>;
+  return (
+    <Suspense fallback={<Loading />}>
+      {children}
+    </Suspense>
+  );
 } 

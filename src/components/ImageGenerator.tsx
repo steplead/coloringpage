@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // Style options with visual examples
 const STYLE_OPTIONS = [
@@ -420,11 +421,17 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
                   <p className="mt-4 text-blue-800">Creating your masterpiece...</p>
                 </div>
               ) : image ? (
-                <img 
-                  src={image} 
-                  alt="Generated coloring page" 
-                  className="max-w-full max-h-[500px] object-contain rounded-md"
-                />
+                <div className="relative w-full aspect-square bg-white rounded-lg overflow-hidden border border-gray-200 shadow-md">
+                  <Image
+                    src={image}
+                    alt={prompt || 'Generated coloring page'}
+                    fill
+                    className="object-contain"
+                    priority={true}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={90}
+                  />
+                </div>
               ) : (
                 <div className="text-center text-gray-500">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
