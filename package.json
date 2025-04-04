@@ -1,6 +1,7 @@
 {
   "name": "coloringpage",
   "version": "1.0.0",
+  "private": true,
   "description": "A black outline coloring page generator using AI",
   "main": "index.js",
   "bin": {
@@ -9,6 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:deploy": "SKIP_SITEMAP=true next build",
     "start": "next start",
     "lint": "next lint",
     "deploy": "node deploy.js",
@@ -42,7 +44,30 @@
     "react-dom": "^18.2.0",
     "react-share": "^5.2.2",
     "sharp": "^0.33.5",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "@headlessui/react": "^1.7.18",
+    "@supabase/auth-helpers-nextjs": "^0.9.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "@uploadthing/react": "^6.2.2",
+    "accept-language": "^3.0.18",
+    "chrome-aws-lambda": "^10.1.0",
+    "dom-to-image": "^2.6.0",
+    "flowbite": "^2.2.1",
+    "flowbite-react": "^0.7.2",
+    "html-to-image": "^1.11.11",
+    "html2canvas": "^1.4.1",
+    "lucide-react": "^0.306.0",
+    "next-pwa": "^5.6.0",
+    "next-share": "^0.27.0",
+    "randexp": "^0.5.3",
+    "react-colorful": "^5.6.1",
+    "react-hook-form": "^7.50.1",
+    "react-hot-toast": "^2.4.1",
+    "server-only": "^0.0.1",
+    "styled-components": "^6.1.8",
+    "swr": "^2.2.4",
+    "uploadthing": "^6.3.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/negotiator": "^0.6.3",
@@ -53,6 +78,9 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.2.2",
-    "vercel": "^41.4.1"
+    "vercel": "^41.4.1",
+    "@types/dom-to-image": "^2.6.7",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0"
   }
 }

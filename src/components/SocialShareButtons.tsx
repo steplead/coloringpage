@@ -45,21 +45,23 @@ export default function SocialShareButtons({
     }
   };
 
+  const shareMessage = `${title} - ${description}`;
+
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <FacebookShareButton url={url} quote={`${title} - ${description}`}>
+      <FacebookShareButton url={url} hashtag="#coloringpage">
         <FacebookIcon size={36} round />
       </FacebookShareButton>
 
-      <TwitterShareButton url={url} title={`${title} - ${description}`}>
+      <TwitterShareButton url={url} title={shareMessage}>
         <TwitterIcon size={36} round />
       </TwitterShareButton>
 
-      <WhatsappShareButton url={url} title={`${title} - ${description}`}>
+      <WhatsappShareButton url={url} title={shareMessage}>
         <WhatsappIcon size={36} round />
       </WhatsappShareButton>
 
-      <PinterestShareButton url={url} media={imageUrl} description={`${title} - ${description}`}>
+      <PinterestShareButton url={url} media={imageUrl} description={shareMessage}>
         <PinterestIcon size={36} round />
       </PinterestShareButton>
 

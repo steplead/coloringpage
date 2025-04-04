@@ -1,31 +1,28 @@
 import { MetadataRoute } from 'next';
-import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+
+// Only include the languages we actually support with translations
+const ACTIVE_LANGUAGES = [
+  { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文' },
+];
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
-  
-  // Create an array of sitemaps
-  const sitemaps = [
-    // Main sitemap
-    `${baseUrl}/sitemap.xml`,
-  ];
-  
-  // Add language-specific sitemaps
-  SUPPORTED_LANGUAGES.forEach(lang => {
-    sitemaps.push(`${baseUrl}/${lang.code}/sitemap.xml`);
-  });
-  
+  // Create an array of language-specific sitemaps
+  const languageSitemaps = ACTIVE_LANGUAGES.map(lang => 
+    `${BASE_URL}/${lang.code}/sitemap.xml`
+  );
+
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: [
-        '/api/',
-        '/admin/',
-        '/private/',
-      ],
+      disallow: ['/api/', '/admin/', '/private/'],
     },
-    sitemap: sitemaps,
-    host: baseUrl,
+    sitemap: [
+      `${BASE_URL}/sitemap.xml`,
+      ...languageSitemaps
+    ],
   };
 } 
