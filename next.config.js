@@ -67,6 +67,23 @@ const nextConfig = {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 1,
   },
+  // Set environment variables for build time
+  env: {
+    // Set NODE_ENV to production for server-side code during build
+    NODE_ENV: 'production',
+    // Ensure build process skips API calls
+    SKIP_API_CALLS_DURING_BUILD: 'true',
+    // Default site URL for API calls
+    NEXT_PUBLIC_SITE_URL: process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'http://localhost:3000',
+  },
+  // Disable compression for faster builds
+  compress: false,
+  // Increase build timeout
+  staticPageGenerationTimeout: 300,
+  // Skip all static optimization for build
+  swcMinify: false
 };
 
 module.exports = nextConfig; 

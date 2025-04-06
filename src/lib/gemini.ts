@@ -4,6 +4,9 @@
  * This library provides helper functions for interacting with Google Gemini API
  */
 
+// Get the base URL for API calls, defaulting to localhost in development
+const API_BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 /**
  * Generate optimized prompts for image generation using Gemini
  * 
@@ -12,7 +15,13 @@
  */
 export async function generateOptimizedPrompt(userPrompt: string): Promise<string> {
   try {
-    const response = await fetch('/api/gemini', {
+    // During build, return the original prompt to avoid API calls
+    if (process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
+      console.log('Skipping API call during build');
+      return userPrompt;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/api/gemini`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +74,17 @@ export async function generateBlogPost(topic: string, targetLength = 1000): Prom
   description: string;
 }> {
   try {
-    const response = await fetch('/api/gemini', {
+    // During build, return a placeholder
+    if (process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
+      console.log('Skipping blog post generation during build');
+      return {
+        title: `${topic} Coloring Pages - Fun & Educational Activities`,
+        description: `Discover the joy of ${topic} coloring pages, perfect for kids of all ages. Download and print these free pages today!`,
+        content: `<h1>${topic} Coloring Pages - Fun & Educational Activities</h1><p>This is placeholder content generated during build.</p>`
+      };
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/api/gemini`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
