@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sitemap from '../sitemap';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
 /**
- * Generates a sitemap.xml for a specific language
+ * Temporary simplified version of the sitemap.xml route
+ * Returns a basic XML structure instead of the full sitemap
  */
 export async function GET(
   request: NextRequest,
@@ -22,10 +22,16 @@ export async function GET(
       return new NextResponse('Invalid language', { status: 400 });
     }
     
-    const sitemapData = await sitemap({ params: { lang } });
-    
-    // Manually generate the XML
-    const xml = generateSitemapXml(sitemapData);
+    // Return a simplified sitemap for now
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://ai-coloringpage.com/${lang}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
     
     // Return the XML with the proper content type
     return new NextResponse(xml, {
@@ -37,31 +43,6 @@ export async function GET(
     console.error('Error generating sitemap:', error);
     return new NextResponse('Error generating sitemap', { status: 500 });
   }
-}
-
-// Helper function to generate sitemap XML
-function generateSitemapXml(sitemapData: any[]) {
-  const entries = sitemapData.map(entry => {
-    const alternates = entry.alternates?.languages 
-      ? Object.entries(entry.alternates.languages)
-          .map(([lang, url]) => 
-            `<xhtml:link rel="alternate" hreflang="${lang}" href="${url}" />`)
-          .join('\n    ')
-      : '';
-    
-    return `  <url>
-    <loc>${entry.url}</loc>
-    <lastmod>${entry.lastModified instanceof Date ? entry.lastModified.toISOString() : entry.lastModified}</lastmod>
-    <changefreq>${entry.changeFrequency || 'daily'}</changefreq>
-    <priority>${entry.priority || 0.7}</priority>
-    ${alternates}
-  </url>`;
-  }).join('\n');
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entries}
-</urlset>`;
 }
 
 export const dynamic = 'force-dynamic';
