@@ -1,0 +1,259 @@
+{
+  "common": {
+    "languageName": "Français",
+    "appName": "Générateur de Pages à Colorier IA",
+    "error": "Erreur",
+    "loading": "Chargement...",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "share": "Partager",
+    "download": "Télécharger",
+    "print": "Imprimer",
+    "language": "Langue",
+    "moreInfo": "Plus d'Informations",
+    "backToHome": "Retour à l'Accueil",
+    "tryIt": "Essayer"
+  },
+  "nav": {
+    "home": "Accueil",
+    "create": "Créer",
+    "gallery": "Galerie",
+    "blog": "Blog",
+    "about": "À Propos",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "admin": "Administration",
+    "createNow": "Créer Maintenant"
+  },
+  "home": {
+    "hero": {
+      "title": "Créez de Magnifiques Pages à Colorier avec l'IA",
+      "subtitle": "Transformez vos idées en superbes pages à colorier en quelques secondes. Parfait pour les enfants, les enseignants et les amateurs de coloriage.",
+      "createButton": "Créer Maintenant",
+      "learnButton": "En Savoir Plus",
+      "stats": "Plus de 5 000 pages à colorier créées"
+    },
+    "examples": {
+      "elephant": "Éléphant de Dessin Animé",
+      "rocket": "Fusée Spatiale",
+      "dragon": "Dragon Amical"
+    },
+    "howItWorks": {
+      "title": "Créez des Pages à Colorier à Votre Façon"
+    },
+    "methods": {
+      "describe": {
+        "title": "Décrivez-le",
+        "description": "Tapez ce que vous voulez et notre IA le créera"
+      },
+      "style": {
+        "title": "Choisissez un Style",
+        "description": "Sélectionnez parmi plusieurs styles artistiques"
+      },
+      "advanced": {
+        "title": "Contrôle Avancé",
+        "description": "Affinez chaque aspect de votre page à colorier"
+      }
+    },
+    "styles": {
+      "title": "Choisissez Votre Style",
+      "subtitle": "Sélectionnez parmi plusieurs styles artistiques pour créer la page à colorier parfaite",
+      "simple": "Simple",
+      "medium": "Moyen",
+      "complex": "Complexe",
+      "cartoon": "Dessin Animé",
+      "realistic": "Réaliste"
+    },
+    "testimonials": {
+      "title": "Ce Que Disent Nos Utilisateurs",
+      "1": {
+        "text": "Mes enfants adorent les pages à colorier que je crée pour eux ! Très facile à utiliser.",
+        "author": "Sarah T."
+      },
+      "2": {
+        "text": "Je l'ai utilisé pour ma classe de maternelle. Les enfants sont ravis !",
+        "author": "Mark L., Enseignant"
+      },
+      "3": {
+        "text": "Le mode avancé me permet de créer exactement ce dont j'ai besoin pour mes séances d'art-thérapie.",
+        "author": "Dr Jessica P."
+      },
+      "cta": "Commencez à Créer Maintenant"
+    },
+    "features": {
+      "title": "Pourquoi Choisir Notre Générateur de Pages à Colorier IA ?",
+      "fast": {
+        "title": "Génération Rapide",
+        "desc": "Créez des pages à colorier en quelques secondes"
+      },
+      "styles": {
+        "title": "Styles Multiples",
+        "desc": "Choisissez parmi divers styles artistiques"
+      },
+      "everywhere": {
+        "title": "Fonctionne Partout",
+        "desc": "Mobile, tablette ou ordinateur"
+      },
+      "unlimited": {
+        "title": "Pages Illimitées",
+        "desc": "Créez autant que vous en avez besoin"
+      },
+      "print": {
+        "title": "Prêt à Imprimer",
+        "desc": "Parfait pour imprimer en toute taille"
+      },
+      "easy": {
+        "title": "Facile à Utiliser",
+        "desc": "Aucune compétence en design requise"
+      },
+      "secure": {
+        "title": "Privé et Sécurisé",
+        "desc": "Vos créations vous appartiennent"
+      },
+      "control": {
+        "title": "Contrôle Avancé",
+        "desc": "Affinez chaque détail"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Créer Vos Pages à Colorier ?",
+      "subtitle": "Commencez en quelques secondes. Aucune carte de crédit requise.",
+      "button": "Commencez à Créer Gratuitement"
+    }
+  },
+  "create": {
+    "title": "Créez Votre Page à Colorier",
+    "subtitle": "Choisissez une méthode de création ci-dessous et laissez notre IA générer une belle page à colorier pour vous",
+    "tabs": {
+      "describe": "Décrivez-le",
+      "photo": "Convertir Photo",
+      "draw": "Dessiner et Améliorer"
+    },
+    "photo": {
+      "title": "Convertir Photo en Page à Colorier",
+      "description": "Cette fonctionnalité sera bientôt disponible ! Téléchargez et convertissez vos photos en pages à colorier.",
+      "fallbackButton": "Essayez Décrivez-le à la Place"
+    },
+    "draw": {
+      "title": "Dessiner et Améliorer",
+      "description": "Bientôt disponible ! Dessinez une esquisse de base et laissez notre IA l'améliorer en une belle page à colorier.",
+      "fallbackButton": "Essayez Décrivez-le à la Place"
+    },
+    "promptLabel": "Que souhaitez-vous créer ?",
+    "promptPlaceholder": "par ex., Un éléphant de dessin animé amical jouant avec un ballon",
+    "styleLabel": "Style",
+    "generateButton": "Générer une Page à Colorier",
+    "regenerateButton": "Réessayer",
+    "saveToGalleryButton": "Enregistrer dans la Galerie",
+    "printButton": "Imprimer Cette Page",
+    "downloadButton": "Télécharger l'Image",
+    "suggestions": "Suggestions",
+    "categories": {
+      "title": "Catégories",
+      "animals": "Animaux",
+      "fantasy": "Fantastique",
+      "nature": "Nature",
+      "vehicles": "Véhicules",
+      "characters": "Personnages",
+      "space": "Espace"
+    },
+    "styleOptions": {
+      "simple": "Simple",
+      "medium": "Moyen",
+      "complex": "Complexe",
+      "cartoon": "Dessin Animé",
+      "realistic": "Réaliste"
+    },
+    "advancedMode": {
+      "toggle": "Mode Avancé",
+      "customPrompt": "Instruction Personnalisée",
+      "helpText": "Affinez votre instruction pour plus de contrôle"
+    },
+    "errors": {
+      "emptyPrompt": "Veuillez entrer une description",
+      "generationFailed": "Échec de la génération d'image. Veuillez réessayer.",
+      "saveFailed": "Échec de l'enregistrement dans la galerie. Veuillez réessayer."
+    },
+    "success": {
+      "generated": "Votre page à colorier a été générée !",
+      "saved": "Votre page à colorier a été enregistrée dans la galerie !"
+    }
+  },
+  "gallery": {
+    "title": "Galerie de Pages à Colorier",
+    "subtitle": "Parcourez notre collection de pages à colorier générées par IA créées par notre communauté",
+    "recentCreations": "Créations Récentes",
+    "createYourOwnButton": "Créez la Vôtre",
+    "viewMoreButton": "Charger Plus",
+    "noImages": {
+      "title": "Pas encore d'images",
+      "message": "Soyez le premier à ajouter une page à colorier à notre galerie !",
+      "button": "Créer une Page à Colorier"
+    },
+    "detail": {
+      "printButton": "Imprimer Cette Page",
+      "downloadButton": "Télécharger l'Image",
+      "shareButton": "Partager",
+      "createYourOwnButton": "Créez la Vôtre",
+      "details": "Détails",
+      "style": "Style",
+      "created": "Créée",
+      "description": "Description",
+      "aboutThisPage": "À Propos de Cette Page à Colorier",
+      "aboutText": "Cette page à colorier a été générée avec l'IA basée sur l'instruction :",
+      "printInstructions": "Vous pouvez imprimer cette page en cliquant sur le bouton \"Imprimer Cette Page\", qui ouvrira une version imprimable.",
+      "similarPages": "Pages à Colorier Similaires"
+    }
+  },
+  "blog": {
+    "title": "Blog des Pages à Colorier",
+    "subtitle": "Découvrez des conseils, des idées et de l'inspiration pour les activités de coloriage",
+    "readMore": "Lire Plus",
+    "backToList": "Retour au Blog",
+    "publishedOn": "Publié le",
+    "author": "par",
+    "relatedPosts": "Articles Connexes",
+    "tags": "Tags",
+    "noPosts": "Pas encore d'articles de blog. Revenez bientôt !"
+  },
+  "about": {
+    "title": "À Propos du Générateur de Pages à Colorier IA",
+    "subtitle": "Découvrez notre mission et comment nous aidons les personnes à créer de belles pages à colorier",
+    "missionTitle": "Notre Mission",
+    "missionText": "Nous croyons au pouvoir de la créativité et aux bienfaits du coloriage pour les personnes de tous âges. Notre mission est de permettre à chacun de créer facilement des pages à colorier personnalisées et de haute qualité en utilisant la dernière technologie d'IA.",
+    "howItWorks": "Comment Ça Marche",
+    "technologyTitle": "Notre Technologie",
+    "technologyText": "Nous utilisons des modèles avancés de génération d'images par IA spécialement affinés pour créer des pages à colorier. Notre technologie comprend les descriptions en langage naturel et les convertit en beaux contours noir et blanc parfaits pour le coloriage.",
+    "team": "Notre Équipe",
+    "contactUs": "Contactez-Nous",
+    "faq": "Questions Fréquentes"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Tableau de Bord Admin",
+      "stats": {
+        "totalBlogPosts": "Total des Articles de Blog",
+        "totalImages": "Total des Pages à Colorier"
+      },
+      "quickActions": {
+        "title": "Actions Rapides"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page Non Trouvée",
+      "message": "La page que vous recherchez n'existe pas.",
+      "button": "Aller à la Page d'Accueil"
+    },
+    "serverError": {
+      "title": "Erreur de Serveur",
+      "message": "Quelque chose s'est mal passé de notre côté. Veuillez réessayer plus tard.",
+      "button": "Réessayer"
+    }
+  }
+} 

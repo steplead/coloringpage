@@ -1,0 +1,259 @@
+{
+  "common": {
+    "languageName": "한국어",
+    "appName": "AI 색칠 페이지 생성기",
+    "error": "오류",
+    "loading": "로딩 중...",
+    "success": "성공",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "view": "보기",
+    "share": "공유",
+    "download": "다운로드",
+    "print": "인쇄",
+    "language": "언어",
+    "moreInfo": "추가 정보",
+    "backToHome": "홈으로 돌아가기",
+    "tryIt": "시도해보기"
+  },
+  "nav": {
+    "home": "홈",
+    "create": "생성",
+    "gallery": "갤러리",
+    "blog": "블로그",
+    "about": "소개",
+    "login": "로그인",
+    "signup": "회원가입",
+    "admin": "관리자",
+    "createNow": "지금 생성"
+  },
+  "home": {
+    "hero": {
+      "title": "AI로 아름다운 색칠 페이지 만들기",
+      "subtitle": "몇 초 만에 아이디어를 멋진 색칠 페이지로 변환하세요. 아이들, 교사, 색칠 애호가들에게 완벽합니다.",
+      "createButton": "지금 생성하기",
+      "learnButton": "더 알아보기",
+      "stats": "5,000개 이상의 색칠 페이지가 생성되었습니다"
+    },
+    "examples": {
+      "elephant": "만화 코끼리",
+      "rocket": "우주 로켓",
+      "dragon": "친근한 드래곤"
+    },
+    "howItWorks": {
+      "title": "나만의 방식으로 색칠 페이지 만들기"
+    },
+    "methods": {
+      "describe": {
+        "title": "설명하기",
+        "description": "원하는 것을 입력하면 AI가 생성합니다"
+      },
+      "style": {
+        "title": "스타일 선택",
+        "description": "다양한 예술적 스타일 중에서 선택하세요"
+      },
+      "advanced": {
+        "title": "고급 제어",
+        "description": "색칠 페이지의 모든 측면을 세밀하게 조정하세요"
+      }
+    },
+    "styles": {
+      "title": "스타일 선택하기",
+      "subtitle": "완벽한 색칠 페이지를 만들기 위해 다양한 예술적 스타일 중에서 선택하세요",
+      "simple": "간단함",
+      "medium": "중간",
+      "complex": "복잡함",
+      "cartoon": "만화",
+      "realistic": "사실적"
+    },
+    "testimonials": {
+      "title": "사용자들의 의견",
+      "1": {
+        "text": "제가 만든 색칠 페이지를 아이들이 정말 좋아해요! 사용하기가 매우 쉽습니다.",
+        "author": "사라 T."
+      },
+      "2": {
+        "text": "유치원 수업에서 사용하고 있어요. 아이들이 정말 신나해요!",
+        "author": "마크 L., 교사"
+      },
+      "3": {
+        "text": "고급 모드를 사용하면 제 아트 테라피 세션에 필요한 것을 정확히 만들 수 있어요.",
+        "author": "제시카 P. 박사"
+      },
+      "cta": "지금 생성 시작하기"
+    },
+    "features": {
+      "title": "왜 AI 색칠 페이지 생성기를 선택해야 할까요?",
+      "fast": {
+        "title": "빠른 생성",
+        "desc": "몇 초 만에 색칠 페이지 생성"
+      },
+      "styles": {
+        "title": "다양한 스타일",
+        "desc": "여러 예술적 스타일 중 선택 가능"
+      },
+      "everywhere": {
+        "title": "어디서나 작동",
+        "desc": "모바일, 태블릿 또는 데스크톱"
+      },
+      "unlimited": {
+        "title": "무제한 페이지",
+        "desc": "필요한 만큼 생성 가능"
+      },
+      "print": {
+        "title": "인쇄 준비 완료",
+        "desc": "모든 크기로 인쇄하기 완벽"
+      },
+      "easy": {
+        "title": "사용 편의성",
+        "desc": "디자인 기술 불필요"
+      },
+      "secure": {
+        "title": "개인 및 안전",
+        "desc": "당신의 창작물은 당신의 것"
+      },
+      "control": {
+        "title": "고급 제어",
+        "desc": "모든 세부 사항 조정 가능"
+      }
+    },
+    "cta": {
+      "title": "색칠 페이지를 만들 준비가 되셨나요?",
+      "subtitle": "몇 초 만에 시작하세요. 신용카드가 필요하지 않습니다.",
+      "button": "무료로 생성 시작하기"
+    }
+  },
+  "create": {
+    "title": "색칠 페이지 만들기",
+    "subtitle": "아래에서 생성 방법을 선택하고 AI가 아름다운 색칠 페이지를 생성하도록 하세요",
+    "tabs": {
+      "describe": "설명하기",
+      "photo": "사진 변환",
+      "draw": "그리기 & 향상"
+    },
+    "photo": {
+      "title": "사진을 색칠 페이지로 변환",
+      "description": "이 기능은 곧 제공될 예정입니다! 사진을 업로드하고 색칠 페이지로 변환하세요.",
+      "fallbackButton": "대신 설명하기 시도하기"
+    },
+    "draw": {
+      "title": "그리기 & 향상",
+      "description": "곧 제공될 예정입니다! 기본 스케치를 그리고 AI가 아름다운 색칠 페이지로 향상시키도록 하세요.",
+      "fallbackButton": "대신 설명하기 시도하기"
+    },
+    "promptLabel": "무엇을 만들고 싶으신가요?",
+    "promptPlaceholder": "예: 공을 가지고 노는 친근한 만화 코끼리",
+    "styleLabel": "스타일",
+    "generateButton": "색칠 페이지 생성",
+    "regenerateButton": "다시 시도",
+    "saveToGalleryButton": "갤러리에 저장",
+    "printButton": "이 페이지 인쇄",
+    "downloadButton": "이미지 다운로드",
+    "suggestions": "제안",
+    "categories": {
+      "title": "카테고리",
+      "animals": "동물",
+      "fantasy": "판타지",
+      "nature": "자연",
+      "vehicles": "차량",
+      "characters": "캐릭터",
+      "space": "우주"
+    },
+    "styleOptions": {
+      "simple": "간단함",
+      "medium": "중간",
+      "complex": "복잡함",
+      "cartoon": "만화",
+      "realistic": "사실적"
+    },
+    "advancedMode": {
+      "toggle": "고급 모드",
+      "customPrompt": "맞춤 프롬프트",
+      "helpText": "더 많은 제어를 위해 프롬프트 미세 조정"
+    },
+    "errors": {
+      "emptyPrompt": "설명을 입력해주세요",
+      "generationFailed": "이미지 생성에 실패했습니다. 다시 시도해주세요.",
+      "saveFailed": "갤러리에 저장하지 못했습니다. 다시 시도해주세요."
+    },
+    "success": {
+      "generated": "색칠 페이지가 생성되었습니다!",
+      "saved": "색칠 페이지가 갤러리에 저장되었습니다!"
+    }
+  },
+  "gallery": {
+    "title": "색칠 페이지 갤러리",
+    "subtitle": "우리 커뮤니티에서 만든 AI 생성 색칠 페이지 컬렉션을 탐색하세요",
+    "recentCreations": "최근 작품",
+    "createYourOwnButton": "나만의 작품 만들기",
+    "viewMoreButton": "더 불러오기",
+    "noImages": {
+      "title": "아직 이미지가 없습니다",
+      "message": "갤러리에 첫 번째 색칠 페이지를 추가해보세요!",
+      "button": "색칠 페이지 만들기"
+    },
+    "detail": {
+      "printButton": "이 페이지 인쇄",
+      "downloadButton": "이미지 다운로드",
+      "shareButton": "공유",
+      "createYourOwnButton": "나만의 작품 만들기",
+      "details": "세부 정보",
+      "style": "스타일",
+      "created": "생성일",
+      "description": "설명",
+      "aboutThisPage": "이 색칠 페이지에 대하여",
+      "aboutText": "이 색칠 페이지는 다음 프롬프트를 기반으로 AI에 의해 생성되었습니다:",
+      "printInstructions": "\"이 페이지 인쇄\" 버튼을 클릭하면 인쇄하기 좋은 버전이 열립니다.",
+      "similarPages": "유사한 색칠 페이지"
+    }
+  },
+  "blog": {
+    "title": "색칠 페이지 블로그",
+    "subtitle": "색칠 활동을 위한 팁, 아이디어, 영감 발견하기",
+    "readMore": "더 읽기",
+    "backToList": "블로그로 돌아가기",
+    "publishedOn": "게시일",
+    "author": "작성자",
+    "relatedPosts": "관련 게시물",
+    "tags": "태그",
+    "noPosts": "아직 블로그 게시물이 없습니다. 곧 다시 확인해주세요!"
+  },
+  "about": {
+    "title": "AI 색칠 페이지 생성기 소개",
+    "subtitle": "우리의 사명과 사람들이 아름다운 색칠 페이지를 만드는 데 어떻게 도움을 주는지 알아보세요",
+    "missionTitle": "우리의 사명",
+    "missionText": "우리는 창의성의 힘과 모든 연령대의 사람들에게 색칠의 이점을 믿습니다. 우리의 사명은 최신 AI 기술을 사용하여 누구나 고품질의 맞춤형 색칠 페이지를 쉽게 만들 수 있도록 하는 것입니다.",
+    "howItWorks": "작동 방식",
+    "technologyTitle": "우리의 기술",
+    "technologyText": "우리는 색칠 페이지 생성을 위해 특별히 미세 조정된 고급 AI 이미지 생성 모델을 사용합니다. 우리 기술은 자연어 설명을 이해하고 색칠하기에 완벽한 아름다운 흑백 윤곽선으로 변환합니다.",
+    "team": "우리 팀",
+    "contactUs": "문의하기",
+    "faq": "자주 묻는 질문"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "관리자 대시보드",
+      "stats": {
+        "totalBlogPosts": "블로그 게시물 총수",
+        "totalImages": "색칠 페이지 총수"
+      },
+      "quickActions": {
+        "title": "빠른 액션"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "페이지를 찾을 수 없음",
+      "message": "찾고 계신 페이지가 존재하지 않습니다.",
+      "button": "홈페이지로 가기"
+    },
+    "serverError": {
+      "title": "서버 오류",
+      "message": "우리 쪽에서 문제가 발생했습니다. 나중에 다시 시도해주세요.",
+      "button": "다시 시도"
+    }
+  }
+} 

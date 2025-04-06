@@ -1,0 +1,259 @@
+{
+  "common": {
+    "languageName": "Deutsch",
+    "appName": "KI-Malbogen-Generator",
+    "error": "Fehler",
+    "loading": "Laden...",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "share": "Teilen",
+    "download": "Herunterladen",
+    "print": "Drucken",
+    "language": "Sprache",
+    "moreInfo": "Weitere Informationen",
+    "backToHome": "Zurück zur Startseite",
+    "tryIt": "Ausprobieren"
+  },
+  "nav": {
+    "home": "Startseite",
+    "create": "Erstellen",
+    "gallery": "Galerie",
+    "blog": "Blog",
+    "about": "Über uns",
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "admin": "Administration",
+    "createNow": "Jetzt erstellen"
+  },
+  "home": {
+    "hero": {
+      "title": "Erstelle wunderschöne Malbögen mit KI",
+      "subtitle": "Verwandle deine Ideen in Sekundenschnelle in beeindruckende Malbögen. Perfekt für Kinder, Lehrer und Malbegeisterte.",
+      "createButton": "Jetzt erstellen",
+      "learnButton": "Mehr erfahren",
+      "stats": "Über 5.000 Malbögen erstellt"
+    },
+    "examples": {
+      "elephant": "Cartoon-Elefant",
+      "rocket": "Weltraumrakete",
+      "dragon": "Freundlicher Drache"
+    },
+    "howItWorks": {
+      "title": "Erstelle Malbögen nach deinen Wünschen"
+    },
+    "methods": {
+      "describe": {
+        "title": "Beschreibe es",
+        "description": "Tippe ein, was du möchtest, und unsere KI erstellt es"
+      },
+      "style": {
+        "title": "Wähle einen Stil",
+        "description": "Wähle aus verschiedenen künstlerischen Stilen"
+      },
+      "advanced": {
+        "title": "Erweiterte Kontrolle",
+        "description": "Passe jeden Aspekt deines Malbogens an"
+      }
+    },
+    "styles": {
+      "title": "Wähle deinen Stil",
+      "subtitle": "Wähle aus verschiedenen künstlerischen Stilen, um den perfekten Malbogen zu erstellen",
+      "simple": "Einfach",
+      "medium": "Mittel",
+      "complex": "Komplex",
+      "cartoon": "Cartoon",
+      "realistic": "Realistisch"
+    },
+    "testimonials": {
+      "title": "Was unsere Nutzer sagen",
+      "1": {
+        "text": "Meine Kinder lieben die Malbögen, die ich für sie erstelle! So einfach zu benutzen.",
+        "author": "Sarah T."
+      },
+      "2": {
+        "text": "Ich benutze es für meine Kindergartenklasse. Die Kinder sind begeistert!",
+        "author": "Mark L., Lehrer"
+      },
+      "3": {
+        "text": "Der erweiterte Modus ermöglicht es mir, genau das zu erstellen, was ich für meine Kunsttherapie-Sitzungen brauche.",
+        "author": "Dr. Jessica P."
+      },
+      "cta": "Starte jetzt mit dem Erstellen"
+    },
+    "features": {
+      "title": "Warum unseren KI-Malbogen-Generator wählen?",
+      "fast": {
+        "title": "Schnelle Erstellung",
+        "desc": "Erstelle Malbögen in Sekundenschnelle"
+      },
+      "styles": {
+        "title": "Mehrere Stile",
+        "desc": "Wähle aus verschiedenen künstlerischen Stilen"
+      },
+      "everywhere": {
+        "title": "Funktioniert überall",
+        "desc": "Smartphone, Tablet oder Desktop"
+      },
+      "unlimited": {
+        "title": "Unbegrenzte Seiten",
+        "desc": "Erstelle so viele, wie du benötigst"
+      },
+      "print": {
+        "title": "Druckbereit",
+        "desc": "Perfekt zum Drucken in jeder Größe"
+      },
+      "easy": {
+        "title": "Einfach zu benutzen",
+        "desc": "Keine Design-Kenntnisse erforderlich"
+      },
+      "secure": {
+        "title": "Privat & Sicher",
+        "desc": "Deine Kreationen gehören dir"
+      },
+      "control": {
+        "title": "Erweiterte Kontrolle",
+        "desc": "Passe jedes Detail an"
+      }
+    },
+    "cta": {
+      "title": "Bereit, deine Malbögen zu erstellen?",
+      "subtitle": "Starte in Sekundenschnelle. Keine Kreditkarte erforderlich.",
+      "button": "Kostenlos mit dem Erstellen beginnen"
+    }
+  },
+  "create": {
+    "title": "Erstelle deinen Malbogen",
+    "subtitle": "Wähle unten eine Erstellungsmethode und lass unsere KI einen schönen Malbogen für dich generieren",
+    "tabs": {
+      "describe": "Beschreibe es",
+      "photo": "Foto umwandeln",
+      "draw": "Zeichnen & Verbessern"
+    },
+    "photo": {
+      "title": "Foto in Malbogen umwandeln",
+      "description": "Diese Funktion kommt bald! Lade deine Fotos hoch und wandle sie in Malbögen um.",
+      "fallbackButton": "Versuche stattdessen Beschreibe es"
+    },
+    "draw": {
+      "title": "Zeichnen & Verbessern",
+      "description": "Kommt bald! Zeichne eine einfache Skizze und lass unsere KI sie in einen schönen Malbogen verwandeln.",
+      "fallbackButton": "Versuche stattdessen Beschreibe es"
+    },
+    "promptLabel": "Was möchtest du erstellen?",
+    "promptPlaceholder": "z.B. Ein freundlicher Cartoon-Elefant, der mit einem Ball spielt",
+    "styleLabel": "Stil",
+    "generateButton": "Malbogen generieren",
+    "regenerateButton": "Erneut versuchen",
+    "saveToGalleryButton": "In Galerie speichern",
+    "printButton": "Diese Seite drucken",
+    "downloadButton": "Bild herunterladen",
+    "suggestions": "Vorschläge",
+    "categories": {
+      "title": "Kategorien",
+      "animals": "Tiere",
+      "fantasy": "Fantasie",
+      "nature": "Natur",
+      "vehicles": "Fahrzeuge",
+      "characters": "Charaktere",
+      "space": "Weltraum"
+    },
+    "styleOptions": {
+      "simple": "Einfach",
+      "medium": "Mittel",
+      "complex": "Komplex",
+      "cartoon": "Cartoon",
+      "realistic": "Realistisch"
+    },
+    "advancedMode": {
+      "toggle": "Erweiterter Modus",
+      "customPrompt": "Benutzerdefinierte Anweisung",
+      "helpText": "Verfeinere deine Anweisung für mehr Kontrolle"
+    },
+    "errors": {
+      "emptyPrompt": "Bitte gib eine Beschreibung ein",
+      "generationFailed": "Bilderstellung fehlgeschlagen. Bitte versuche es erneut.",
+      "saveFailed": "Speichern in der Galerie fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "success": {
+      "generated": "Dein Malbogen wurde erstellt!",
+      "saved": "Dein Malbogen wurde in der Galerie gespeichert!"
+    }
+  },
+  "gallery": {
+    "title": "Malbogen-Galerie",
+    "subtitle": "Durchstöbere unsere Sammlung von KI-generierten Malbögen, die von unserer Community erstellt wurden",
+    "recentCreations": "Neueste Kreationen",
+    "createYourOwnButton": "Erstelle deinen eigenen",
+    "viewMoreButton": "Mehr laden",
+    "noImages": {
+      "title": "Noch keine Bilder",
+      "message": "Sei der Erste, der einen Malbogen zu unserer Galerie hinzufügt!",
+      "button": "Einen Malbogen erstellen"
+    },
+    "detail": {
+      "printButton": "Diese Seite drucken",
+      "downloadButton": "Bild herunterladen",
+      "shareButton": "Teilen",
+      "createYourOwnButton": "Erstelle deinen eigenen",
+      "details": "Details",
+      "style": "Stil",
+      "created": "Erstellt",
+      "description": "Beschreibung",
+      "aboutThisPage": "Über diesen Malbogen",
+      "aboutText": "Dieser Malbogen wurde mit KI basierend auf der Anweisung erstellt:",
+      "printInstructions": "Du kannst diese Seite drucken, indem du auf die Schaltfläche \"Diese Seite drucken\" klickst, die eine druckerfreundliche Version öffnet.",
+      "similarPages": "Ähnliche Malbögen"
+    }
+  },
+  "blog": {
+    "title": "Malbogen-Blog",
+    "subtitle": "Entdecke Tipps, Ideen und Inspiration für Malaktivitäten",
+    "readMore": "Weiterlesen",
+    "backToList": "Zurück zum Blog",
+    "publishedOn": "Veröffentlicht am",
+    "author": "von",
+    "relatedPosts": "Verwandte Beiträge",
+    "tags": "Tags",
+    "noPosts": "Noch keine Blogbeiträge. Schau bald wieder vorbei!"
+  },
+  "about": {
+    "title": "Über den KI-Malbogen-Generator",
+    "subtitle": "Erfahre mehr über unsere Mission und wie wir Menschen helfen, wunderschöne Malbögen zu erstellen",
+    "missionTitle": "Unsere Mission",
+    "missionText": "Wir glauben an die Kraft der Kreativität und die Vorteile des Malens für Menschen aller Altersgruppen. Unsere Mission ist es, jedem zu ermöglichen, mit der neuesten KI-Technologie hochwertige, personalisierte Malbögen zu erstellen.",
+    "howItWorks": "Wie es funktioniert",
+    "technologyTitle": "Unsere Technologie",
+    "technologyText": "Wir verwenden fortschrittliche KI-Bildgenerierungsmodelle, die speziell für die Erstellung von Malbögen optimiert wurden. Unsere Technologie versteht natürliche Sprachbeschreibungen und wandelt sie in schöne schwarz-weiße Umrisse um, die perfekt zum Ausmalen geeignet sind.",
+    "team": "Unser Team",
+    "contactUs": "Kontaktiere uns",
+    "faq": "Häufig gestellte Fragen"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin-Dashboard",
+      "stats": {
+        "totalBlogPosts": "Gesamtzahl der Blogbeiträge",
+        "totalImages": "Gesamtzahl der Malbögen"
+      },
+      "quickActions": {
+        "title": "Schnellaktionen"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Seite nicht gefunden",
+      "message": "Die gesuchte Seite existiert nicht.",
+      "button": "Zur Startseite"
+    },
+    "serverError": {
+      "title": "Serverfehler",
+      "message": "Auf unserer Seite ist etwas schiefgelaufen. Bitte versuche es später erneut.",
+      "button": "Erneut versuchen"
+    }
+  }
+} 

@@ -1,0 +1,259 @@
+{
+  "common": {
+    "languageName": "日本語",
+    "appName": "AI塗り絵ジェネレーター",
+    "error": "エラー",
+    "loading": "読み込み中...",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "view": "表示",
+    "share": "共有",
+    "download": "ダウンロード",
+    "print": "印刷",
+    "language": "言語",
+    "moreInfo": "詳細情報",
+    "backToHome": "ホームに戻る",
+    "tryIt": "試してみる"
+  },
+  "nav": {
+    "home": "ホーム",
+    "create": "作成",
+    "gallery": "ギャラリー",
+    "blog": "ブログ",
+    "about": "サイトについて",
+    "login": "ログイン",
+    "signup": "登録",
+    "admin": "管理者",
+    "createNow": "今すぐ作成"
+  },
+  "home": {
+    "hero": {
+      "title": "AIで美しい塗り絵を作成",
+      "subtitle": "あなたのアイデアを数秒で素晴らしい塗り絵に変換。子供、先生、塗り絵愛好家に最適です。",
+      "createButton": "今すぐ作成",
+      "learnButton": "詳細を見る",
+      "stats": "5,000枚以上の塗り絵が作成されました"
+    },
+    "examples": {
+      "elephant": "漫画風の象",
+      "rocket": "宇宙ロケット",
+      "dragon": "フレンドリーなドラゴン"
+    },
+    "howItWorks": {
+      "title": "あなた好みの塗り絵を作成"
+    },
+    "methods": {
+      "describe": {
+        "title": "説明する",
+        "description": "欲しいものを入力するだけで、AIが作成します"
+      },
+      "style": {
+        "title": "スタイルを選ぶ",
+        "description": "複数の芸術的スタイルから選択できます"
+      },
+      "advanced": {
+        "title": "高度なコントロール",
+        "description": "塗り絵のあらゆる側面を微調整"
+      }
+    },
+    "styles": {
+      "title": "スタイルを選択",
+      "subtitle": "完璧な塗り絵を作成するために、複数の芸術的スタイルから選択してください",
+      "simple": "シンプル",
+      "medium": "普通",
+      "complex": "複雑",
+      "cartoon": "漫画風",
+      "realistic": "リアル"
+    },
+    "testimonials": {
+      "title": "ユーザーの声",
+      "1": {
+        "text": "子供たちが私が作った塗り絵を大好きです！使い方がとても簡単です。",
+        "author": "サラ T."
+      },
+      "2": {
+        "text": "幼稚園のクラスで使っています。子供たちはとても喜んでいます！",
+        "author": "マーク L., 教師"
+      },
+      "3": {
+        "text": "高度なモードでは、アートセラピーセッションのために必要なものを正確に作成できます。",
+        "author": "ジェシカ P. 博士"
+      },
+      "cta": "今すぐ作成を始める"
+    },
+    "features": {
+      "title": "なぜAI塗り絵ジェネレーターを選ぶのか？",
+      "fast": {
+        "title": "高速生成",
+        "desc": "数秒で塗り絵を作成"
+      },
+      "styles": {
+        "title": "複数のスタイル",
+        "desc": "様々な芸術的スタイルから選択可能"
+      },
+      "everywhere": {
+        "title": "どこでも使用可能",
+        "desc": "モバイル、タブレット、デスクトップ"
+      },
+      "unlimited": {
+        "title": "無制限のページ",
+        "desc": "必要な数だけ作成可能"
+      },
+      "print": {
+        "title": "印刷準備完了",
+        "desc": "あらゆるサイズに最適な印刷"
+      },
+      "easy": {
+        "title": "使いやすさ",
+        "desc": "デザインスキル不要"
+      },
+      "secure": {
+        "title": "プライベート＆安全",
+        "desc": "あなたの作品はあなたのもの"
+      },
+      "control": {
+        "title": "高度なコントロール",
+        "desc": "すべての詳細を微調整"
+      }
+    },
+    "cta": {
+      "title": "塗り絵を作成する準備はできましたか？",
+      "subtitle": "数秒で始められます。クレジットカード不要。",
+      "button": "無料で作成を始める"
+    }
+  },
+  "create": {
+    "title": "塗り絵を作成する",
+    "subtitle": "以下の作成方法を選択し、AIに美しい塗り絵を生成させましょう",
+    "tabs": {
+      "describe": "説明する",
+      "photo": "写真を変換",
+      "draw": "描いて強化"
+    },
+    "photo": {
+      "title": "写真を塗り絵に変換",
+      "description": "この機能は近日公開予定！写真をアップロードして塗り絵に変換します。",
+      "fallbackButton": "代わりに「説明する」を試す"
+    },
+    "draw": {
+      "title": "描いて強化",
+      "description": "近日公開予定！基本的なスケッチを描いて、AIに美しい塗り絵に強化させます。",
+      "fallbackButton": "代わりに「説明する」を試す"
+    },
+    "promptLabel": "何を作成したいですか？",
+    "promptPlaceholder": "例：ボールで遊ぶフレンドリーな漫画風の象",
+    "styleLabel": "スタイル",
+    "generateButton": "塗り絵を生成",
+    "regenerateButton": "もう一度試す",
+    "saveToGalleryButton": "ギャラリーに保存",
+    "printButton": "このページを印刷",
+    "downloadButton": "画像をダウンロード",
+    "suggestions": "提案",
+    "categories": {
+      "title": "カテゴリー",
+      "animals": "動物",
+      "fantasy": "ファンタジー",
+      "nature": "自然",
+      "vehicles": "乗り物",
+      "characters": "キャラクター",
+      "space": "宇宙"
+    },
+    "styleOptions": {
+      "simple": "シンプル",
+      "medium": "普通",
+      "complex": "複雑",
+      "cartoon": "漫画風",
+      "realistic": "リアル"
+    },
+    "advancedMode": {
+      "toggle": "高度なモード",
+      "customPrompt": "カスタムプロンプト",
+      "helpText": "より細かい制御のためにプロンプトを微調整"
+    },
+    "errors": {
+      "emptyPrompt": "説明を入力してください",
+      "generationFailed": "画像の生成に失敗しました。もう一度お試しください。",
+      "saveFailed": "ギャラリーへの保存に失敗しました。もう一度お試しください。"
+    },
+    "success": {
+      "generated": "塗り絵が生成されました！",
+      "saved": "塗り絵がギャラリーに保存されました！"
+    }
+  },
+  "gallery": {
+    "title": "塗り絵ギャラリー",
+    "subtitle": "コミュニティによって作成されたAI生成の塗り絵コレクションをブラウズ",
+    "recentCreations": "最近の作品",
+    "createYourOwnButton": "自分で作成",
+    "viewMoreButton": "もっと読み込む",
+    "noImages": {
+      "title": "まだ画像がありません",
+      "message": "最初の塗り絵をギャラリーに追加しましょう！",
+      "button": "塗り絵を作成"
+    },
+    "detail": {
+      "printButton": "このページを印刷",
+      "downloadButton": "画像をダウンロード",
+      "shareButton": "共有",
+      "createYourOwnButton": "自分で作成",
+      "details": "詳細",
+      "style": "スタイル",
+      "created": "作成日",
+      "description": "説明",
+      "aboutThisPage": "この塗り絵について",
+      "aboutText": "この塗り絵はAIによって以下のプロンプトに基づいて生成されました：",
+      "printInstructions": "「このページを印刷」ボタンをクリックすると、印刷に適したバージョンが開き、印刷できます。",
+      "similarPages": "類似の塗り絵"
+    }
+  },
+  "blog": {
+    "title": "塗り絵ブログ",
+    "subtitle": "塗り絵アクティビティのヒント、アイデア、インスピレーションを発見",
+    "readMore": "続きを読む",
+    "backToList": "ブログに戻る",
+    "publishedOn": "公開日",
+    "author": "著者",
+    "relatedPosts": "関連記事",
+    "tags": "タグ",
+    "noPosts": "まだブログ記事はありません。また後でチェックしてください！"
+  },
+  "about": {
+    "title": "AI塗り絵ジェネレーターについて",
+    "subtitle": "私たちのミッションと、人々が美しい塗り絵を作成するのをどのように支援しているかについて学ぶ",
+    "missionTitle": "私たちのミッション",
+    "missionText": "私たちは創造性の力と、あらゆる年齢層の人々への塗り絵の利点を信じています。私たちのミッションは、最新のAI技術を使用して、誰でも高品質でカスタマイズされた塗り絵を簡単に作成できるようにすることです。",
+    "howItWorks": "仕組み",
+    "technologyTitle": "私たちの技術",
+    "technologyText": "私たちは、塗り絵の作成のために特別に微調整された高度なAI画像生成モデルを使用しています。私たちの技術は自然言語の説明を理解し、それを塗り絵に最適な美しい白黒の輪郭に変換します。",
+    "team": "私たちのチーム",
+    "contactUs": "お問い合わせ",
+    "faq": "よくある質問"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "管理ダッシュボード",
+      "stats": {
+        "totalBlogPosts": "ブログ記事総数",
+        "totalImages": "塗り絵総数"
+      },
+      "quickActions": {
+        "title": "クイックアクション"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "ページが見つかりません",
+      "message": "お探しのページは存在しません。",
+      "button": "ホームページへ"
+    },
+    "serverError": {
+      "title": "サーバーエラー",
+      "message": "サーバー側で問題が発生しました。後でもう一度お試しください。",
+      "button": "再試行"
+    }
+  }
+} 
