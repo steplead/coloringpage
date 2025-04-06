@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LanguageSelector from './LanguageSelector';
@@ -13,6 +13,12 @@ interface NavigationProps {
 export function Navigation({ currentLang = 'en' }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const [displayLang, setDisplayLang] = useState(currentLang);
+
+  // When currentLang changes, update the displayLang
+  useEffect(() => {
+    setDisplayLang(currentLang);
+  }, [currentLang]);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -21,9 +27,9 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
   // Helper function to get the correct localized URL path
   const getLocalizedHref = (path: string): string => {
     if (path === '/') {
-      return `/${currentLang}`;
+      return `/${displayLang}`;
     }
-    return `/${currentLang}${path}`;
+    return `/${displayLang}${path}`;
   };
 
   // Basic navigation links without the language prefix
@@ -43,7 +49,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
           {/* Logo */}
           <Link href={getLocalizedHref('/')} className="flex items-center flex-shrink-0">
             <span className="text-xl font-bold text-blue-600 tracking-tight">
-              <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={currentLang} />
+              <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={displayLang} />
             </span>
           </Link>
 
@@ -61,19 +67,23 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                       : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
                   }`}
                 >
-                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={displayLang} />
                 </Link>
               );
             })}
             
             {/* Language Selector - Desktop */}
-            <LanguageSelector currentLang={currentLang} className="ml-2" />
+            <LanguageSelector 
+              currentLang={displayLang} 
+              className="ml-2"
+              onLanguageChange={(lang) => setDisplayLang(lang)}
+            />
             
             <Link 
               href={getLocalizedHref('/create')} 
               className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
-              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
             </Link>
           </nav>
 
@@ -126,7 +136,11 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
         {/* Second Row: Language Selector (Mobile Only) */}
         <div className="md:hidden border-t border-gray-100">
           <div className="px-2 py-2">
-            <LanguageSelector currentLang={currentLang} className="w-full" />
+            <LanguageSelector 
+              currentLang={displayLang} 
+              className="w-full"
+              onLanguageChange={(lang) => setDisplayLang(lang)}
+            />
           </div>
         </div>
       </div>
@@ -148,7 +162,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={currentLang} />
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={displayLang} />
                 </Link>
               );
             })}
@@ -157,7 +171,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
               className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsOpen(false)}
             >
-              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={currentLang} />
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
             </Link>
           </div>
         </div>

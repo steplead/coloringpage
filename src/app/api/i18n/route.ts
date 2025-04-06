@@ -3,11 +3,22 @@ import { cookies } from 'next/headers';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import enTranslations from '@/lib/i18n/translations/en.json';
 import zhTranslations from '@/lib/i18n/translations/zh.json';
+import esTranslations from '@/lib/i18n/translations/es.json';
+import frTranslations from '@/lib/i18n/translations/fr.json';
+import deTranslations from '@/lib/i18n/translations/de.json';
+import jaTranslations from '@/lib/i18n/translations/ja.json';
+import koTranslations from '@/lib/i18n/translations/ko.json';
+import ruTranslations from '@/lib/i18n/translations/ru.json';
 
 const translations = {
   en: enTranslations,
   zh: zhTranslations,
-  // Add other translations here as they become available
+  es: esTranslations,
+  fr: frTranslations,
+  de: deTranslations,
+  ja: jaTranslations,
+  ko: koTranslations,
+  ru: ruTranslations,
 };
 
 /**
