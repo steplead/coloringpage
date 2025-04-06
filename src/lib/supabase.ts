@@ -17,7 +17,6 @@ export interface ImageRecord {
   user_id?: string;
   style?: string;
   title?: string;
-  category?: string;
   updated_at: string;
   // SEO Fields
   alt_text?: string;

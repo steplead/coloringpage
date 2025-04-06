@@ -4,23 +4,11 @@
 
 import en from './translations/en.json';
 import zh from './translations/zh.json';
-import es from './translations/es.json';
-import fr from './translations/fr.json';
-import de from './translations/de.json';
-import ja from './translations/ja.json';
-import ko from './translations/ko.json';
-import ru from './translations/ru.json';
 
 // A cache to store translations to avoid reloading them
 const translationsCache: Record<string, any> = {
   en,
-  zh,
-  es,
-  fr,
-  de,
-  ja,
-  ko,
-  ru
+  zh
 };
 
 /**
@@ -34,8 +22,8 @@ export async function getTranslations(lang: string): Promise<any> {
 
   // Try to dynamically load the translations
   try {
-    // For languages not preloaded, load them dynamically
-    if (!Object.keys(translationsCache).includes(lang)) {
+    // For languages other than English and Chinese, load them dynamically
+    if (lang !== 'en' && lang !== 'zh') {
       const module = await import(`./translations/${lang}.json`);
       translationsCache[lang] = module.default;
       return module.default;
@@ -75,10 +63,9 @@ export async function getTranslation(lang: string, key: string): Promise<string>
  * Clear the translations cache
  */
 export function clearTranslationCache(): void {
-  // Keep all directly imported languages (most used) but clear the rest
-  const importedLanguages = ['en', 'zh', 'es', 'fr', 'de', 'ja', 'ko', 'ru'];
+  // Keep English and Chinese (most used) but clear the rest
   Object.keys(translationsCache).forEach(key => {
-    if (!importedLanguages.includes(key)) {
+    if (key !== 'en' && key !== 'zh') {
       delete translationsCache[key];
     }
   });

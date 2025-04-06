@@ -45,16 +45,6 @@ function getRandomTopics(count: number): string[] {
  * This endpoint is designed to be called by a cron job service like Vercel Cron
  */
 export async function GET(request: NextRequest) {
-  // Skip actual execution during build time
-  if (process.env.NODE_ENV === 'production' && typeof window === 'undefined' && process.env.SKIP_API_CALLS_DURING_BUILD === 'true') {
-    console.log('Skipping blog cron job during build');
-    return NextResponse.json({
-      success: true,
-      message: 'Skipped during build',
-      is_build: true
-    });
-  }
-  
   const config = getConfig();
   const topics = getRandomTopics(config.postCount);
   let successCount = 0;
@@ -71,8 +61,19 @@ export async function GET(request: NextRequest) {
           continue;
         }
         
-        // Extract content from blogContent object
-        const { title, content: bodyContent, description: metaDescription } = blogContent;
+        // For TypeScript, treat blogContent as a string
+        const contentStr = typeof blogContent === 'string' 
+          ? blogContent 
+          : blogContent.content || '';
+        
+        // Parse the content to separate title from body
+        const titleMatch = contentStr.match(/^#\s+(.+?)(?:\n|$)/);
+        const title = titleMatch ? titleMatch[1].trim() : `${topic} - Guide and Tips`;
+        
+        // Remove the title from content for body
+        const bodyContent = titleMatch 
+          ? contentStr.replace(/^#\s+(.+?)(?:\n|$)/, '')
+          : contentStr;
         
         // Create a slug from the title
         const slug = createSlug(title);
@@ -96,12 +97,23 @@ export async function GET(request: NextRequest) {
         const tagsArray = [...keywords, 'coloring', 'art', 'creative'];
         const uniqueTags = Array.from(new Set(tagsArray)).slice(0, 5);
         
+        // Generate a meta description
+        let metaDescription = `Learn about ${topic} with our comprehensive guide.`;
+        const cleanedContent = bodyContent
+          .replace(/[#*_{}[\]()]/g, '')
+          .split('\n')
+          .filter((line: string) => line.trim().length > 0);
+          
+        if (cleanedContent.length > 0 && cleanedContent[0]) {
+          metaDescription = cleanedContent[0].slice(0, 160);
+        }
+        
         // Insert into database
         const { error } = await supabase.from('blog_posts').insert({
           title,
           slug,
           content: bodyContent,
-          meta_description: metaDescription || `Learn about ${topic} with our comprehensive guide.`,
+          meta_description: metaDescription,
           featured_image_url: featuredImageUrl,
           tags: uniqueTags,
           is_published: true,

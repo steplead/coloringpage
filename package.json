@@ -8,15 +8,14 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build || exit 0",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "deploy": "node deploy.js",
     "deploy:auto": "node deploy-auto.js",
     "quick-deploy": "node src/lib/cursor-deploy.js",
     "deploy:now": "node src/lib/cursor-deploy.js",
-    "deploy-now": "node deploy-now.js",
-    "deploy-prod": "npx vercel --prod"
+    "deploy-now": "node deploy-now.js"
   },
   "keywords": [
     "coloring page",
@@ -51,7 +50,6 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.21",
-    "null-loader": "^4.0.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.2.2",
