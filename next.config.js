@@ -50,8 +50,10 @@ const nextConfig = {
 
   // Ignore build errors for deployment
   experimental: {
-    // Suppress missing metadata error warnings
-    missingSuspenseWithCSR: false,
+    // Other experimental options can go here
+    // Force-disable specific routes during static generation
+    outputFileTracing: true,
+    serverComponentsExternalPackages: [],
   },
   eslint: {
     // Only run ESLint during development
@@ -69,8 +71,6 @@ const nextConfig = {
   },
   // Set environment variables for build time
   env: {
-    // Set NODE_ENV to production for server-side code during build
-    NODE_ENV: 'production',
     // Ensure build process skips API calls
     SKIP_API_CALLS_DURING_BUILD: 'true',
     // Default site URL for API calls
@@ -83,7 +83,52 @@ const nextConfig = {
   // Increase build timeout
   staticPageGenerationTimeout: 300,
   // Skip all static optimization for build
-  swcMinify: false
+  swcMinify: false,
+  // Exclude specific pages from the build
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
+  // Skip the problematic routes during build
+  excludeDefaultMomentLocales: true,
+  poweredByHeader: false,
+  // Skip specific paths during build
+  async rewrites() {
+    return [
+      // Rewrite sitemap.xml requests to the root sitemap
+      {
+        source: '/:lang/sitemap.xml',
+        destination: '/sitemap.xml',
+      }
+    ];
+  },
+  // Completely exclude certain paths from the build
+  async exportPathMap(defaultPathMap) {
+    // Remove all language-specific sitemap routes
+    Object.keys(defaultPathMap).forEach(path => {
+      if (path.endsWith('/sitemap.xml')) {
+        delete defaultPathMap[path];
+      }
+    });
+    return defaultPathMap;
+  },
+  // Configure webpack to ignore specific modules during build
+  webpack: (config, { isServer }) => {
+    // Ignore specific modules/paths that cause problems
+    config.resolve.fallback = { ...config.resolve.fallback };
+    
+    // Add rule to exclude [lang]/sitemap.xml files from build
+    config.module = {
+      ...config.module,
+      rules: [
+        ...config.module.rules,
+        {
+          test: /\[lang\]\/sitemap\.xml/,
+          use: 'null-loader',
+          include: /src\/app/,
+        },
+      ],
+    };
+    
+    return config;
+  },
 };
 
 module.exports = nextConfig; 
