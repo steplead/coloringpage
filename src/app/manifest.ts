@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -51,20 +52,20 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     prefer_related_applications: false,
     shortcuts: [
-      {
-        name: 'Create Coloring Page',
-        short_name: 'Create',
-        description: 'Start creating a new coloring page',
-        url: '/create',
+      ...SUPPORTED_LANGUAGES.map((lang) => ({
+        name: `Create (${lang.name})`,
+        short_name: `Create ${lang.code}`,
+        description: `Start creating a new coloring page (${lang.name})`,
+        url: `/${lang.code}/create`,
         icons: [{ src: '/icons/create-icon-96x96.png', sizes: '96x96' }]
-      },
-      {
-        name: 'Gallery',
-        short_name: 'Gallery',
-        description: 'Browse coloring pages gallery',
-        url: '/gallery',
+      })),
+      ...SUPPORTED_LANGUAGES.map((lang) => ({
+        name: `Gallery (${lang.name})`,
+        short_name: `Gallery ${lang.code}`,
+        description: `Browse coloring pages gallery (${lang.name})`,
+        url: `/${lang.code}/gallery`,
         icons: [{ src: '/icons/gallery-icon-96x96.png', sizes: '96x96' }]
-      }
+      }))
     ],
     lang: 'en',
     dir: 'ltr',
