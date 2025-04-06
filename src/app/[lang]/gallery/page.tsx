@@ -18,6 +18,6 @@ export default function LanguageGalleryPage({ params }: { params: { lang: string
     redirect('/en/gallery');
   }
   
-  // Pass language parameter to the original page
-  return <GalleryPage params={{ lang }} />;
+  // Render the original GalleryPage
+  return <GalleryPage />;
 } 
