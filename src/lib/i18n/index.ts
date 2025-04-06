@@ -4,11 +4,23 @@ import { SUPPORTED_LANGUAGES } from './locales';
 // Import all translation files
 import enTranslations from './translations/en.json';
 import zhTranslations from './translations/zh.json';
+import esTranslations from './translations/es.json';
+import frTranslations from './translations/fr.json';
+import deTranslations from './translations/de.json';
+import jaTranslations from './translations/ja.json';
+import koTranslations from './translations/ko.json';
+import ruTranslations from './translations/ru.json';
 
 // Map of all translations
 const translations: Record<string, any> = {
   en: enTranslations,
   zh: zhTranslations,
+  es: esTranslations,
+  fr: frTranslations,
+  de: deTranslations,
+  ja: jaTranslations,
+  ko: koTranslations,
+  ru: ruTranslations,
 };
 
 // Cookie name for storing language preference
