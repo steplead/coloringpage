@@ -4,38 +4,13 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "framework": "nextjs",
   "ignoreCommand": "echo 'Ignoring build errors for deployment'",
   "env": {
     "SKIP_API_CALLS_DURING_BUILD": "true",
-    "NODE_ENV": "production",
-    "NEXT_PUBLIC_SUPABASE_URL": "https://hjmwtgqvmqaontbjebpi.supabase.co",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbXd0Z3F2bXFhb250YmplYnBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NjA0NzIsImV4cCI6MjA1OTEzNjQ3Mn0.M0JVWdQk14MPtTbL-q9zyPjl36kYotRTw7L-aF9iK_A",
-    "SILICONFLOW_API_KEY": "sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah",
-    "SILICONFLOW_API_URL": "https://api.siliconflow.cn/v1/images/generations",
-    "SILICONFLOW_MODEL": "black-forest-labs/FLUX.1-schnell",
-    "GEMINI_API_KEY": "AIzaSyBSo6E7uZR7IvaRfiNZSdpgGwg8uzE6xow",
-    "GEMINI_API_URL": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
-    "GEMINI_MODEL": "gemini-2.0-flash",
-    "AUTO_BLOG_POST_COUNT": "1",
-    "AUTO_BLOG_POST_LENGTH": "800"
-  },
-  "functions": {
-    "src/app/sitemap.xml/route.ts": {
-      "maxDuration": 10,
-      "memory": 128
-    }
+    "NODE_ENV": "production"
   },
   "rewrites": [
-    { "source": "/:lang/sitemap.xml", "destination": "/sitemap.xml" },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
+    { "source": "/:lang/sitemap.xml", "destination": "/sitemap.xml" }
   ],
   "headers": [
     {
@@ -46,33 +21,6 @@
           "value": "application/xml"
         }
       ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/blog/cron",
-      "schedule": "0 0 * * *"
     }
   ]
 } 
