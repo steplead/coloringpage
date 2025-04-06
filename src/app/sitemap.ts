@@ -15,110 +15,87 @@ const routes = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date().toISOString();
-  
   let sitemapEntries: MetadataRoute.Sitemap = [];
   
-  // Add language-specific routes
-  SUPPORTED_LANGUAGES.forEach(language => {
-    routes.forEach(route => {
-      // For root path, just use language code
-      const localizedPath = route === '/' 
-        ? `/${language.code}` 
-        : `/${language.code}${route}`;
-      
-      sitemapEntries.push({
-        url: `${BASE_URL}${localizedPath}`,
-        lastModified: currentDate,
-        changeFrequency: 'daily',
-        priority: route === '/' ? 1 : 0.8,
-        // Add language information for better SEO
-        alternates: {
-          languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES
-              .filter(lang => lang.code !== language.code)
-              .map(lang => [
-                lang.code,
-                `${BASE_URL}/${lang.code}${route === '/' ? '' : route}`
-              ])
-          )
-        }
-      });
-    });
+  // Add default site root
+  sitemapEntries.push({
+    url: `${BASE_URL}`,
+    lastModified: currentDate,
+    changeFrequency: 'daily',
+    priority: 1,
   });
   
-  // Add default routes as well (without language prefix)
-  routes.forEach(route => {
+  // Add routes for each language
+  for (const language of SUPPORTED_LANGUAGES) {
+    const lang = language.code;
+    
+    // Add language root
     sitemapEntries.push({
-      url: `${BASE_URL}${route}`,
+      url: `${BASE_URL}/${lang}`,
       lastModified: currentDate,
       changeFrequency: 'daily',
-      priority: route === '/' ? 1 : 0.8,
-      // Add default route alternates
-      alternates: {
-        languages: Object.fromEntries(
-          SUPPORTED_LANGUAGES.map(lang => [
-            lang.code,
-            `${BASE_URL}/${lang.code}${route === '/' ? '' : route}`
-          ])
-        )
-      }
+      priority: 0.9,
     });
-  });
+    
+    // Add routes for this specific language (excluding root which was already added)
+    for (const route of routes.filter(r => r !== '/')) {
+      sitemapEntries.push({
+        url: `${BASE_URL}/${lang}${route}`,
+        lastModified: currentDate,
+        changeFrequency: 'daily',
+        priority: 0.8,
+      });
+    }
+  }
   
-  // Fetch blog posts for sitemap
-  const { data: blogPosts } = await supabase
-    .from('blog_posts')
-    .select('slug, created_at, updated_at')
-    .eq('is_published', true)
-    .order('created_at', { ascending: false })
-    .limit(100);
+  try {
+    // Fetch blog posts for sitemap
+    const { data: blogPosts } = await supabase
+      .from('blog_posts')
+      .select('slug, created_at, updated_at')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false })
+      .limit(100);
 
-  // Add blog post URLs to sitemap
-  const blogRoutes = blogPosts
-    ? blogPosts.map((post) => ({
-        url: `${BASE_URL}/blog/${post.slug}`,
-        lastModified: new Date(post.updated_at || post.created_at),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-        // Add language alternates for blog posts
-        alternates: {
-          languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES.map(lang => [
-              lang.code,
-              `${BASE_URL}/${lang.code}/blog/${post.slug}`
-            ])
-          )
+    // Add blog post URLs to sitemap for each language
+    if (blogPosts && blogPosts.length > 0) {
+      for (const post of blogPosts) {
+        for (const language of SUPPORTED_LANGUAGES) {
+          sitemapEntries.push({
+            url: `${BASE_URL}/${language.code}/blog/${post.slug}`,
+            lastModified: new Date(post.updated_at || post.created_at).toISOString(),
+            changeFrequency: 'weekly',
+            priority: 0.7,
+          });
         }
-      }))
-    : [];
+      }
+    }
 
-  // Fetch gallery images for sitemap
-  const { data: galleryImages } = await supabase
-    .from('images')
-    .select('id, created_at')
-    .eq('is_public', true)
-    .order('created_at', { ascending: false })
-    .limit(100);
+    // Fetch gallery images for sitemap
+    const { data: galleryImages } = await supabase
+      .from('images')
+      .select('id, created_at')
+      .eq('is_public', true)
+      .order('created_at', { ascending: false })
+      .limit(100);
 
-  // Add gallery images to sitemap
-  const galleryRoutes = galleryImages
-    ? galleryImages.map((image) => ({
-        url: `${BASE_URL}/gallery/${image.id}`,
-        lastModified: new Date(image.created_at),
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
-        // Add language alternates for gallery items
-        alternates: {
-          languages: Object.fromEntries(
-            SUPPORTED_LANGUAGES.map(lang => [
-              lang.code,
-              `${BASE_URL}/${lang.code}/gallery/${image.id}`
-            ])
-          )
+    // Add gallery images to sitemap for each language
+    if (galleryImages && galleryImages.length > 0) {
+      for (const image of galleryImages) {
+        for (const language of SUPPORTED_LANGUAGES) {
+          sitemapEntries.push({
+            url: `${BASE_URL}/${language.code}/gallery/${image.id}`,
+            lastModified: new Date(image.created_at).toISOString(),
+            changeFrequency: 'monthly',
+            priority: 0.6,
+          });
         }
-      }))
-    : [];
+      }
+    }
+  } catch (error) {
+    console.error('Error generating sitemap data:', error);
+    // Continue with partial sitemap even if database queries fail
+  }
 
-  // Combine all routes
-  return [...sitemapEntries, ...blogRoutes, ...galleryRoutes];
+  return sitemapEntries;
 } 

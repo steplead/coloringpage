@@ -15,7 +15,8 @@
     "deploy:auto": "node deploy-auto.js",
     "quick-deploy": "node src/lib/cursor-deploy.js",
     "deploy:now": "node src/lib/cursor-deploy.js",
-    "deploy-now": "node deploy-now.js"
+    "deploy-now": "node deploy-now.js",
+    "deploy-prod": "npx vercel --prod"
   },
   "keywords": [
     "coloring page",

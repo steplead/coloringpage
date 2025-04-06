@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  distDir: '.next',
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -50,10 +52,9 @@ const nextConfig = {
 
   // Ignore build errors for deployment
   experimental: {
-    // Other experimental options can go here
-    // Force-disable specific routes during static generation
-    outputFileTracing: true,
-    serverComponentsExternalPackages: [],
+    // Disable warnings about metadata during build
+    disableOptimizedLoading: true,
+    optimizeCss: false,
   },
   eslint: {
     // Only run ESLint during development
@@ -63,12 +64,6 @@ const nextConfig = {
     // Skip type checking during build for faster deployment
     ignoreBuildErrors: true,
   },
-  // Ignore API runtime error warnings for deployment
-  onDemandEntries: {
-    // Don't retry failed API routes
-    maxInactiveAge: 60 * 1000,
-    pagesBufferLength: 1,
-  },
   // Set environment variables for build time
   env: {
     // Ensure build process skips API calls
@@ -77,6 +72,8 @@ const nextConfig = {
     NEXT_PUBLIC_SITE_URL: process.env.VERCEL_URL 
       ? `https://${process.env.VERCEL_URL}` 
       : 'http://localhost:3000',
+    // Skip accessing sitemap.xml during build
+    SKIP_SITEMAP_GENERATION: 'true',
   },
   // Disable compression for faster builds
   compress: false,
@@ -92,40 +89,17 @@ const nextConfig = {
   // Skip specific paths during build
   async rewrites() {
     return [
-      // Rewrite sitemap.xml requests to the root sitemap
+      // Handle all language-specific sitemap requests to the root sitemap
       {
         source: '/:lang/sitemap.xml',
         destination: '/sitemap.xml',
       }
     ];
   },
-  // Completely exclude certain paths from the build
-  async exportPathMap(defaultPathMap) {
-    // Remove all language-specific sitemap routes
-    Object.keys(defaultPathMap).forEach(path => {
-      if (path.endsWith('/sitemap.xml')) {
-        delete defaultPathMap[path];
-      }
-    });
-    return defaultPathMap;
-  },
   // Configure webpack to ignore specific modules during build
   webpack: (config, { isServer }) => {
     // Ignore specific modules/paths that cause problems
     config.resolve.fallback = { ...config.resolve.fallback };
-    
-    // Add rule to exclude [lang]/sitemap.xml files from build
-    config.module = {
-      ...config.module,
-      rules: [
-        ...config.module.rules,
-        {
-          test: /\[lang\]\/sitemap\.xml/,
-          use: 'null-loader',
-          include: /src\/app/,
-        },
-      ],
-    };
     
     return config;
   },
