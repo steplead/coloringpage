@@ -38,8 +38,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  themeColor: '#ffffff',
-  colorScheme: 'light',
   applicationName: 'AI Coloring Page Generator',
   appleWebApp: {
     capable: true,
@@ -95,6 +93,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: '#ffffff',
+  colorScheme: 'light',
 };
 
 // Initialize Supabase Storage

@@ -33,8 +33,25 @@ function getLocaleFromRequest(request: NextRequest): string {
   });
 
   try {
-    const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
-    const detectedLocale = matchLocale(languages, locales, defaultLocale);
+    const negotiator = new Negotiator({ headers: negotiatorHeaders });
+    // Make sure we have a valid Accept-Language header
+    const languages = negotiator.languages().filter(Boolean);
+    
+    if (languages.length === 0) {
+      return defaultLocale;
+    }
+    
+    // Filter out any invalid language tags before passing to matchLocale
+    const validLanguages = languages.filter(lang => {
+      // Basic validation: language tags should follow the pattern xx or xx-XX
+      return typeof lang === 'string' && /^[a-zA-Z]{2}(-[a-zA-Z]{2})?$/.test(lang);
+    });
+    
+    if (validLanguages.length === 0) {
+      return defaultLocale;
+    }
+    
+    const detectedLocale = matchLocale(validLanguages, locales, defaultLocale);
     return detectedLocale;
   } catch (error) {
     console.error('Error detecting locale:', error);
