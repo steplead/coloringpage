@@ -74,9 +74,15 @@ export function middleware(request: NextRequest) {
   // Determine which locale to use
   const finalLocale = pathnameLocale || requestLocale;
   
+  // Clone headers to add custom values
+  const response = NextResponse.next();
+  
+  // Add pathname header for the root layout to use
+  response.headers.set('x-pathname', pathname);
+  response.headers.set('x-locale', finalLocale);
+  
   // If path already has a locale that matches our final locale, just proceed
   if (pathnameLocale === finalLocale) {
-    const response = NextResponse.next();
     response.cookies.set('NEXT_LOCALE', finalLocale, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -104,16 +110,20 @@ export function middleware(request: NextRequest) {
   url.pathname = newPathname;
   
   // Redirect to the localized URL
-  const response = NextResponse.redirect(url);
+  const redirectResponse = NextResponse.redirect(url);
   
   // Set the locale cookie
-  response.cookies.set('NEXT_LOCALE', finalLocale, {
+  redirectResponse.cookies.set('NEXT_LOCALE', finalLocale, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
   });
   
-  return response;
+  // Also add the pathname header to the redirect response
+  redirectResponse.headers.set('x-pathname', newPathname);
+  redirectResponse.headers.set('x-locale', finalLocale);
+  
+  return redirectResponse;
 }
 
 export const config = {

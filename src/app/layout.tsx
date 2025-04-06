@@ -109,12 +109,21 @@ export default function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { lang?: string };
+  params: any;
 }) {
-  // Determine language from URL params (set by middleware) or default to English
-  const headersList = headers();
-  const localeFromCookie = headersList.get('x-locale');
-  const currentLang = params.lang || localeFromCookie || 'en';
+  // Extract the lang parameter from the URL path segments
+  // This requires looking at the request path since we're in the root layout
+  const pathname = headers().get('x-pathname') || '';
+  const pathSegments = pathname.split('/').filter(Boolean);
+  
+  // Check if the first segment is a valid language code
+  let currentLang = 'en'; // Default language
+  if (pathSegments.length > 0) {
+    const potentialLang = pathSegments[0];
+    if (SUPPORTED_LANGUAGES.some(lang => lang.code === potentialLang)) {
+      currentLang = potentialLang;
+    }
+  }
 
   return (
     <html lang={currentLang} className="scroll-smooth">
