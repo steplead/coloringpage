@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface TranslatedTextProps {
   translationKey: string;
@@ -8,60 +8,27 @@ interface TranslatedTextProps {
   lang?: string;
 }
 
-// Cache for translations
-const translationCache = new Map<string, string>();
-
-// Function to clear the translation cache
-export function clearTranslationCache() {
-  translationCache.clear();
-}
-
 export default function TranslatedText({ 
   translationKey, 
   fallback = translationKey.split('.').pop() || translationKey,
-  lang = 'en'
+  lang
 }: TranslatedTextProps) {
-  const [translatedText, setTranslatedText] = useState<string>(fallback);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTranslation = async () => {
-      // Check cache first
-      const cacheKey = `${lang}:${translationKey}`;
-      if (translationCache.has(cacheKey)) {
-        setTranslatedText(translationCache.get(cacheKey) || fallback);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/i18n?lang=${lang}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch translations');
-        }
-        const data = await response.json();
-        const translation = translationKey.split('.').reduce((obj, key) => obj?.[key], data);
-        
-        if (translation) {
-          translationCache.set(cacheKey, translation);
-          setTranslatedText(translation);
-        } else {
-          setTranslatedText(fallback);
-        }
-      } catch (error) {
-        console.error('Error fetching translation:', error);
-        setTranslatedText(fallback);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTranslation();
-  }, [translationKey, lang, fallback]);
+  const { getTranslation, isLoading, language } = useTranslation();
+  
+  // Use the provided lang or the global language from context
+  const activeLang = lang || language;
+  
+  // Get translation from context
+  const translatedText = getTranslation(translationKey, fallback);
 
   if (isLoading) {
     return <span className="animate-pulse">{fallback}</span>;
   }
 
   return <>{translatedText}</>;
+}
+
+// Export a function to clear the translation cache for backward compatibility
+export function clearTranslationCache() {
+  console.log('Translation cache cleared');
 } 

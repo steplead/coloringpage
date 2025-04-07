@@ -18,6 +18,7 @@ export interface ImageRecord {
   style?: string;
   title?: string;
   updated_at: string;
+  category?: string;
   // SEO Fields
   alt_text?: string;
   seo_description?: string;

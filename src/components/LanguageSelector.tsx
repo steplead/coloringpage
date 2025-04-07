@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { clearTranslationCache } from './TranslatedText';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface LanguageSelectorProps {
   currentLang?: string;
@@ -13,7 +14,7 @@ interface LanguageSelectorProps {
 }
 
 export default function LanguageSelector({ 
-  currentLang = 'en', 
+  currentLang,
   onLanguageChange,
   className = '',
   dropdownPosition = 'bottom'
@@ -21,16 +22,12 @@ export default function LanguageSelector({
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(currentLang);
   const [isChanging, setIsChanging] = useState(false);
   const selectorRef = useRef<HTMLDivElement>(null);
-
-  // Update selected language when currentLang prop changes
-  useEffect(() => {
-    if (currentLang && currentLang !== selectedLang) {
-      setSelectedLang(currentLang);
-    }
-  }, [currentLang, selectedLang]);
+  const { language: contextLang, setLanguage } = useTranslation();
+  
+  // Use the language from props or context
+  const selectedLang = currentLang || contextLang;
 
   // Get the current language info
   const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLang) || SUPPORTED_LANGUAGES[0];
@@ -65,37 +62,20 @@ export default function LanguageSelector({
     try {
       console.log('Changing language to:', languageCode);
       
-      // First, set the language cookie
-      const response = await fetch('/api/i18n', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ lang: languageCode }),
-      });
-
-      if (response.ok) {
-        console.log('Language change API response:', await response.json());
-        setSelectedLang(languageCode);
-        
-        // Call the onLanguageChange callback if provided
-        if (onLanguageChange) {
-          onLanguageChange(languageCode);
-        }
-        
-        // Clear translation cache
-        clearTranslationCache();
-        
-        // Build the new URL with the updated language code
-        const pathWithoutLocale = getPathWithoutLocale(pathname);
-        const newPath = `/${languageCode}${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
-        
-        // Use the router to navigate to the new URL
-        router.push(newPath);
-        router.refresh();
-      } else {
-        console.error('Failed to change language: Server returned an error');
+      // Update translations in the context
+      await setLanguage(languageCode);
+      
+      // Call the onLanguageChange callback if provided
+      if (onLanguageChange) {
+        onLanguageChange(languageCode);
       }
+      
+      // Build the new URL with the updated language code
+      const pathWithoutLocale = getPathWithoutLocale(pathname);
+      const newPath = `/${languageCode}${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
+      
+      // Use the router to navigate to the new URL
+      router.push(newPath);
     } catch (error) {
       console.error('Failed to change language:', error);
     } finally {
@@ -131,6 +111,7 @@ export default function LanguageSelector({
         className="flex items-center justify-between w-full px-2 py-1.5 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
         aria-haspopup="true"
         aria-expanded={isOpen ? 'true' : 'false'}
+        disabled={isChanging}
       >
         <div className="flex items-center space-x-2">
           <span className="text-base">{currentLanguage.flag}</span>
@@ -161,6 +142,7 @@ export default function LanguageSelector({
                 selectedLang === language.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
               }`}
               role="menuitem"
+              disabled={isChanging}
             >
               <span className="text-base mr-2">{language.flag}</span>
               <span>{language.nativeName}</span>

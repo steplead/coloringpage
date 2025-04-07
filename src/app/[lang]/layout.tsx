@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { Suspense } from 'react';
 import Loading from './loading';
+import { TranslationProvider } from '@/lib/i18n/context';
+import { redirect } from 'next/navigation';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   // Get the current language
@@ -34,14 +36,25 @@ export async function generateStaticParams() {
 
 export default function LanguageLayout({
   children,
-  params,
+  params
 }: {
   children: React.ReactNode;
   params: { lang: string };
 }) {
+  // Validate the language parameter
+  const { lang } = params;
+  const isValidLanguage = SUPPORTED_LANGUAGES.some(l => l.code === lang);
+  
+  // If language is not supported, redirect to the default English page
+  if (!isValidLanguage) {
+    redirect('/en');
+  }
+  
   return (
-    <Suspense fallback={<Loading />}>
-      {children}
-    </Suspense>
+    <TranslationProvider initialLang={lang}>
+      <Suspense fallback={<Loading />}>
+        {children}
+      </Suspense>
+    </TranslationProvider>
   );
 } 

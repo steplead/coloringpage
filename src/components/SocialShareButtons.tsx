@@ -47,7 +47,7 @@ export default function SocialShareButtons({
 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <FacebookShareButton url={url} quote={`${title} - ${description}`}>
+      <FacebookShareButton url={url} hashtag="#coloringpage">
         <FacebookIcon size={36} round />
       </FacebookShareButton>
 

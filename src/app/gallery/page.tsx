@@ -8,7 +8,7 @@ import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
 
-export default function GalleryPage() {
+export default function GalleryPage({ params }: { params?: { lang?: string } }) {
   const [images, setImages] = useState<ImageRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,13 +16,15 @@ export default function GalleryPage() {
   const [limit] = useState(12);
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [style, setStyle] = useState<string | undefined>(undefined);
-  const [currentLang, setCurrentLang] = useState('en');
+  const [currentLang, setCurrentLang] = useState(params?.lang || 'en');
   
-  // Get language from cookie on client side
+  // Get language from cookie on client side if not provided via params
   useEffect(() => {
-    const lang = Cookies.get('NEXT_LOCALE') || 'en';
-    setCurrentLang(lang);
-  }, []);
+    if (!params?.lang) {
+      const lang = Cookies.get('NEXT_LOCALE') || 'en';
+      setCurrentLang(lang);
+    }
+  }, [params?.lang]);
 
   useEffect(() => {
     const fetchImages = async () => {
