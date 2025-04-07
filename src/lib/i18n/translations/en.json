@@ -31,11 +31,11 @@
   },
   "home": {
     "hero": {
-      "title": "Create Beautiful Coloring Pages with AI",
-      "subtitle": "Turn your ideas into stunning coloring pages in seconds. Perfect for kids, teachers, and coloring enthusiasts.",
-      "createButton": "Create Now",
-      "learnButton": "Learn More",
-      "stats": "Over 5,000 coloring pages created"
+      "title": "Create Magical Coloring Pages with AI",
+      "subtitle": "Transform your ideas into beautiful coloring pages in seconds. Perfect for kids, parents, teachers, and coloring enthusiasts of all ages.",
+      "createButton": "Create Your First Page",
+      "learnButton": "See How It Works",
+      "stats": "Over 5,000 coloring pages created by happy users"
     },
     "examples": {
       "elephant": "Cartoon Elephant",
@@ -48,15 +48,15 @@
     "methods": {
       "describe": {
         "title": "Describe It",
-        "description": "Type what you want and our AI will create it"
+        "description": "Just tell us what you want and our AI will create it instantly"
       },
       "style": {
         "title": "Choose a Style",
-        "description": "Select from multiple artistic styles"
+        "description": "Pick from different styles to match any age group"
       },
       "advanced": {
-        "title": "Advanced Control",
-        "description": "Fine-tune every aspect of your coloring page"
+        "title": "Fine-Tune Details",
+        "description": "Control every aspect for exactly the page you want"
       }
     },
     "styles": {
@@ -71,63 +71,70 @@
     "testimonials": {
       "title": "What Our Users Say",
       "1": {
-        "text": "My kids love the coloring pages I create for them! So easy to use.",
-        "author": "Sarah T."
+        "text": "My kids love the coloring pages I create for them! So easy to use and they keep asking for more!",
+        "author": "Sarah T., Mom of three"
       },
       "2": {
-        "text": "I've been using this for my kindergarten class. The children are thrilled!",
-        "author": "Mark L., Teacher"
+        "text": "I've been using this for my kindergarten class. The children are thrilled with their personalized coloring activities!",
+        "author": "Mark L., Kindergarten Teacher"
       },
       "3": {
-        "text": "The advanced mode lets me create exactly what I need for my art therapy sessions.",
-        "author": "Dr. Jessica P."
+        "text": "The advanced mode lets me create exactly what I need for my art therapy sessions. The quality is impressive.",
+        "author": "Dr. Jessica P., Art Therapist"
       },
       "cta": "Start Creating Now"
     },
     "features": {
       "title": "Why Choose Our AI Coloring Page Generator?",
       "fast": {
-        "title": "Fast Generation",
-        "desc": "Create coloring pages in seconds"
+        "title": "Instant Creation",
+        "desc": "Get your coloring page in just seconds"
       },
       "styles": {
         "title": "Multiple Styles",
-        "desc": "Choose from various artistic styles"
+        "desc": "Simple for toddlers or complex for adults"
       },
       "everywhere": {
         "title": "Works Everywhere",
-        "desc": "Mobile, tablet, or desktop"
+        "desc": "Use on your phone, tablet, or computer"
       },
       "unlimited": {
         "title": "Unlimited Pages",
-        "desc": "Create as many as you need"
+        "desc": "Create as many pages as you want, anytime"
       },
       "print": {
         "title": "Print Ready",
-        "desc": "Perfect for printing at any size"
+        "desc": "Perfect quality for printing at any size"
       },
       "easy": {
-        "title": "Easy to Use",
-        "desc": "No design skills required"
+        "title": "Child-Friendly",
+        "desc": "Simple enough for kids to use themselves"
       },
       "secure": {
-        "title": "Private & Secure",
-        "desc": "Your creations belong to you"
+        "title": "Safe & Private",
+        "desc": "No account needed, your creations are yours"
       },
       "control": {
-        "title": "Advanced Control",
-        "desc": "Fine-tune every detail"
+        "title": "Complete Control",
+        "desc": "Adjust every detail to your preference"
       }
     },
     "cta": {
-      "title": "Ready to Create Your Coloring Pages?",
-      "subtitle": "Get started in seconds. No credit card required.",
-      "button": "Start Creating for Free"
+      "title": "Ready to Create Amazing Coloring Pages?",
+      "subtitle": "Start in seconds - no signup or credit card required. Just describe and create!",
+      "button": "Create Your First Page Free"
     }
   },
   "create": {
-    "title": "Create Your Coloring Page",
-    "subtitle": "Choose a creation method below and let our AI generate a beautiful coloring page for you",
+    "title": "Create Your Perfect Coloring Page",
+    "subtitle": "It's easy! Describe what you want, choose a style, and our AI will do the rest",
+    "tips": {
+      "title": "Tips for Best Results",
+      "1": "Be specific with details (example: 'a smiling cartoon elephant playing with a red ball in a garden with flowers')",
+      "2": "Include the setting or background in your description (forest, space, underwater, etc.)",
+      "3": "Mention the style you prefer (cartoon, realistic, simple, detailed)",
+      "4": "For toddlers and young children, choose 'Simple' style for bigger coloring areas"
+    },
     "tabs": {
       "describe": "Describe It",
       "photo": "Convert Photo",
@@ -144,14 +151,16 @@
       "fallbackButton": "Try Describe It Instead"
     },
     "promptLabel": "What would you like to create?",
-    "promptPlaceholder": "e.g., A friendly cartoon elephant playing with a ball",
-    "styleLabel": "Style",
-    "generateButton": "Generate Coloring Page",
+    "promptHelp": "Describe what you want in your coloring page with specific details",
+    "promptPlaceholder": "e.g., A friendly cartoon elephant playing with a ball in a sunny garden",
+    "styleLabel": "Choose Complexity Level",
+    "styleHelp": "Simple styles are best for young children, complex styles for older kids and adults",
+    "generateButton": "Create My Coloring Page",
     "regenerateButton": "Try Again",
-    "saveToGalleryButton": "Save to Gallery",
+    "saveToGalleryButton": "Save to My Collection",
     "printButton": "Print This Page",
     "downloadButton": "Download Image",
-    "suggestions": "Suggestions",
+    "suggestions": "Quick Ideas",
     "categories": {
       "title": "Categories",
       "animals": "Animals",
@@ -162,72 +171,73 @@
       "space": "Space"
     },
     "styleOptions": {
-      "simple": "Simple",
-      "medium": "Medium",
-      "complex": "Complex",
-      "cartoon": "Cartoon",
-      "realistic": "Realistic"
+      "simple": "Simple (Ages 2-5)",
+      "medium": "Medium (Ages 6-12)",
+      "complex": "Complex (Ages 12+)",
+      "cartoon": "Cartoon Style",
+      "realistic": "Realistic Style"
     },
     "advancedMode": {
-      "toggle": "Advanced Mode",
-      "customPrompt": "Custom Prompt",
-      "helpText": "Fine-tune your prompt for more control"
+      "toggle": "Expert Mode",
+      "customPrompt": "Custom Instructions",
+      "helpText": "For advanced users who want complete control"
     },
     "errors": {
-      "emptyPrompt": "Please enter a description",
-      "generationFailed": "Failed to generate image. Please try again.",
-      "saveFailed": "Failed to save to gallery. Please try again."
+      "emptyPrompt": "Please describe what you'd like to color",
+      "tooLong": "Description is too long. Please keep it shorter",
+      "generationFailed": "We couldn't create that image. Please try different words or a simpler description.",
+      "saveFailed": "We couldn't save your coloring page. Please try again in a moment."
     },
     "success": {
-      "generated": "Your coloring page has been generated!",
-      "saved": "Your coloring page has been saved to the gallery!"
+      "generated": "Your coloring page is ready! You can print it, download it, or create another one.",
+      "saved": "Great! Your coloring page has been saved to your collection."
     }
   },
   "gallery": {
     "title": "Coloring Page Gallery",
-    "subtitle": "Browse through our collection of AI-generated coloring pages created by our community",
-    "recentCreations": "Recent Creations",
-    "createYourOwnButton": "Create Your Own",
-    "viewMoreButton": "Load More",
+    "subtitle": "Browse and discover coloring pages created by our community. Find inspiration or print pages to color!",
+    "recentCreations": "Recently Created Pages",
+    "createYourOwnButton": "Create Your Own Page",
+    "viewMoreButton": "Show More Pages",
     "noImages": {
-      "title": "No images yet",
+      "title": "No coloring pages yet",
       "message": "Be the first to add a coloring page to our gallery!",
-      "button": "Create a Coloring Page"
+      "button": "Create My First Page"
     },
     "detail": {
       "printButton": "Print This Page",
-      "downloadButton": "Download Image",
-      "shareButton": "Share",
-      "createYourOwnButton": "Create Your Own",
-      "details": "Details",
+      "downloadButton": "Download For Coloring",
+      "shareButton": "Share With Friends",
+      "createYourOwnButton": "Create My Own Page",
+      "details": "Page Details",
       "style": "Style",
-      "created": "Created",
+      "created": "Created On",
       "description": "Description",
       "aboutThisPage": "About This Coloring Page",
       "aboutText": "This coloring page was generated with AI based on the prompt:",
-      "printInstructions": "You can print this page by clicking the \"Print This Page\" button, which will open a printer-friendly version.",
-      "similarPages": "Similar Coloring Pages"
+      "printInstructions": "For best results when printing, click the \"Print This Page\" button and select \"Fit to Page\" in your printer settings.",
+      "similarPages": "You Might Also Like"
     }
   },
   "blog": {
-    "title": "Coloring Page Blog",
-    "subtitle": "Discover tips, ideas, and inspiration for coloring activities",
-    "readMore": "Read More",
-    "backToList": "Back to Blog",
+    "title": "Coloring Tips & Ideas",
+    "subtitle": "Discover creative coloring activities, educational ideas, and helpful advice",
+    "readMore": "Read Full Article",
+    "backToList": "Back to All Articles",
     "publishedOn": "Published on",
     "author": "by",
-    "relatedPosts": "Related Posts",
-    "tags": "Tags",
-    "noPosts": "No blog posts yet. Check back soon!"
+    "relatedPosts": "You Might Also Enjoy",
+    "tags": "Topics",
+    "noPosts": "New articles coming soon! Check back later for coloring tips and ideas."
   },
   "about": {
-    "title": "About AI Coloring Page Generator",
-    "subtitle": "Learn about our mission and how we help people create beautiful coloring pages",
+    "title": "About Our Coloring Page Creator",
+    "subtitle": "We're making coloring fun and accessible for everyone",
     "missionTitle": "Our Mission",
-    "missionText": "We believe in the power of creativity and the benefits of coloring for people of all ages. Our mission is to make it easy for anyone to create high-quality, customized coloring pages using the latest AI technology.",
+    "missionText": "We believe coloring reduces stress and boosts creativity for all ages. Our mission is to make it easy for anyone to create personalized, high-quality coloring pages without any design skills.",
     "howItWorks": "How It Works",
     "technologyTitle": "Our Technology",
-    "technologyText": "We use advanced AI image generation models specifically fine-tuned for creating coloring pages. Our technology understands natural language descriptions and converts them into beautiful black and white outlines perfect for coloring.",
+    "technologyText": "We use advanced AI specifically trained to create beautiful coloring pages. Our system understands your description and creates crisp, clean outlines perfect for coloring with any medium.",
     "team": "Our Team",
     "contactUs": "Contact Us",
     "faq": "Frequently Asked Questions"
@@ -238,9 +248,6 @@
       "stats": {
         "totalBlogPosts": "Total Blog Posts",
         "totalImages": "Total Coloring Pages"
-      },
-      "quickActions": {
-        "title": "Quick Actions"
       }
     }
   },
