@@ -23,6 +23,11 @@ const FixTranslationsV3 = dynamic(
   { ssr: false }
 );
 
+const FixTranslationsV4 = dynamic(
+  () => import('../debug/fix-translations-v4'),
+  { ssr: false }
+);
+
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   // Get the current language
   const lang = params.lang;
@@ -73,10 +78,10 @@ export default function LanguageLayout({
       <Suspense fallback={<Loading />}>
         <Navigation currentLang={lang} />
         {children}
-        {/* 添加修复翻译的组件，只在中文页面生效 - 主要使用V3版本 */}
+        {/* 添加修复翻译的组件，只在中文页面生效 - 主要使用V4版本 */}
         {lang === 'zh' && (
           <>
-            <FixTranslationsV3 />
+            <FixTranslationsV4 />
           </>
         )}
       </Suspense>
