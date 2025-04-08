@@ -94,6 +94,20 @@
         "desc": "根据您的喜好调整每个细节"
       }
     },
+    "methods": {
+      "describe": {
+        "title": "描述您想要的图像",
+        "description": "输入文字描述，我们的AI将创建匹配的涂色页"
+      },
+      "style": {
+        "title": "选择您喜欢的风格",
+        "description": "从多种艺术风格中选择，定制您的涂色页外观"
+      },
+      "advanced": {
+        "title": "高级设置",
+        "description": "调整细节参数，获得完全符合您需求的涂色页"
+      }
+    },
     "howItWorks": {
       "title": "使用方法",
       "description": "只需三个简单步骤即可创建您自己的涂色页",
@@ -113,17 +127,44 @@
     "examples": {
       "title": "示例",
       "description": "查看我们的AI生成的涂色页示例",
-      "viewMore": "在画廊中查看更多"
+      "viewMore": "在画廊中查看更多",
+      "elephant": "大象",
+      "rocket": "火箭",
+      "dragon": "龙"
     },
     "hero": {
       "title": "用AI创建精美涂色页面",
       "subtitle": "在几秒钟内从文本描述中生成高质量涂色页面",
       "button": "免费试用",
-      "stats": "已创建超过5,000个涂色页面"
+      "stats": "已创建超过5,000个涂色页面",
+      "createButton": "立即创建",
+      "learnButton": "了解更多"
     },
     "testimonials": {
       "title": "用户评价",
-      "subtitle": "看看人们如何使用我们的涂色页面"
+      "subtitle": "看看人们如何使用我们的涂色页面",
+      "1": {
+        "text": "我的孩子们喜欢这些涂色页！每次我们都能创建新的独特图案。",
+        "author": "李明，两个孩子的父亲"
+      },
+      "2": {
+        "text": "作为一名教师，这是我找到的最好的资源之一。我可以为我的学生创建主题涂色页。",
+        "author": "王老师，小学教师"
+      },
+      "3": {
+        "text": "我用它来放松和减压。创建自己想象的场景然后给它上色非常有趣。",
+        "author": "张女士，艺术爱好者"
+      },
+      "cta": "立即开始创建"
+    },
+    "styles": {
+      "title": "选择您的风格",
+      "subtitle": "选择多种艺术风格，创建完美的涂色页",
+      "simple": "简单",
+      "medium": "中等",
+      "complex": "复杂",
+      "cartoon": "卡通",
+      "realistic": "写实"
     },
     "cta": {
       "title": "准备好创建您的涂色页面了吗？",

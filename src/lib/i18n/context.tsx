@@ -34,7 +34,7 @@ interface TranslationProviderProps {
 }
 
 // Version flag to detect updates to translation files
-const TRANSLATION_VERSION = '1.1';
+const TRANSLATION_VERSION = '1.2';
 
 // Cache translations to avoid repeated fetches - add version suffix to localStorage key
 const getStorageKey = (lang: string) => `translations_${lang}_v${TRANSLATION_VERSION}`;
@@ -94,6 +94,11 @@ export function TranslationProvider({
       
       if (value !== undefined && typeof value === 'string') {
         return value;
+      }
+      
+      // If in development mode, log warnings for missing translations
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`[Translation Missing] Key "${key}" not found in "${language}" translations.`);
       }
       
       // Always use the provided fallback or the last part of the key
