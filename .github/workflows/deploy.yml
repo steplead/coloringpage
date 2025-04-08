@@ -23,59 +23,24 @@ jobs:
         run: npm ci
 
       - name: Install Vercel CLI
-        run: npm install -g vercel
+        run: npm install -g vercel@latest
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-
-      - name: Deploy to Vercel
-        id: deploy
+      - name: Deploy to Vercel (Production)
         run: |
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "::set-output name=deployment_url::$DEPLOYMENT_URL"
+          echo "VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}"
+          echo "VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}"
+          echo "VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}"
+          vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      
-      - name: Create deployment success comment
-        uses: actions/github-script@v6
-        if: success()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            const deployment_url = '${{ steps.deploy.outputs.deployment_url }}';
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `✅ 部署成功! 您的网站已更新。\n访问链接: ${deployment_url || 'https://ai-coloringpage.com'}`
-            });
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Create deployment failure comment
-        uses: actions/github-script@v6
-        if: failure()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `❌ 部署失败! 请检查GitHub Actions日志获取更多信息。`
-            }); 
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ 部署成功! 您的网站已更新。访问链接: https://ai-coloringpage.com"
+          else
+            echo "❌ 部署失败! 请检查GitHub Actions日志获取更多信息。"
+          fi 
