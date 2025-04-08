@@ -7,6 +7,7 @@ export default function FixTranslationsV4() {
   const fixCountRef = useRef(0);
   const observerRef = useRef<MutationObserver | null>(null);
   const originalFetchRef = useRef<typeof window.fetch | null>(null);
+  const intervalRefs = useRef<NodeJS.Timeout[]>([]);
   
   useEffect(() => {
     // 只在中文页面执行
@@ -189,11 +190,12 @@ export default function FixTranslationsV4() {
             // 创建增强版的响应
             // 这里我们可以修改translations对象，但保持响应格式一致
             
-            // 设置定时器在翻译应用后修复DOM
-            setTimeout(performFix, 0);
-            setTimeout(performFix, 100);
-            setTimeout(performFix, 500);
-            setTimeout(performFix, 1000);
+            // 使用安全的方式设置定时器
+            const originalSetTimeout = window.setTimeout;
+            originalSetTimeout(performFix, 0);
+            originalSetTimeout(performFix, 100);
+            originalSetTimeout(performFix, 500);
+            originalSetTimeout(performFix, 1000);
             
             return response;
           } catch (error) {
@@ -213,12 +215,11 @@ export default function FixTranslationsV4() {
       // 拦截setTimeout，确保我们的修复函数在React批量更新后执行
       const originalSetTimeout = window.setTimeout;
       
-      // 修复TypeScript错误，正确声明setTimeout
+      // 创建一个新的setTimeout函数，保留原始功能并添加额外的特性
       const newSetTimeout = function(
         handler: TimerHandler, 
-        timeout?: number | undefined, 
-        ...args: any[]
-      ) {
+        timeout?: number | undefined
+      ): number {
         // 获取调用栈以检测是否来自React
         const stack = new Error().stack || '';
         const isReactStateUpdate = stack.includes('react') || 
@@ -233,7 +234,7 @@ export default function FixTranslationsV4() {
           const wrappedHandler = function(this: any) {
             // 先执行原始处理程序
             if (typeof handler === 'function') {
-              handler.apply(this, args);
+              (handler as Function).call(this);
             } else if (typeof handler === 'string') {
               eval(handler);
             }
@@ -242,13 +243,13 @@ export default function FixTranslationsV4() {
             originalSetTimeout(performFix, 0);
           };
           
-          return originalSetTimeout(wrappedHandler, timeout);
+          return originalSetTimeout(wrappedHandler as TimerHandler, timeout);
         }
         
-        return originalSetTimeout(handler, timeout, ...args);
+        return originalSetTimeout(handler, timeout);
       };
       
-      // 添加__promisify__属性
+      // 添加__promisify__属性，修复TypeScript类型错误
       Object.defineProperty(newSetTimeout, '__promisify__', {
         value: originalSetTimeout.__promisify__,
         enumerable: false,
@@ -257,7 +258,7 @@ export default function FixTranslationsV4() {
       });
       
       // 替换原始setTimeout
-      window.setTimeout = newSetTimeout as typeof originalSetTimeout;
+      window.setTimeout = newSetTimeout as typeof window.setTimeout;
       
       console.log('[FixV4] 已拦截setTimeout，监控React状态更新');
     };
@@ -275,8 +276,8 @@ export default function FixTranslationsV4() {
     interceptReactStateUpdates();
     
     // 设置定时执行 - 不管怎样每隔一段时间都强制检查
-    const interval1 = setInterval(performFix, 300);   // 每0.3秒
-    const interval2 = setInterval(performFix, 3000);  // 每3秒强制刷新
+    intervalRefs.current.push(setInterval(performFix, 300));   // 每0.3秒
+    intervalRefs.current.push(setInterval(performFix, 3000));  // 每3秒强制刷新
     
     // 页面加载完成后再次修复
     if (document.readyState !== 'complete') {
@@ -292,8 +293,11 @@ export default function FixTranslationsV4() {
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
-      clearInterval(interval1);
-      clearInterval(interval2);
+      
+      // 清除所有定时器
+      intervalRefs.current.forEach(clearInterval);
+      intervalRefs.current = [];
+      
       window.removeEventListener('load', performFix);
       
       // 恢复原始fetch
