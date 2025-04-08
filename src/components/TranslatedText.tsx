@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslation } from '@/lib/i18n/context';
-import get from 'lodash/get';
+import get from 'lodash.get';
 
 // 支持中文的硬编码翻译（以防语言切换中出现空白）
 const hardcodedZh: Record<string, string> = {
