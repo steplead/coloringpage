@@ -5,6 +5,13 @@ import Loading from './loading';
 import { TranslationProvider } from '@/lib/i18n/context';
 import { redirect } from 'next/navigation';
 import { Navigation } from '@/components/Navigation';
+import dynamic from 'next/dynamic';
+
+// 动态导入修复翻译的组件，确保它只在客户端运行
+const FixTranslations = dynamic(
+  () => import('../debug/fix-translations'),
+  { ssr: false }
+);
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   // Get the current language
@@ -56,6 +63,8 @@ export default function LanguageLayout({
       <Suspense fallback={<Loading />}>
         <Navigation currentLang={lang} />
         {children}
+        {/* 添加修复翻译的组件，只在中文页面生效 */}
+        {lang === 'zh' && <FixTranslations />}
       </Suspense>
     </TranslationProvider>
   );
