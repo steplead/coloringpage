@@ -47,21 +47,21 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
         {/* First Row: Logo and Menu Button */}
         <div className="flex justify-between items-center h-14 md:h-16">
           {/* Logo */}
-          <Link href={getLocalizedHref('/')} className="flex items-center flex-shrink-0">
-            <span className="text-xl font-bold text-blue-600 tracking-tight">
+          <Link href={getLocalizedHref('/')} className="flex items-center flex-shrink-0 max-w-[60%]">
+            <span className="text-base sm:text-lg md:text-xl font-bold text-blue-600 tracking-tight truncate">
               <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={displayLang} />
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex md:items-center md:space-x-4">
+          <nav className="hidden md:flex md:items-center md:space-x-2 lg:space-x-4">
             {navLinks.map((link) => {
               const localizedHref = getLocalizedHref(link.href);
               return (
                 <Link
                   key={link.name}
                   href={localizedHref}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`px-2 lg:px-3 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors duration-200 ${
                     pathname === localizedHref || pathname === link.href
                       ? 'bg-blue-50 text-blue-600'
                       : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
@@ -75,13 +75,13 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
             {/* Language Selector - Desktop */}
             <LanguageSelector 
               currentLang={displayLang} 
-              className="ml-2"
+              className="ml-1 lg:ml-2"
               onLanguageChange={(lang) => setDisplayLang(lang)}
             />
             
             <Link 
               href={getLocalizedHref('/create')} 
-              className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+              className="ml-2 lg:ml-4 bg-blue-600 hover:bg-blue-700 text-white px-3 lg:px-4 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors duration-200"
             >
               <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
             </Link>
@@ -155,7 +155,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                 <Link
                   key={link.name}
                   href={localizedHref}
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  className={`block px-3 py-2 rounded-md text-sm font-medium ${
                     pathname === localizedHref || pathname === link.href
                       ? 'bg-blue-50 text-blue-600'
                       : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
@@ -168,7 +168,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
             })}
             <Link
               href={getLocalizedHref('/create')}
-              className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
+              className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
               <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
