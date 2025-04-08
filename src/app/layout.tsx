@@ -5,7 +5,6 @@ import { headers } from 'next/headers';
 import React from 'react';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
-import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { initializeStorage } from '@/lib/storage';
 import LanguageDetectionBanner from '@/components/LanguageDetectionBanner';
@@ -141,7 +140,6 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
-          <Navigation currentLang={currentLang} />
           <main className="flex-1">
             {children}
           </main>
