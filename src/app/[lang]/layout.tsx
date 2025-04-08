@@ -7,9 +7,14 @@ import { redirect } from 'next/navigation';
 import { Navigation } from '@/components/Navigation';
 import dynamic from 'next/dynamic';
 
-// 动态导入修复翻译的组件，确保它只在客户端运行
+// 动态导入修复翻译的组件，确保它们只在客户端运行
 const FixTranslations = dynamic(
   () => import('../debug/fix-translations'),
+  { ssr: false }
+);
+
+const FixTranslationsV2 = dynamic(
+  () => import('../debug/fix-translations-v2'),
   { ssr: false }
 );
 
@@ -64,7 +69,12 @@ export default function LanguageLayout({
         <Navigation currentLang={lang} />
         {children}
         {/* 添加修复翻译的组件，只在中文页面生效 */}
-        {lang === 'zh' && <FixTranslations />}
+        {lang === 'zh' && (
+          <>
+            <FixTranslations />
+            <FixTranslationsV2 />
+          </>
+        )}
       </Suspense>
     </TranslationProvider>
   );
