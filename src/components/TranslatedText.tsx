@@ -18,6 +18,14 @@ const hardcodedZh: Record<string, string> = {
   'common.loading': '加载中...',
   'create.title': '创建您的涂色页',
   'create.subtitle': '选择下方的创建方式，让我们的AI为您生成精美的涂色页',
+  // 使用方法部分的硬编码翻译
+  'home.howItWorks.title': '使用方法',
+  'home.methods.describe.title': '描述您想要的图像',
+  'home.methods.describe.description': '输入文字描述，我们的AI将创建匹配的涂色页',
+  'home.methods.style.title': '选择您喜欢的风格',
+  'home.methods.style.description': '从多种艺术风格中选择，定制您的涂色页外观',
+  'home.methods.advanced.title': '高级设置',
+  'home.methods.advanced.description': '调整细节参数，获得完全符合您需求的涂色页'
 };
 
 // 导出清除翻译缓存的函数
