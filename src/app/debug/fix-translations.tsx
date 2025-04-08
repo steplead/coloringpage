@@ -18,6 +18,26 @@ const methodCards = [
   }
 ];
 
+// 用户评价部分翻译
+const testimonialsContent = {
+  sectionTitle: '用户评价',
+  testimonials: [
+    {
+      text: '我的孩子们喜欢这些涂色页！每次我们都能创建新的独特图案。',
+      author: '李明，两个孩子的父亲'
+    },
+    {
+      text: '作为一名教师，这是我找到的最好的资源之一。我可以为我的学生创建主题涂色页。',
+      author: '王老师，小学教师'
+    },
+    {
+      text: '我用它来放松和减压。创建自己想象的场景然后给它上色非常有趣。',
+      author: '张女士，艺术爱好者'
+    }
+  ],
+  cta: '立即开始创建'
+};
+
 export default function FixTranslations() {
   useEffect(() => {
     // 检测是否是中文页面
@@ -39,14 +59,10 @@ export default function FixTranslations() {
       });
     };
     
-    // 等待DOM完全加载
-    const fixTitles = () => {
+    // 修复"使用方法"部分
+    const fixHowItWorks = () => {
       try {
-        // 记录当前页面结构，帮助调试
-        debugPageStructure();
-        
         // 更通用的方法寻找"使用方法"部分
-        // 首先尝试查找包含"使用方法"或"how it works"文本的标题
         let howItWorksSection: HTMLElement | null = null;
         
         // 寻找ID为how-it-works的部分
@@ -134,22 +150,124 @@ export default function FixTranslations() {
           console.error('[Debug] 无法找到"使用方法"部分');
         }
       } catch (error) {
-        console.error('[FixTranslations] 修复翻译时出错:', error);
+        console.error('[FixTranslations] 修复使用方法部分时出错:', error);
       }
+    };
+    
+    // 修复"用户评价"部分
+    const fixTestimonials = () => {
+      try {
+        // 查找用户评价部分
+        // 可能的标题文本
+        const possibleTitles = ['用户评价', 'What Our Users Say', 'home.testimonials.title'];
+        let testimonialsSection: HTMLElement | null = null;
+        
+        // 通过标题文本查找
+        const allSections = document.querySelectorAll('section');
+        for (let i = 0; i < allSections.length; i++) {
+          const section = allSections[i];
+          const h2 = section.querySelector('h2');
+          if (h2 && possibleTitles.some(title => h2.textContent?.includes(title))) {
+            testimonialsSection = section as HTMLElement;
+            console.log('[Debug] 找到用户评价部分:', h2.textContent);
+            break;
+          }
+        }
+        
+        // 如果找到了部分
+        if (testimonialsSection) {
+          // 更新标题
+          const sectionTitle = testimonialsSection.querySelector('h2');
+          if (sectionTitle) {
+            console.log('[Debug] 原用户评价标题:', sectionTitle.textContent);
+            sectionTitle.textContent = testimonialsContent.sectionTitle;
+          }
+          
+          // 查找评价卡片
+          const testimonialCards = testimonialsSection.querySelectorAll('.grid > div, .md\\:grid-cols-3 > div');
+          
+          if (!testimonialCards || testimonialCards.length === 0) {
+            // 尝试更通用的选择器
+            const allDivs = testimonialsSection.querySelectorAll('div');
+            // 找出所有可能包含评价的div
+            const possibleCards = Array.from(allDivs).filter(div => {
+              const text = div.textContent || '';
+              return (
+                text.includes('home.testimonials.1') ||
+                text.includes('home.testimonials.2') ||
+                text.includes('home.testimonials.3') ||
+                (div.querySelector('p') && div.querySelector('p')?.nextElementSibling?.tagName === 'P')
+              );
+            });
+            
+            console.log('[Debug] 找到可能的评价卡片数量:', possibleCards.length);
+            
+            // 修复每个评价卡片
+            possibleCards.forEach((card, index) => {
+              if (index >= testimonialsContent.testimonials.length) return;
+              
+              // 查找文本和作者元素
+              const paragraphs = card.querySelectorAll('p');
+              if (paragraphs.length >= 2) {
+                const textElem = paragraphs[0];
+                const authorElem = paragraphs[1];
+                
+                console.log(`[Debug] 评价 ${index+1} 原文本:`, textElem.textContent);
+                console.log(`[Debug] 评价 ${index+1} 原作者:`, authorElem.textContent);
+                
+                // 检查是否包含翻译键
+                if (
+                  textElem.textContent?.includes('home.testimonials') || 
+                  textElem.textContent?.trim() === '"home.testimonials.1.text"' ||
+                  textElem.textContent?.trim() === '"home.testimonials.2.text"' ||
+                  textElem.textContent?.trim() === '"home.testimonials.3.text"'
+                ) {
+                  // 更新文本
+                  const testimonial = testimonialsContent.testimonials[index];
+                  textElem.textContent = `"${testimonial.text}"`;
+                  authorElem.textContent = `- ${testimonial.author}`;
+                  console.log(`[Debug] 已更新评价 ${index+1}`);
+                }
+              }
+            });
+            
+            // 修复"立即开始创建"按钮
+            const ctaButton = testimonialsSection.querySelector('a');
+            if (ctaButton && ctaButton.textContent?.includes('home.testimonials.cta')) {
+              ctaButton.textContent = testimonialsContent.cta;
+              console.log('[Debug] 已更新CTA按钮文本');
+            }
+            
+            console.log('[FixTranslations] 已修复用户评价部分的翻译');
+          }
+        } else {
+          console.error('[Debug] 无法找到用户评价部分');
+        }
+      } catch (error) {
+        console.error('[FixTranslations] 修复用户评价部分时出错:', error);
+      }
+    };
+    
+    // 执行所有修复
+    const fixAllTranslations = () => {
+      debugPageStructure(); // 记录页面结构
+      fixHowItWorks();      // 修复"使用方法"部分
+      fixTestimonials();    // 修复"用户评价"部分
     };
     
     // 等待页面完全加载后再执行修复
     if (document.readyState === 'complete') {
-      fixTitles();
+      fixAllTranslations();
     } else {
-      window.addEventListener('load', fixTitles);
+      window.addEventListener('load', fixAllTranslations);
     }
     
     // 设置多个延时调用，确保在不同时间点尝试修复
     const timerIds = [
-      setTimeout(fixTitles, 1000),
-      setTimeout(fixTitles, 2000),
-      setTimeout(fixTitles, 3000)
+      setTimeout(fixAllTranslations, 1000),
+      setTimeout(fixAllTranslations, 2000),
+      setTimeout(fixAllTranslations, 3000),
+      setTimeout(fixAllTranslations, 5000)
     ];
     
     // 监听DOM变化，当有新元素加载时再次尝试修复
@@ -161,7 +279,7 @@ export default function FixTranslations() {
       
       if (shouldFix) {
         console.log('[Debug] DOM已更新，尝试修复翻译');
-        fixTitles();
+        fixAllTranslations();
       }
     });
     
@@ -175,7 +293,7 @@ export default function FixTranslations() {
     return () => {
       timerIds.forEach(clearTimeout);
       observer.disconnect();
-      window.removeEventListener('load', fixTitles);
+      window.removeEventListener('load', fixAllTranslations);
     };
   }, []);
   
