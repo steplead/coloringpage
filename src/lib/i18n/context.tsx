@@ -96,17 +96,8 @@ export function TranslationProvider({
         return value;
       }
       
-      // If the fallback is just the last part of the key (like "title" or "desc"),
-      // try to provide a better fallback
+      // Always use the provided fallback or the last part of the key
       const lastKey = key.split('.').pop() || '';
-      if (fallback === lastKey && (lastKey === 'title' || lastKey === 'desc')) {
-        // For features section, give more meaningful defaults
-        if (key.includes('features')) {
-          if (lastKey === 'title') return 'Loading...';
-          if (lastKey === 'desc') return 'Please wait...';
-        }
-      }
-      
       return fallback || lastKey || key;
     } catch (error) {
       console.error(`Error getting translation for key: ${key}`, error);

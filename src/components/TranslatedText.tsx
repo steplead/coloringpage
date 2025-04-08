@@ -21,29 +21,7 @@ export default function TranslatedText({
   // Get translation from context
   const translatedText = getTranslation(translationKey, fallback);
   
-  // Determine if the fallback is a raw key part like "title" or "desc"
-  const isGenericFallback = fallback === 'title' || fallback === 'desc';
-
-  if (isLoading) {
-    // If the fallback is just "title" or "desc", show a more meaningful loading indicator
-    if (isGenericFallback) {
-      // Use more meaningful loading indicators based on the context
-      if (translationKey.includes('features')) {
-        return translationKey.includes('title') ? 
-          <span className="h-4 w-24 bg-gray-200 rounded animate-pulse inline-block"></span> :
-          <span className="h-3 w-32 bg-gray-100 rounded animate-pulse inline-block"></span>;
-      }
-      
-      // For other contexts, use different sizes
-      return translationKey.includes('title') ? 
-        <span className="h-4 w-20 bg-gray-200 rounded animate-pulse inline-block"></span> :
-        <span className="h-3 w-28 bg-gray-100 rounded animate-pulse inline-block"></span>;
-    }
-    
-    // For non-generic fallbacks, show the fallback with a pulse animation
-    return <span className="animate-pulse">{fallback}</span>;
-  }
-
+  // Always show the translation text or fallback, even during loading
   return <>{translatedText}</>;
 }
 
