@@ -12,8 +12,10 @@ import { translations, LANGUAGE_COOKIE } from '@/lib/i18n';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const lang = searchParams.get('lang') || 'en';
+  // Extract cache buster to log but we don't use it otherwise
+  const cacheBuster = searchParams.get('v');
 
-  console.log(`GET /api/i18n - Requested language: ${lang}`);
+  console.log(`GET /api/i18n - Requested language: ${lang}, cache version: ${cacheBuster || 'none'}`);
 
   // Validate language
   if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
@@ -21,7 +23,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Unsupported language' }, { 
       status: 400,
       headers: {
-        'Cache-Control': 'no-store',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store',
         'Access-Control-Allow-Origin': '*',
       }
     });
@@ -38,8 +43,11 @@ export async function GET(request: NextRequest) {
     console.log(`GET /api/i18n - No translations for ${lang}, falling back to English`);
     return NextResponse.json(translations.en, {
       headers: {
-        // Cache translations for a day
-        'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+        // Prevent caching to ensure updates to translations are received
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store',
         'Access-Control-Allow-Origin': '*',
       }
     });
@@ -47,8 +55,11 @@ export async function GET(request: NextRequest) {
   
   return NextResponse.json(langTranslations, {
     headers: {
-      // Cache translations for a day
-      'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+      // Prevent caching to ensure updates to translations are received
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
       'Access-Control-Allow-Origin': '*',
     }
   });

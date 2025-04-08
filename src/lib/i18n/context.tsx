@@ -33,10 +33,43 @@ interface TranslationProviderProps {
   initialLang?: string;
 }
 
-// Cache translations to avoid repeated fetches
+// Version flag to detect updates to translation files
+const TRANSLATION_VERSION = '1.1';
+
+// Cache translations to avoid repeated fetches - add version suffix to localStorage key
+const getStorageKey = (lang: string) => `translations_${lang}_v${TRANSLATION_VERSION}`;
+
+// Initialize translation cache with English as default
 const translationCache: Record<string, Record<string, any>> = {
   en: defaultTranslations
 };
+
+// Try to load cached translations from localStorage
+if (typeof window !== 'undefined') {
+  try {
+    // Clear any old version translations from localStorage
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('translations_') && !key.includes(`_v${TRANSLATION_VERSION}`)) {
+        localStorage.removeItem(key);
+      }
+    });
+    
+    // Load cached translations that match current version
+    Object.keys(translations).forEach(lang => {
+      const cached = localStorage.getItem(getStorageKey(lang));
+      if (cached) {
+        try {
+          translationCache[lang] = JSON.parse(cached);
+          console.log(`Loaded cached translations for ${lang} from localStorage`);
+        } catch (e) {
+          console.error(`Failed to parse cached translations for ${lang}`, e);
+        }
+      }
+    });
+  } catch (e) {
+    console.error('Error initializing translation cache from localStorage', e);
+  }
+}
 
 export function TranslationProvider({ 
   children, 
@@ -106,7 +139,8 @@ export function TranslationProvider({
     
     try {
       // Fetch translations for the new language
-      const response = await fetch(`/api/i18n?lang=${lang}`);
+      const cacheBuster = Date.now(); // Add timestamp to prevent caching
+      const response = await fetch(`/api/i18n?lang=${lang}&v=${cacheBuster}`);
       if (!response.ok) {
         throw new Error('Failed to fetch translations');
       }
@@ -115,6 +149,15 @@ export function TranslationProvider({
       
       // Cache the translations
       translationCache[lang] = data;
+      
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(getStorageKey(lang), JSON.stringify(data));
+        } catch (e) {
+          console.error(`Failed to save translations to localStorage for ${lang}`, e);
+        }
+      }
       
       setTranslationsData(data);
       setLanguageState(lang);
@@ -148,11 +191,22 @@ export function TranslationProvider({
     const fetchInitialTranslations = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/i18n?lang=${initialLang}`);
+        const cacheBuster = Date.now(); // Add timestamp to prevent caching
+        const response = await fetch(`/api/i18n?lang=${initialLang}&v=${cacheBuster}`);
         if (response.ok) {
           const data = await response.json();
           // Cache the translations
           translationCache[initialLang] = data;
+          
+          // Save to localStorage
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem(getStorageKey(initialLang), JSON.stringify(data));
+            } catch (e) {
+              console.error(`Failed to save translations to localStorage for ${initialLang}`, e);
+            }
+          }
+          
           setTranslationsData(data);
         }
       } catch (error) {
@@ -180,10 +234,19 @@ export function TranslationProvider({
       for (const lang of languagesToPreload) {
         if (!translationCache[lang]) {
           try {
-            const response = await fetch(`/api/i18n?lang=${lang}`);
+            const cacheBuster = Date.now(); // Add timestamp to prevent caching
+            const response = await fetch(`/api/i18n?lang=${lang}&v=${cacheBuster}`);
             if (response.ok) {
               const data = await response.json();
               translationCache[lang] = data;
+              
+              // Save to localStorage
+              try {
+                localStorage.setItem(getStorageKey(lang), JSON.stringify(data));
+              } catch (e) {
+                console.error(`Failed to save translations to localStorage for ${lang}`, e);
+              }
+              
               console.log(`Preloaded translations for ${lang}`);
             }
           } catch (error) {
