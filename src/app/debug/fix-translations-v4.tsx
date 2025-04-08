@@ -212,7 +212,13 @@ export default function FixTranslationsV4() {
     const interceptReactStateUpdates = () => {
       // 拦截setTimeout，确保我们的修复函数在React批量更新后执行
       const originalSetTimeout = window.setTimeout;
-      window.setTimeout = function(handler: TimerHandler, timeout?: number, ...args: any[]): number {
+      
+      // 修复TypeScript错误，正确声明setTimeout
+      const newSetTimeout = function(
+        handler: TimerHandler, 
+        timeout?: number | undefined, 
+        ...args: any[]
+      ) {
         // 获取调用栈以检测是否来自React
         const stack = new Error().stack || '';
         const isReactStateUpdate = stack.includes('react') || 
@@ -233,14 +239,25 @@ export default function FixTranslationsV4() {
             }
             
             // 在处理程序执行后修复DOM
-            setTimeout(performFix, 0);
+            originalSetTimeout(performFix, 0);
           };
           
-          return originalSetTimeout.call(window, wrappedHandler, timeout);
+          return originalSetTimeout(wrappedHandler, timeout);
         }
         
-        return originalSetTimeout.apply(window, arguments as any);
+        return originalSetTimeout(handler, timeout, ...args);
       };
+      
+      // 添加__promisify__属性
+      Object.defineProperty(newSetTimeout, '__promisify__', {
+        value: originalSetTimeout.__promisify__,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      });
+      
+      // 替换原始setTimeout
+      window.setTimeout = newSetTimeout as typeof originalSetTimeout;
       
       console.log('[FixV4] 已拦截setTimeout，监控React状态更新');
     };
@@ -258,10 +275,8 @@ export default function FixTranslationsV4() {
     interceptReactStateUpdates();
     
     // 设置定时执行 - 不管怎样每隔一段时间都强制检查
-    const intervals = [
-      setInterval(performFix, 300),   // 每0.3秒
-      setInterval(performFix, 3000)   // 每3秒强制刷新 
-    ];
+    const interval1 = setInterval(performFix, 300);   // 每0.3秒
+    const interval2 = setInterval(performFix, 3000);  // 每3秒强制刷新
     
     // 页面加载完成后再次修复
     if (document.readyState !== 'complete') {
@@ -277,7 +292,8 @@ export default function FixTranslationsV4() {
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
-      intervals.forEach(clearInterval);
+      clearInterval(interval1);
+      clearInterval(interval2);
       window.removeEventListener('load', performFix);
       
       // 恢复原始fetch
