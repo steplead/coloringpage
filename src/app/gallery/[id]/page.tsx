@@ -8,9 +8,9 @@ import { PageHeader } from '@/components/PageHeader';
 import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
-import { ArrowLeftIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import PDFExportButton from '@/components/PDFExportButton';
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import SocialShareButtons from '@/components/SocialShareButtons';
+import PDFDownload from '@/components/PDFDownload';
 
 interface ColoringPageDetailProps {
   params: { 
@@ -237,7 +237,10 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
               </div>
               
               {/* Action Buttons */}
-              <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  <TranslatedText translationKey="gallery.detail.downloadOptions" fallback="Download Options" lang={currentLang} />
+                </h3>
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={handleDownload}
@@ -248,24 +251,22 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
                   </button>
                   
                   {image?.image_url && (
-                    <PDFExportButton 
+                    <PDFDownload 
                       imageUrl={image.image_url} 
                       title={title}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      lang={currentLang}
                     />
                   )}
+                  
+                  <Link 
+                    href="/gallery/[id]/print"
+                    as={`/gallery/${params.id}/print`}
+                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    <PrinterIcon className="mr-2 h-4 w-4" />
+                    <TranslatedText translationKey="gallery.detail.printButton" fallback="Print This Page" lang={currentLang} />
+                  </Link>
                 </div>
-                
-                <Link 
-                  href="/gallery/[id]/print"
-                  as={`/gallery/${params.id}/print`}
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                  </svg>
-                  <TranslatedText translationKey="gallery.detail.printButton" fallback="Print This Page" lang={currentLang} />
-                </Link>
               </div>
 
               {/* Printing Tips Box */}
