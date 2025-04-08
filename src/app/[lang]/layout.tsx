@@ -5,7 +5,6 @@ import Loading from './loading';
 import { TranslationProvider } from '@/lib/i18n/context';
 import { redirect } from 'next/navigation';
 import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
   // Get the current language
@@ -54,15 +53,10 @@ export default function LanguageLayout({
   
   return (
     <TranslationProvider initialLang={lang}>
-      <div className="flex flex-col min-h-screen">
+      <Suspense fallback={<Loading />}>
         <Navigation currentLang={lang} />
-        <main className="flex-1">
-          <Suspense fallback={<Loading />}>
-            {children}
-          </Suspense>
-        </main>
-        <Footer />
-      </div>
+        {children}
+      </Suspense>
     </TranslationProvider>
   );
 } 
