@@ -137,7 +137,7 @@ export default function Home({ params }: { params?: { lang?: string } }) {
       {/* How It Works Section */}
       <section id="how-it-works" className="w-full py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
             <TranslatedText translationKey="home.howItWorks.title" fallback="Create Coloring Pages Your Way" lang={currentLang} />
           </h2>
 
@@ -145,10 +145,10 @@ export default function Home({ params }: { params?: { lang?: string } }) {
             {creationMethods.map((method, index) => (
               <div key={index} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow p-6 text-center">
                 <div className="text-5xl mb-4">{method.icon}</div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-800 break-words">
                   <TranslatedText translationKey={method.title} fallback={method.title.split('.').pop()} lang={currentLang} />
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-sm sm:text-base text-gray-600 mb-6">
                   <TranslatedText translationKey={method.description} fallback={method.description.split('.').pop()} lang={currentLang} />
                 </p>
                 <Link href={method.link} className="inline-block px-6 py-2 bg-blue-100 text-blue-600 rounded-full font-medium hover:bg-blue-200 transition-colors">
@@ -163,10 +163,10 @@ export default function Home({ params }: { params?: { lang?: string } }) {
       {/* Styles Preview */}
       <section className="w-full py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4 sm:mb-6 break-words hyphens-auto">
             <TranslatedText translationKey="home.styles.title" fallback="Choose Your Style" lang={currentLang} />
           </h2>
-          <p className="text-xl text-center text-gray-600 max-w-3xl mx-auto mb-12">
+          <p className="text-base sm:text-xl text-center text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12">
             <TranslatedText translationKey="home.styles.subtitle" fallback="Select from multiple artistic styles to create the perfect coloring page" lang={currentLang} />
           </p>
 
@@ -179,7 +179,7 @@ export default function Home({ params }: { params?: { lang?: string } }) {
                   </div>
                 </div>
                 <div className="p-3 text-center border-t border-gray-100">
-                  <h3 className="font-medium text-gray-800">
+                  <h3 className="text-sm sm:text-base font-medium text-gray-800 break-words">
                     <TranslatedText translationKey={style} fallback={style.split('.').pop()} lang={currentLang} />
                   </h3>
                 </div>
@@ -192,15 +192,15 @@ export default function Home({ params }: { params?: { lang?: string } }) {
       {/* Testimonials */}
       <section className="w-full py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
             <TranslatedText translationKey="home.testimonials.title" fallback="What Our Users Say" lang={currentLang} />
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white rounded-xl overflow-hidden shadow-md p-6 border border-gray-100">
-                <p className="text-gray-600 mb-4">"<TranslatedText translationKey={testimonial.text} fallback={testimonial.text} lang={currentLang} />"</p>
-                <p className="font-medium text-gray-800">- <TranslatedText translationKey={testimonial.author} fallback={testimonial.author} lang={currentLang} /></p>
+                <p className="text-sm sm:text-base text-gray-600 mb-4">"<TranslatedText translationKey={testimonial.text} fallback={testimonial.text} lang={currentLang} />"</p>
+                <p className="text-sm sm:text-base font-medium text-gray-800">- <TranslatedText translationKey={testimonial.author} fallback={testimonial.author} lang={currentLang} /></p>
               </div>
             ))}
           </div>
@@ -216,7 +216,7 @@ export default function Home({ params }: { params?: { lang?: string } }) {
       {/* Features Section */}
       <section className="w-full py-16 px-4 bg-blue-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
             <TranslatedText translationKey="home.features.title" fallback="Why Choose Our AI Coloring Page Generator?" lang={currentLang} />
           </h2>
 
@@ -231,12 +231,12 @@ export default function Home({ params }: { params?: { lang?: string } }) {
               { icon: '🔒', title: 'home.features.secure.title', desc: 'home.features.secure.desc' },
               { icon: '✏️', title: 'home.features.control.title', desc: 'home.features.control.desc' },
             ].map((feature, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="text-3xl mb-3">{feature.icon}</div>
-                <h3 className="text-lg font-bold mb-2 text-gray-800">
+              <div key={index} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm">
+                <div className="text-2xl sm:text-3xl mb-2 sm:mb-3">{feature.icon}</div>
+                <h3 className="text-base sm:text-lg font-bold mb-1 sm:mb-2 text-gray-800 break-words">
                   <TranslatedText translationKey={feature.title} fallback={feature.title.split('.').pop()} lang={currentLang} />
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600 break-words">
                   <TranslatedText translationKey={feature.desc} fallback={feature.desc.split('.').pop()} lang={currentLang} />
                 </p>
               </div>
@@ -248,13 +248,13 @@ export default function Home({ params }: { params?: { lang?: string } }) {
       {/* CTA Section */}
       <section className="w-full py-16 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 break-words hyphens-auto">
             <TranslatedText translationKey="home.cta.title" fallback="Ready to Create Your Coloring Pages?" lang={currentLang} />
           </h2>
-          <p className="text-xl mb-8 text-blue-100">
+          <p className="text-base sm:text-xl mb-6 sm:mb-8 text-blue-100">
             <TranslatedText translationKey="home.cta.subtitle" fallback="Get started in seconds. No credit card required." lang={currentLang} />
           </p>
-          <Link href="/create" className="px-8 py-4 bg-white text-blue-600 rounded-full font-medium text-lg hover:bg-blue-50 transition-colors shadow-lg inline-block">
+          <Link href="/create" className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 rounded-full font-medium text-base sm:text-lg hover:bg-blue-50 transition-colors shadow-lg inline-block">
             <TranslatedText translationKey="home.cta.button" fallback="Start Creating for Free" lang={currentLang} />
           </Link>
         </div>
