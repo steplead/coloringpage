@@ -1,92 +1,109 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useTranslation } from '@/lib/i18n/context';
+import get from 'lodash/get';
 
-// 针对中文的硬编码翻译，用于加快显示速度
-const CHINESE_HARDCODED: Record<string, string> = {
-  'features.title': '为什么选择我们的AI涂色页生成器？',
-  'features.fast.title': '即时创建',
-  'features.fast.desc': '几秒钟内获得您的涂色页',
-  'features.styles.title': '多种风格',
-  'features.styles.desc': '简单的适合幼儿，复杂的适合成人',
-  'features.everywhere.title': '随处可用',
-  'features.everywhere.desc': '在手机、平板或电脑上使用',
-  'features.unlimited.title': '无限页面',
-  'features.unlimited.desc': '随时创建任意数量的页面',
-  'features.print.title': '打印就绪',
-  'features.print.desc': '适合任何尺寸打印的完美质量',
-  'features.easy.title': '儿童友好',
-  'features.easy.desc': '简单到孩子们可以自己使用',
-  'features.secure.title': '安全私密',
-  'features.secure.desc': '无需账户，您的创作属于您',
-  'features.control.title': '完全控制',
-  'features.control.desc': '根据您的喜好调整每个细节'
+// 支持中文的硬编码翻译（以防语言切换中出现空白）
+const hardcodedZh: Record<string, string> = {
+  'common.appName': 'AI涂色页',
+  'home.hero.title': '使用AI创建精美的涂色页',
+  'home.hero.subtitle': '几秒钟内将您的想法转化为精美的涂色页。适合儿童、教师和涂色爱好者。',
+  'home.hero.createButton': '立即创建',
+  'nav.home': '主页',
+  'nav.gallery': '画廊',
+  'nav.about': '关于',
+  'nav.create': '创建',
+  'nav.createNow': '立即创建',
+  'common.loading': '加载中...',
+  'create.title': '创建您的涂色页',
+  'create.subtitle': '选择下方的创建方式，让我们的AI为您生成精美的涂色页',
 };
 
-// 清除翻译缓存的函数
-export function clearTranslationCache() {
+// 导出清除翻译缓存的函数
+export const clearTranslationCache = () => {
   if (typeof window !== 'undefined') {
-    // Clear all translation-related localStorage items
+    const keys = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith('translation_')) {
-        localStorage.removeItem(key);
+      if (key && key.startsWith('translations_')) {
+        keys.push(key);
       }
     }
+    
+    keys.forEach(key => {
+      localStorage.removeItem(key);
+    });
+    
     console.log('Translation cache cleared');
+    window.location.reload();
   }
-}
-
-type TranslatedTextProps = {
-  translationKey: string;
-  fallback?: string;
-  params?: Record<string, string>;
-  className?: string;
 };
 
-export default function TranslatedText({ 
+type TranslatedTextProps = {
+  // 支持新旧两种属性
+  translationKey?: string;
+  path?: string;
+  fallback?: string;
+  params?: Record<string, string | number>;
+  className?: string;
+  skipLoading?: boolean;
+};
+
+const TranslatedText: React.FC<TranslatedTextProps> = ({ 
   translationKey, 
+  path, 
   fallback = '', 
   params = {}, 
-  className = '' 
-}: TranslatedTextProps) {
+  className = '',
+  skipLoading = false
+}) => {
   const { translations, language, isLoading, lastError } = useTranslation();
   
-  // Replace placeholders like {{param}} with actual values
-  const formatTranslation = (text: string) => {
-    return text.replace(/\{\{(\w+)\}\}/g, (_, key) => params[key] || '');
-  };
+  // 使用translationKey或path，确保向后兼容性
+  const key = translationKey || path;
+  
+  if (!key) {
+    console.error('TranslatedText: No translationKey or path provided');
+    return <span className={className}>{fallback}</span>;
+  }
 
-  if (isLoading) {
-    // Return a skeleton loader with similar dimensions
+  // 加载中显示骨架屏
+  if (isLoading && !skipLoading) {
     return (
-      <span className={`bg-gray-200 animate-pulse rounded ${className}`} 
-            style={{ display: 'inline-block', minWidth: '20px', height: '1em' }}>
-        {fallback || '-'}
+      <span className={`inline-block bg-gray-200 animate-pulse rounded ${className}`} style={{ minWidth: '3em' }}>
+        {fallback}
       </span>
     );
   }
 
+  // 如果是中文且有硬编码翻译，直接使用
+  if (language === 'zh' && key in hardcodedZh) {
+    return <span className={className}>{hardcodedZh[key]}</span>;
+  }
+
+  // 当有翻译时使用翻译
+  if (translations && Object.keys(translations).length > 0) {
+    const translated = get(translations, key);
+    
+    if (translated) {
+      // 处理包含参数的翻译
+      let formattedText = translated;
+      
+      Object.entries(params).forEach(([paramKey, value]) => {
+        formattedText = formattedText.replace(new RegExp(`{${paramKey}}`, 'g'), String(value));
+      });
+      
+      return <span className={className}>{formattedText}</span>;
+    }
+  }
+
+  // 如果翻译出错或没有找到翻译，使用fallback
   if (lastError) {
-    console.error('Translation error:', lastError);
-    return <span className={className}>{fallback || translationKey}</span>;
+    console.warn(`Translation error for key ${key}:`, lastError);
   }
 
-  // Navigate through the translation object using the dot notation key
-  let parts = translationKey.split('.');
-  let result = translations;
-  
-  for (const part of parts) {
-    result = result?.[part];
-    if (result === undefined) break;
-  }
+  return <span className={className}>{fallback}</span>;
+};
 
-  // If we found a string translation, format it with params
-  if (typeof result === 'string') {
-    return <span className={className}>{formatTranslation(result)}</span>;
-  }
-  
-  // Otherwise use fallback
-  return <span className={className}>{fallback || translationKey}</span>;
-} 
+export default TranslatedText; 
