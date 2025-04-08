@@ -1,65 +1,92 @@
 'use client';
 
+import React, { ReactNode } from 'react';
 import { useTranslation } from '@/lib/i18n/context';
-import { useEffect, useState } from 'react';
 
-interface TranslatedTextProps {
+// 针对中文的硬编码翻译，用于加快显示速度
+const CHINESE_HARDCODED: Record<string, string> = {
+  'features.title': '为什么选择我们的AI涂色页生成器？',
+  'features.fast.title': '即时创建',
+  'features.fast.desc': '几秒钟内获得您的涂色页',
+  'features.styles.title': '多种风格',
+  'features.styles.desc': '简单的适合幼儿，复杂的适合成人',
+  'features.everywhere.title': '随处可用',
+  'features.everywhere.desc': '在手机、平板或电脑上使用',
+  'features.unlimited.title': '无限页面',
+  'features.unlimited.desc': '随时创建任意数量的页面',
+  'features.print.title': '打印就绪',
+  'features.print.desc': '适合任何尺寸打印的完美质量',
+  'features.easy.title': '儿童友好',
+  'features.easy.desc': '简单到孩子们可以自己使用',
+  'features.secure.title': '安全私密',
+  'features.secure.desc': '无需账户，您的创作属于您',
+  'features.control.title': '完全控制',
+  'features.control.desc': '根据您的喜好调整每个细节'
+};
+
+// 清除翻译缓存的函数
+export function clearTranslationCache() {
+  if (typeof window !== 'undefined') {
+    // Clear all translation-related localStorage items
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('translation_')) {
+        localStorage.removeItem(key);
+      }
+    }
+    console.log('Translation cache cleared');
+  }
+}
+
+type TranslatedTextProps = {
   translationKey: string;
   fallback?: string;
-  lang?: string;
-  showLoading?: boolean; // 是否在加载时显示加载指示器
-}
+  params?: Record<string, string>;
+  className?: string;
+};
 
 export default function TranslatedText({ 
   translationKey, 
-  fallback = translationKey.split('.').pop() || translationKey,
-  lang,
-  showLoading = false, // 默认不显示加载指示器
+  fallback = '', 
+  params = {}, 
+  className = '' 
 }: TranslatedTextProps) {
-  const { getTranslation, isLoading, language } = useTranslation();
-  const [isMounted, setIsMounted] = useState(false);
+  const { translations, language, isLoading, lastError } = useTranslation();
   
-  // 使用useEffect确保组件仅在客户端渲染
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  // 使用提供的lang或来自context的全局语言
-  const activeLang = lang || language;
-  
-  // 从context获取翻译
-  const translatedText = getTranslation(translationKey, fallback);
-  
-  // 在组件挂载前不渲染任何内容（避免服务器/客户端不匹配）
-  if (!isMounted) {
-    return null;
-  }
-  
-  // 如果正在加载并启用了加载指示器
-  if (isLoading && showLoading) {
-    return <span className="text-gray-400 animate-pulse">{fallback}</span>;
-  }
-  
-  // 显示翻译文本或回退值
-  return <>{translatedText}</>;
-}
+  // Replace placeholders like {{param}} with actual values
+  const formatTranslation = (text: string) => {
+    return text.replace(/\{\{(\w+)\}\}/g, (_, key) => params[key] || '');
+  };
 
-// 用于清除翻译缓存的函数
-export function clearTranslationCache() {
-  if (typeof window === 'undefined') return;
-  
-  try {
-    // 从localStorage中查找并删除所有翻译缓存
-    Object.keys(localStorage).forEach(key => {
-      if (key.startsWith('translations_')) {
-        localStorage.removeItem(key);
-        console.log(`Cleared translation cache: ${key}`);
-      }
-    });
-    
-    // 强制刷新页面以重新加载翻译
-    window.location.reload();
-  } catch (error) {
-    console.error('Error clearing translation cache:', error);
+  if (isLoading) {
+    // Return a skeleton loader with similar dimensions
+    return (
+      <span className={`bg-gray-200 animate-pulse rounded ${className}`} 
+            style={{ display: 'inline-block', minWidth: '20px', height: '1em' }}>
+        {fallback || '-'}
+      </span>
+    );
   }
+
+  if (lastError) {
+    console.error('Translation error:', lastError);
+    return <span className={className}>{fallback || translationKey}</span>;
+  }
+
+  // Navigate through the translation object using the dot notation key
+  let parts = translationKey.split('.');
+  let result = translations;
+  
+  for (const part of parts) {
+    result = result?.[part];
+    if (result === undefined) break;
+  }
+
+  // If we found a string translation, format it with params
+  if (typeof result === 'string') {
+    return <span className={className}>{formatTranslation(result)}</span>;
+  }
+  
+  // Otherwise use fallback
+  return <span className={className}>{fallback || translationKey}</span>;
 } 
