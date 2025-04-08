@@ -1,6 +1,3 @@
-import { cookies } from 'next/headers';
-import { SUPPORTED_LANGUAGES } from './locales';
-
 // Import all translation files
 import enTranslations from './translations/en.json';
 import zhTranslations from './translations/zh.json';
@@ -10,9 +7,10 @@ import deTranslations from './translations/de.json';
 import jaTranslations from './translations/ja.json';
 import koTranslations from './translations/ko.json';
 import ruTranslations from './translations/ru.json';
+import { SUPPORTED_LANGUAGES } from './locales';
 
 // Map of all translations
-const translations: Record<string, any> = {
+export const translations: Record<string, any> = {
   en: enTranslations,
   zh: zhTranslations,
   es: esTranslations,
@@ -24,61 +22,31 @@ const translations: Record<string, any> = {
 };
 
 // Cookie name for storing language preference
-const LANGUAGE_COOKIE = 'preferred_language';
+export const LANGUAGE_COOKIE = 'NEXT_LOCALE';
 
 /**
- * Detect the user's preferred language from cookies or Accept-Language header
- * @param requestHeaders - Optional headers from the request
+ * Client-side language detection from navigator
  * @returns The detected language code
  */
-export function detectLanguage(requestHeaders?: Headers): string {
-  // First check if there's a cookie with language preference
-  const cookieStore = cookies();
-  const languageCookie = cookieStore.get(LANGUAGE_COOKIE);
-  
-  if (languageCookie?.value && isValidLanguage(languageCookie.value)) {
-    return languageCookie.value;
+export function detectClientLanguage(): string {
+  if (typeof window === 'undefined') {
+    return 'en'; // Default to English on the server
   }
   
-  // If no valid cookie, check Accept-Language header
-  if (requestHeaders) {
-    const acceptLanguage = requestHeaders.get('Accept-Language');
-    if (acceptLanguage) {
-      // Parse the Accept-Language header to get language preferences in order
-      const languages = acceptLanguage
-        .split(',')
-        .map(lang => {
-          const [language, quality = 'q=1.0'] = lang.trim().split(';');
-          const q = parseFloat(quality.substring(2)) || 0;
-          return { language: language.substring(0, 2), quality: q };
-        })
-        .sort((a, b) => b.quality - a.quality);
-      
-      // Find the first supported language
-      for (const { language } of languages) {
-        if (isValidLanguage(language)) {
-          return language;
-        }
-      }
-    }
+  // Try to get from localStorage first
+  const storedLang = localStorage.getItem(LANGUAGE_COOKIE);
+  if (storedLang && isValidLanguage(storedLang)) {
+    return storedLang;
   }
   
-  // Default to English if no valid language detected
+  // Check navigator language
+  const browserLang = navigator.language?.substring(0, 2);
+  if (browserLang && isValidLanguage(browserLang)) {
+    return browserLang;
+  }
+  
+  // Default to English
   return 'en';
-}
-
-/**
- * Set the user's preferred language
- * @param language - The language code to set
- */
-export function setLanguage(language: string): void {
-  if (isValidLanguage(language)) {
-    cookies().set(LANGUAGE_COOKIE, language, {
-      path: '/',
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-    });
-  }
 }
 
 /**
@@ -139,8 +107,6 @@ export function getTranslations(language: string): any {
  * @param language - The language code to check
  * @returns True if the language is supported
  */
-function isValidLanguage(language: string): boolean {
+export function isValidLanguage(language: string): boolean {
   return SUPPORTED_LANGUAGES.some(lang => lang.code === language);
-}
-
-export { translations, LANGUAGE_COOKIE }; 
+} 

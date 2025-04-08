@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { translations } from './index';
+import Cookies from 'js-cookie';
+import { LANGUAGE_COOKIE } from './index';
 
 // Default to English translations as initial value
 const defaultTranslations = translations.en;
@@ -91,8 +93,14 @@ export function TranslationProvider({
       setLanguageState(lang);
       setIsLoading(false);
       
-      // Update cookie in background
-      updateLanguageCookie(lang).catch(e => console.error('Error updating language cookie:', e));
+      // Update cookie directly with js-cookie
+      Cookies.set(LANGUAGE_COOKIE, lang, { expires: 365, path: '/' });
+      
+      // Also update localStorage for redundancy
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(LANGUAGE_COOKIE, lang);
+      }
+      
       return;
     }
     
@@ -111,24 +119,19 @@ export function TranslationProvider({
       setTranslationsData(data);
       setLanguageState(lang);
       
-      // Update cookie
-      await updateLanguageCookie(lang);
+      // Update cookie directly with js-cookie
+      Cookies.set(LANGUAGE_COOKIE, lang, { expires: 365, path: '/' });
+      
+      // Also update localStorage for redundancy
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(LANGUAGE_COOKIE, lang);
+      }
+      
     } catch (error) {
       console.error('Error setting language:', error);
     } finally {
       setIsLoading(false);
     }
-  };
-  
-  // Helper function to update the language cookie
-  const updateLanguageCookie = async (lang: string) => {
-    return fetch('/api/i18n', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ lang }),
-    });
   };
 
   // Initial load of translations
@@ -161,6 +164,42 @@ export function TranslationProvider({
 
     fetchInitialTranslations();
   }, [initialLang]);
+
+  // Preload all translations in the background for faster language switching
+  useEffect(() => {
+    // This effect will only run once on client side
+    if (typeof window === 'undefined') return;
+    
+    const preloadAllTranslations = async () => {
+      // Get the list of supported languages that aren't already cached
+      const languagesToPreload = Object.keys(translations).filter(
+        lang => lang !== 'en' && !translationCache[lang]
+      );
+      
+      // Preload each language in sequence
+      for (const lang of languagesToPreload) {
+        if (!translationCache[lang]) {
+          try {
+            const response = await fetch(`/api/i18n?lang=${lang}`);
+            if (response.ok) {
+              const data = await response.json();
+              translationCache[lang] = data;
+              console.log(`Preloaded translations for ${lang}`);
+            }
+          } catch (error) {
+            console.error(`Error preloading translations for ${lang}:`, error);
+          }
+        }
+      }
+    };
+    
+    // Start preloading after a short delay to not compete with critical resources
+    const timer = setTimeout(() => {
+      preloadAllTranslations();
+    }, 3000);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <TranslationContext.Provider
