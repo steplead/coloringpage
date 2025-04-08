@@ -1,105 +1,102 @@
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { TranslationProvider } from '@/lib/i18n/context';
-import { Navigation } from '@/components/Navigation';
-import Loading from './loading';
-import { Inter } from 'next/font/google';
-import { Toaster } from 'react-hot-toast';
-import { Analytics } from '@vercel/analytics/react';
-import "../globals.css";
-import Script from 'next/script';
-import dynamic from 'next/dynamic';
-import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
-import { redirect } from 'next/navigation';
+import './globals.css'
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { notFound } from 'next/navigation'
+import Script from 'next/script'
+import { Toaster } from 'react-hot-toast'
+import { TranslationProvider } from '@/lib/i18n/context'
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales'
+import { cn } from '@/lib/utils'
+import { Analytics } from '@vercel/analytics/react'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+import { Navigation } from '@/components/Navigation'
+import Loading from './loading'
 
-const inter = Inter({ subsets: ['latin'] });
+// 动态导入调试和修复组件
+const FixTranslationsV7 = dynamic(() => import('@/app/debug/fix-translations-v7'), { ssr: false })
 
-// 动态导入修复翻译的组件，确保它们只在客户端运行
-const FixTranslationsV5 = dynamic(
-  () => import('../debug/fix-translations-v5'),
-  { ssr: false }
-);
+const inter = Inter({ subsets: ['latin'] })
 
-export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  // Get the current language
-  const lang = params.lang;
-  
-  // Find language details
-  const languageInfo = SUPPORTED_LANGUAGES.find(l => l.code === lang);
-  const languageName = languageInfo?.name || 'English';
+export const metadata: Metadata = {
+  title: 'AI Coloring Page Generator',
+  description: 'Create coloring pages with AI',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+}
+
+export async function generateMetadata({
+  params: { lang },
+}: {
+  params: { lang: string }
+}) {
+  // 如果语言不受支持，返回默认元数据
+  if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    return metadata
+  }
 
   return {
     title: {
-      template: '%s | AI Coloring Page Generator',
-      default: `AI Coloring Page Generator - ${languageName}`,
+      default: lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator',
+      template: '%s | ' + (lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator'),
     },
-    description: `Create beautiful coloring pages with AI. Available in ${languageName}.`,
-    alternates: {
-      canonical: `https://ai-coloringpage.com/${lang}`,
-      languages: {
-        'x-default': 'https://ai-coloringpage.com',
-      },
+    description:
+      lang === 'zh'
+        ? '使用人工智能创建独特的涂色页，适合儿童和成人'
+        : 'Create unique coloring pages with artificial intelligence, perfect for kids and adults',
+    openGraph: {
+      title: lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator',
+      description:
+        lang === 'zh'
+          ? '使用人工智能创建独特的涂色页，适合儿童和成人'
+          : 'Create unique coloring pages with artificial intelligence, perfect for kids and adults',
     },
-  };
-}
-
-// Validate language middleware
-export function middleware(request: Request) {
-  const pathname = new URL(request.url).pathname;
-  const pathSegments = pathname.split('/');
-  const lang = pathSegments[1];
-
-  // Check if the language is valid
-  if (lang && !SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
-    redirect('/en');
   }
 }
 
-export default function LanguageLayout({
+export function generateStaticParams() {
+  return SUPPORTED_LANGUAGES.map((lang) => ({ lang: lang.code }))
+}
+
+// 中间件检查语言是否支持
+export default function RootLayout({
+  params: { lang },
   children,
-  params
 }: {
-  children: React.ReactNode;
-  params: { lang: string };
+  params: { lang: string }
+  children: React.ReactNode
 }) {
-  // Validate the language parameter
-  const { lang } = params;
-  const isValidLanguage = SUPPORTED_LANGUAGES.some(l => l.code === lang);
-  
-  if (!isValidLanguage) {
-    redirect('/en');
+  if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    notFound()
   }
-  
+
   return (
-    <html lang={lang} className="dark">
-      <body className={`${inter.className} bg-gray-950 text-gray-50`}>
+    <html lang={lang}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body className={cn(inter.className, 'bg-gray-50')}>
         <TranslationProvider initialLang={lang}>
           <Suspense fallback={<Loading />}>
             <Navigation currentLang={lang} />
             {children}
-            <Toaster position="top-center" toastOptions={{ style: { background: '#1F2937', color: 'white' } }} />
-            {/* 添加修复翻译的组件，只在中文页面生效 - 主要使用V5版本 */}
-            {lang === 'zh' && (
-              <>
-                <FixTranslationsV5 />
-              </>
-            )}
+            <Toaster position="bottom-center" />
           </Suspense>
+          {/* 修复中文翻译 - 注意: 当前最新版本为 V7，替代之前所有版本 */}
+          {lang === 'zh' && <FixTranslationsV7 />}
         </TranslationProvider>
         <Analytics />
         <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-92597486097093773"
+          crossOrigin="anonymous"
           strategy="lazyOnload"
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
         />
-        <Script id="gtag-init" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-          `}
-        </Script>
       </body>
     </html>
-  );
+  )
 } 
