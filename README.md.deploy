@@ -1,0 +1,53 @@
+# Vercel自动部署配置
+
+本项目已配置GitHub Actions工作流，实现代码推送到main分支后自动部署到Vercel。
+
+## 配置步骤
+
+要启用自动部署，需要在GitHub仓库设置以下secrets：
+
+1. `VERCEL_TOKEN`: 从Vercel获取的API令牌
+2. `VERCEL_PROJECT_ID`: Vercel项目ID
+3. `VERCEL_ORG_ID`: Vercel组织ID
+
+### 获取Vercel Token
+
+1. 登录Vercel账户
+2. 前往 Settings > Tokens
+3. 创建一个新token（确保有足够的权限）
+4. 复制token并添加到GitHub仓库的secrets中
+
+### 获取Vercel Project ID和Org ID
+
+1. 运行 `vercel login` 登录Vercel
+2. 运行 `vercel link` 关联项目
+3. 检查 `.vercel/project.json` 文件，可以找到projectId和orgId
+
+## 如何设置GitHub Secrets
+
+1. 前往GitHub仓库页面
+2. 点击 "Settings" 标签
+3. 在左侧菜单中选择 "Secrets" > "Actions"
+4. 点击 "New repository secret" 添加上述三个secret
+
+## 部署过程
+
+每当代码推送到main分支时，GitHub Actions将自动：
+
+1. 检出代码
+2. 安装依赖
+3. 部署到Vercel
+4. 在提交上添加评论，包含部署的结果和链接
+
+## 手动部署
+
+如果需要手动部署，可以运行：
+
+```bash
+npm run deploy:auto
+```
+
+这将会：
+1. 提交所有更改
+2. 推送到GitHub
+3. 触发GitHub Actions部署流程 
