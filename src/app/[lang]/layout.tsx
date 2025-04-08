@@ -1,35 +1,22 @@
 import type { Metadata } from 'next';
-import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { Suspense } from 'react';
-import Loading from './loading';
 import { TranslationProvider } from '@/lib/i18n/context';
-import { redirect } from 'next/navigation';
 import { Navigation } from '@/components/Navigation';
+import Loading from './loading';
+import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
+import { Analytics } from '@vercel/analytics/react';
+import "../globals.css";
+import Script from 'next/script';
 import dynamic from 'next/dynamic';
+import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import { redirect } from 'next/navigation';
+
+const inter = Inter({ subsets: ['latin'] });
 
 // 动态导入修复翻译的组件，确保它们只在客户端运行
-const FixTranslations = dynamic(
-  () => import('../debug/fix-translations'),
-  { ssr: false }
-);
-
-const FixTranslationsV2 = dynamic(
-  () => import('../debug/fix-translations-v2'),
-  { ssr: false }
-);
-
-const FixTranslationsV3 = dynamic(
-  () => import('../debug/fix-translations-v3'),
-  { ssr: false }
-);
-
-const FixTranslationsV4 = dynamic(
-  () => import('../debug/fix-translations-v4'),
-  { ssr: false }
-);
-
-const FixTranslationsSimplified = dynamic(
-  () => import('../debug/fix-translations-simplified'),
+const FixTranslationsV5 = dynamic(
+  () => import('../debug/fix-translations-v5'),
   { ssr: false }
 );
 
@@ -40,7 +27,7 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   // Find language details
   const languageInfo = SUPPORTED_LANGUAGES.find(l => l.code === lang);
   const languageName = languageInfo?.name || 'English';
-  
+
   return {
     title: {
       template: '%s | AI Coloring Page Generator',
@@ -56,10 +43,16 @@ export async function generateMetadata({ params }: { params: { lang: string } })
   };
 }
 
-export async function generateStaticParams() {
-  return SUPPORTED_LANGUAGES.map(lang => ({
-    lang: lang.code,
-  }));
+// Validate language middleware
+export function middleware(request: Request) {
+  const pathname = new URL(request.url).pathname;
+  const pathSegments = pathname.split('/');
+  const lang = pathSegments[1];
+
+  // Check if the language is valid
+  if (lang && !SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
+    redirect('/en');
+  }
 }
 
 export default function LanguageLayout({
@@ -73,23 +66,40 @@ export default function LanguageLayout({
   const { lang } = params;
   const isValidLanguage = SUPPORTED_LANGUAGES.some(l => l.code === lang);
   
-  // If language is not supported, redirect to the default English page
   if (!isValidLanguage) {
     redirect('/en');
   }
   
   return (
-    <TranslationProvider initialLang={lang}>
-      <Suspense fallback={<Loading />}>
-        <Navigation currentLang={lang} />
-        {children}
-        {/* 添加修复翻译的组件，只在中文页面生效 - 使用简化版本避免TypeScript错误 */}
-        {lang === 'zh' && (
-          <>
-            <FixTranslationsSimplified />
-          </>
-        )}
-      </Suspense>
-    </TranslationProvider>
+    <html lang={lang} className="dark">
+      <body className={`${inter.className} bg-gray-950 text-gray-50`}>
+        <TranslationProvider initialLang={lang}>
+          <Suspense fallback={<Loading />}>
+            <Navigation currentLang={lang} />
+            {children}
+            <Toaster position="top-center" toastOptions={{ style: { background: '#1F2937', color: 'white' } }} />
+            {/* 添加修复翻译的组件，只在中文页面生效 - 主要使用V5版本 */}
+            {lang === 'zh' && (
+              <>
+                <FixTranslationsV5 />
+              </>
+            )}
+          </Suspense>
+        </TranslationProvider>
+        <Analytics />
+        <Script
+          strategy="lazyOnload"
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+        />
+        <Script id="gtag-init" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+          `}
+        </Script>
+      </body>
+    </html>
   );
 } 
