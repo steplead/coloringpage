@@ -1,0 +1,48 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background and outline for the 404 text -->
+  <g>
+    <rect x="50" y="100" width="300" height="170" rx="15" ry="15" fill="none" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="5,5"/>
+    <g fill="none" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Number 4 -->
+      <path d="M115,130 L115,230 M85,180 L145,180" />
+      <path d="M85,130 L115,180" />
+      <!-- Number 0 -->
+      <path d="M155,130 A30,50 0 0 1 215,130 A30,50 0 0 1 215,230 A30,50 0 0 1 155,230 A30,50 0 0 1 155,130 z" />
+      <!-- Number 4 -->
+      <path d="M255,130 L255,230 M225,180 L285,180" />
+      <path d="M225,130 L255,180" />
+    </g>
+  </g>
+  
+  <!-- Decorative elements -->
+  <g>
+    <!-- Crayon left -->
+    <path d="M40,290 L60,310 L80,290 L75,255 L45,255 z" fill="#fcd34d" stroke="#9ca3af" stroke-width="1.5"/>
+    <path d="M60,310 L60,320" stroke="#9ca3af" stroke-width="1.5"/>
+    <rect x="45" y="245" width="30" height="10" fill="#fef3c7" stroke="#9ca3af" stroke-width="1.5" rx="2" ry="2"/>
+    
+    <!-- Crayon right -->
+    <path d="M320,290 L340,310 L360,290 L355,255 L325,255 z" fill="#60a5fa" stroke="#9ca3af" stroke-width="1.5"/>
+    <path d="M340,310 L340,320" stroke="#9ca3af" stroke-width="1.5"/>
+    <rect x="325" y="245" width="30" height="10" fill="#dbeafe" stroke="#9ca3af" stroke-width="1.5" rx="2" ry="2"/>
+    
+    <!-- Pencil -->
+    <path d="M195,85 L205,85 L215,65 L185,65 z" fill="#fde68a"/>
+    <rect x="195" y="85" width="10" height="30" fill="#d1d5db"/>
+    <path d="M185,65 L215,65 L200,45 z" fill="#f87171"/>
+    <path d="M185,65 L215,65 L200,45 z" fill="none" stroke="#9ca3af" stroke-width="1"/>
+    <path d="M195,85 L205,85 L215,65 L185,65 L195,85 z" fill="none" stroke="#9ca3af" stroke-width="1"/>
+    <rect x="195" y="85" width="10" height="30" fill="none" stroke="#9ca3af" stroke-width="1"/>
+  </g>
+  
+  <!-- Message -->
+  <text x="200" y="355" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#4b5563">Page not found</text>
+  
+  <!-- Dotted circles suggesting "coloring" theme -->
+  <circle cx="90" cy="50" r="15" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="320" cy="70" r="20" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="50" cy="200" r="12" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="350" cy="200" r="12" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="90" cy="330" r="15" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="300" cy="350" r="10" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="3,3"/>
+</svg> 
