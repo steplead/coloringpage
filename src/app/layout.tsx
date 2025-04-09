@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { headers } from 'next/headers';
 import React from 'react';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import { redirect } from 'next/navigation';
 
 import { Footer } from '@/components/Footer';
 import { initializeStorage } from '@/lib/storage';
@@ -105,48 +106,18 @@ if (typeof window === 'undefined') {
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: any;
 }) {
-  // Extract the lang parameter from the URL path segments
-  // This requires looking at the request path since we're in the root layout
-  const pathname = headers().get('x-pathname') || '';
-  const pathSegments = pathname.split('/').filter(Boolean);
+  // Get the preferred language from headers
+  const headersList = headers();
+  const pathname = headersList.get('x-pathname') || '/';
   
-  // Check if the first segment is a valid language code
-  let currentLang = 'en'; // Default language
-  if (pathSegments.length > 0) {
-    const potentialLang = pathSegments[0];
-    if (SUPPORTED_LANGUAGES.some(lang => lang.code === potentialLang)) {
-      currentLang = potentialLang;
-    }
+  // If we're at the root path, redirect to the appropriate language version
+  if (pathname === '/') {
+    const headerLang = headersList.get('x-locale') || 'en';
+    redirect(`/${headerLang}`);
   }
 
-  return (
-    <html lang={currentLang} className="scroll-smooth">
-      <head>
-        {/* Add hreflang tags for better SEO */}
-        {SUPPORTED_LANGUAGES.map(lang => (
-          <link 
-            key={lang.code}
-            rel="alternate" 
-            hrefLang={lang.code} 
-            href={`${SITE_URL}/${lang.code}`} 
-          />
-        ))}
-        <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
-      </head>
-      <body className={`${inter.className} antialiased`}>
-        <div className="flex flex-col min-h-screen">
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <LanguageDetectionBanner />
-        </div>
-      </body>
-    </html>
-  );
+  return children;
 } 

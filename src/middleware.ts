@@ -57,25 +57,39 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Get the locale from the request
+  const locale = getLocaleFromRequest(request);
+
+  // Create a response with the appropriate headers
+  const response = NextResponse.next();
+  response.headers.set('x-pathname', pathname);
+  response.headers.set('x-locale', locale);
+
   // Check if the path starts with a locale
-  const pathnameSegments = pathname.split('/');
-  const firstSegment = pathnameSegments[1];
+  const segments = pathname.split('/');
+  const firstSegment = segments[1];
   const hasLocale = locales.includes(firstSegment);
 
-  // If the path already has a valid locale, proceed
-  if (hasLocale) {
-    const response = NextResponse.next();
-    response.headers.set('x-pathname', pathname);
-    response.headers.set('x-locale', firstSegment);
-    return response;
+  // If we're at the root or the path doesn't have a locale, redirect
+  if (!hasLocale) {
+    const url = new URL(request.url);
+    url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+    
+    const redirectResponse = NextResponse.redirect(url);
+    redirectResponse.headers.set('x-pathname', pathname);
+    redirectResponse.headers.set('x-locale', locale);
+    
+    // Set the locale cookie
+    redirectResponse.cookies.set('NEXT_LOCALE', locale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
+    
+    return redirectResponse;
   }
 
-  // If no locale in path, redirect to the appropriate locale version
-  const locale = getLocaleFromRequest(request);
-  const response = NextResponse.redirect(
-    new URL(`/${locale}${pathname === '/' ? '' : pathname}`, request.url)
-  );
-  
+  // Set the locale cookie for non-redirect responses too
   response.cookies.set('NEXT_LOCALE', locale, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -86,5 +100,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    // Skip all internal paths (_next)
+    '/((?!_next|api|favicon.ico).*)',
+  ],
 }; 
