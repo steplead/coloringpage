@@ -5,88 +5,59 @@ import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 const locales = SUPPORTED_LANGUAGES.map(lang => lang.code);
 const defaultLocale = 'en';
 
-function getLocaleFromRequest(request: NextRequest): string {
-  // First check if we have a language cookie
-  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
-  if (cookieLocale && locales.includes(cookieLocale)) {
-    return cookieLocale;
-  }
-
-  // Get accept-language header
-  const acceptLanguage = request.headers.get('accept-language') || '';
-  const preferredLocale = acceptLanguage
-    .split(',')[0]
-    ?.split('-')[0]
-    ?.toLowerCase();
-
-  // Check if the preferred locale is supported
-  if (preferredLocale && locales.includes(preferredLocale)) {
-    return preferredLocale;
-  }
-
-  return defaultLocale;
-}
+// 静态资源和API路径
+const PUBLIC_FILE = /\.(.*)$/;
+const EXCLUDED_PATHS = [
+  '/api/',
+  '/_next/',
+  '/static/',
+  '/images/',
+  '/favicon.ico',
+  '/robots.txt',
+  '/sitemap.xml'
+];
 
 export function middleware(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
-  // Skip middleware for API routes, static files, etc.
+  // 检查是否是静态文件或排除的路径
   if (
-    pathname.startsWith('/api/') ||
-    pathname.includes('.') ||
-    pathname.startsWith('/_next/') ||
-    pathname.startsWith('/favicon') ||
-    pathname.startsWith('/static/') ||
-    pathname.startsWith('/images/')
+    PUBLIC_FILE.test(pathname) ||
+    EXCLUDED_PATHS.some(path => pathname.startsWith(path))
   ) {
     return NextResponse.next();
   }
 
-  // Check if the path starts with a supported locale
-  const pathnameLocale = locales.find(
-    locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  // 检查路径是否已经包含语言代码
+  const pathnameIsMissingLocale = locales.every(
+    locale => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   );
 
-  if (pathnameLocale) {
-    // If URL has supported locale, forward as-is and set cookie
-    const response = NextResponse.next();
-    response.cookies.set('NEXT_LOCALE', pathnameLocale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    });
-    return response;
+  // 如果路径中没有语言代码，添加默认语言
+  if (pathnameIsMissingLocale) {
+    const locale = defaultLocale;
+    
+    // 创建新的URL对象
+    const url = new URL(request.url);
+    
+    // 如果是根路径，直接添加语言代码
+    if (pathname === '/') {
+      url.pathname = `/${locale}`;
+    } else {
+      // 否则在路径前添加语言代码
+      url.pathname = `/${locale}${pathname}`;
+    }
+
+    // 使用redirect而不是rewrite
+    return NextResponse.redirect(url);
   }
 
-  // Get locale from request
-  const locale = getLocaleFromRequest(request);
-  
-  // Create new URL with locale prefix
-  const url = new URL(request.url);
-  url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
-  url.search = search; // Preserve query parameters
-
-  // Create response with rewrite
-  const response = NextResponse.rewrite(url);
-  
-  // Set locale cookie
-  response.cookies.set('NEXT_LOCALE', locale, {
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-    sameSite: 'lax',
-  });
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    // Match all paths except those that start with:
-    // - api (API routes)
-    // - _next (Next.js internals)
-    // - static (static files)
-    // - images (static images)
-    // - favicon.ico, robots.txt, sitemap.xml (public files)
-    '/((?!api/|_next/|static/|images/|favicon.ico|robots.txt|sitemap.xml).*)',
-  ],
+    // 匹配所有路径，除了静态文件和API路由
+    '/((?!api/|_next/|static/|images/|favicon.ico|robots.txt|sitemap.xml).*)'
+  ]
 }; 
