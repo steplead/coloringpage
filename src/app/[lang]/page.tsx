@@ -1,3 +1,5 @@
+'use client';
+
 import { redirect } from 'next/navigation';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { PageHeader } from '@/components/PageHeader';
