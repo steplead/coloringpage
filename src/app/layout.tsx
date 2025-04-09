@@ -85,6 +85,12 @@ export const metadata: Metadata = {
     languages: buildLanguageAlternates(),
   },
   metadataBase: new URL(SITE_URL),
+  icons: [
+    {
+      rel: 'icon',
+      url: '/favicon.ico',
+    },
+  ],
 };
 
 export const viewport: Viewport = {
@@ -125,19 +131,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={currentLang} className="scroll-smooth">
-      <head>
-        {/* Add hreflang tags for better SEO */}
-        {SUPPORTED_LANGUAGES.map(lang => (
-          <link 
-            key={lang.code}
-            rel="alternate" 
-            hrefLang={lang.code} 
-            href={`${SITE_URL}/${lang.code}`} 
-          />
-        ))}
-        <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
-      </head>
+    <html lang={currentLang} className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
           <main className="flex-1">

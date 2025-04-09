@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n/context';
 import get from 'lodash.get';
 
@@ -67,17 +67,27 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   skipLoading = false
 }) => {
   const { translations, language, isLoading, lastError } = useTranslation();
+  const [isMounted, setIsMounted] = useState(false);
   
   // 使用translationKey或path，确保向后兼容性
   const key = translationKey || path;
   
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!key) {
     console.error('TranslatedText: No translationKey or path provided');
     return <span className={className}>{fallback}</span>;
   }
 
+  // 未挂载前，直接返回fallback，避免服务器/客户端渲染不一致
+  if (!isMounted) {
+    return <span className={className}>{fallback}</span>;
+  }
+
   // 加载中显示骨架屏
-  if (isLoading && !skipLoading) {
+  if (isMounted && isLoading && !skipLoading) {
     return (
       <span className={`inline-block bg-gray-200 animate-pulse rounded ${className}`} style={{ minWidth: '3em' }}>
         {fallback}

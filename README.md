@@ -69,7 +69,7 @@ This application supports multiple languages to make it accessible to users worl
 - 🇫🇷 French (Français)
 - 🇩🇪 German (Deutsch)
 - 🇯🇵 Japanese (日本語)
-- 🇰🇷 Korean (한国어)
+- 🇰🇷 Korean (한국어)
 - 🇷🇺 Russian (Русский)
 
 ### Enhanced Language Features
@@ -80,6 +80,36 @@ The application now uses URL-based language paths for improved SEO and user expe
 - **Automatic Detection**: First-time visitors are offered their preferred language based on browser settings
 - **SEO Optimization**: Complete with `hreflang` tags and language-specific sitemaps
 - **Persistent Selection**: Language preferences are saved for returning visitors
+
+### Multilingual Architecture
+
+The internationalization system is built using Next.js App Router and follows these design principles:
+
+1. **Route Structure**: Each page is nested under a language parameter route (`[lang]`) 
+2. **Separate Layout Structure**: 
+   - Root layout (`src/app/layout.tsx`) - Provides the base HTML structure
+   - Language layout (`src/app/[lang]/layout.tsx`) - Handles language-specific settings
+3. **Translation Context**: 
+   - Uses React Context API to provide translations throughout the app
+   - Includes client-safe hydration handling to prevent React hydration errors
+   - Implements efficient caching with localStorage and version tracking
+
+#### Solving React Hydration Issues
+
+To prevent React hydration errors with internationalization, we've implemented:
+
+- **Client-side only initialization**: All localStorage and browser-specific code runs only after component mounting
+- **Consistent initial rendering**: Using fallback content for first render to match server output
+- **Hydration safety flags**: Using `suppressHydrationWarning` and mounting state tracking
+- **Progressive enhancement**: Content displays instantly with fallbacks, then enhances once hydrated
+
+### Chinese Translation Handling
+
+For Chinese language support, we've implemented:
+
+- **Hardcoded Fallbacks**: Critical UI elements have hardcoded Chinese translations
+- **Reactive Fix Scripts**: For complex scenarios, reactive DOM manipulation scripts correct translations
+- **Multi-layer Strategy**: Combines server-side translations with client-side enhancements
 
 **Note**: While the main UI interface supports multiple languages, blog content is currently available in English only. The internationalization system is focused on providing a localized user experience for the core application features.
 
