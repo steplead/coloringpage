@@ -7,18 +7,6 @@ import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 const locales = SUPPORTED_LANGUAGES.map(lang => lang.code);
 const defaultLocale = 'en';
 
-function getLocaleFromPath(pathname: string): string | undefined {
-  // Check if the path starts with a locale
-  const segments = pathname.split('/');
-  const locale = segments[1]; // The locale should be the first segment after '/'
-  
-  if (locales.includes(locale)) {
-    return locale;
-  }
-  
-  return undefined;
-}
-
 function getLocaleFromRequest(request: NextRequest): string {
   // First check if we have a language cookie
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
@@ -34,16 +22,13 @@ function getLocaleFromRequest(request: NextRequest): string {
 
   try {
     const negotiator = new Negotiator({ headers: negotiatorHeaders });
-    // Make sure we have a valid Accept-Language header
     const languages = negotiator.languages().filter(Boolean);
     
     if (languages.length === 0) {
       return defaultLocale;
     }
     
-    // Filter out any invalid language tags before passing to matchLocale
     const validLanguages = languages.filter(lang => {
-      // Basic validation: language tags should follow the pattern xx or xx-XX
       return typeof lang === 'string' && /^[a-zA-Z]{2}(-[a-zA-Z]{2})?$/.test(lang);
     });
     
@@ -59,22 +44,9 @@ function getLocaleFromRequest(request: NextRequest): string {
   }
 }
 
-function getPathWithoutLocale(pathname: string, locale: string): string {
-  if (pathname === '/') return '/';
-  
-  const segments = pathname.split('/');
-  if (segments.length > 1 && segments[1] === locale) {
-    // Remove the locale segment
-    segments.splice(1, 1);
-    return segments.join('/') || '/';
-  }
-  
-  return pathname;
-}
-
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  
+
   // Skip middleware for API routes, static files, etc.
   if (
     pathname.startsWith('/api/') ||
@@ -84,76 +56,33 @@ export function middleware(request: NextRequest) {
   ) {
     return NextResponse.next();
   }
-  
-  // Special handling for root path
-  if (pathname === '/') {
-    const requestLocale = getLocaleFromRequest(request);
-    const url = request.nextUrl.clone();
-    url.pathname = `/${requestLocale}`;
-    
-    const response = NextResponse.redirect(url);
-    response.cookies.set('NEXT_LOCALE', requestLocale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    });
-    
+
+  // Check if the path starts with a locale
+  const pathnameSegments = pathname.split('/');
+  const firstSegment = pathnameSegments[1];
+  const hasLocale = locales.includes(firstSegment);
+
+  // If the path already has a valid locale, proceed
+  if (hasLocale) {
+    const response = NextResponse.next();
+    response.headers.set('x-pathname', pathname);
+    response.headers.set('x-locale', firstSegment);
     return response;
   }
+
+  // If no locale in path, redirect to the appropriate locale version
+  const locale = getLocaleFromRequest(request);
+  const response = NextResponse.redirect(
+    new URL(`/${locale}${pathname === '/' ? '' : pathname}`, request.url)
+  );
   
-  // Get locale from the path or from the request
-  const pathnameLocale = getLocaleFromPath(pathname);
-  const requestLocale = getLocaleFromRequest(request);
-  
-  // Determine which locale to use
-  const finalLocale = pathnameLocale || requestLocale;
-  
-  // Clone headers to add custom values
-  const response = NextResponse.next();
-  
-  // Add pathname header for the root layout to use
-  response.headers.set('x-pathname', pathname);
-  response.headers.set('x-locale', finalLocale);
-  
-  // If path already has a locale that matches our final locale, just proceed
-  if (pathnameLocale === finalLocale) {
-    response.cookies.set('NEXT_LOCALE', finalLocale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    });
-    return response;
-  }
-  
-  // Get the path without locale
-  const pathWithoutLocale = pathnameLocale
-    ? getPathWithoutLocale(pathname, pathnameLocale)
-    : pathname;
-  
-  // Add the final locale to create the localized URL
-  const segments = pathWithoutLocale.split('/');
-  segments.splice(1, 0, finalLocale); // Insert locale after the first '/'
-  const newPathname = segments.join('/');
-  
-  // Create the URL with the new pathname and preserve search params
-  const url = request.nextUrl.clone();
-  url.pathname = newPathname;
-  
-  // Redirect to the localized URL
-  const redirectResponse = NextResponse.redirect(url);
-  
-  // Set the locale cookie
-  redirectResponse.cookies.set('NEXT_LOCALE', finalLocale, {
+  response.cookies.set('NEXT_LOCALE', locale, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
   });
-  
-  // Also add the pathname header to the redirect response
-  redirectResponse.headers.set('x-pathname', newPathname);
-  redirectResponse.headers.set('x-locale', finalLocale);
-  
-  return redirectResponse;
+
+  return response;
 }
 
 export const config = {
