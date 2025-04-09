@@ -1,13 +1,8 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { headers } from 'next/headers';
-import React from 'react';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
-
-import { Footer } from '@/components/Footer';
 import { initializeStorage } from '@/lib/storage';
-import LanguageDetectionBanner from '@/components/LanguageDetectionBanner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -111,34 +106,14 @@ if (typeof window === 'undefined') {
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: any;
 }) {
-  // Extract the lang parameter from the URL path segments
-  // This requires looking at the request path since we're in the root layout
-  const pathname = headers().get('x-pathname') || '';
-  const pathSegments = pathname.split('/').filter(Boolean);
-  
-  // Check if the first segment is a valid language code
-  let currentLang = 'en'; // Default language
-  if (pathSegments.length > 0) {
-    const potentialLang = pathSegments[0];
-    if (SUPPORTED_LANGUAGES.some(lang => lang.code === potentialLang)) {
-      currentLang = potentialLang;
-    }
-  }
-
   return (
-    <html lang={currentLang} className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <div className="flex flex-col min-h-screen">
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <LanguageDetectionBanner />
+          {children}
         </div>
       </body>
     </html>
