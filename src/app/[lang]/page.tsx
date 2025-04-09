@@ -5,12 +5,6 @@ import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { PageHeader } from '@/components/PageHeader';
 import TranslatedText from '@/components/TranslatedText';
 
-export async function generateStaticParams() {
-  return SUPPORTED_LANGUAGES.map(lang => ({
-    lang: lang.code,
-  }));
-}
-
 export default function HomePage({ params }: { params: { lang: string } }) {
   // Validate the language parameter
   const { lang } = params;
