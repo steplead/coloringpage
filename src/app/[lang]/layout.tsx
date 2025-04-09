@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import Loading from './loading'
+import { Footer } from '@/components/Footer'
 
 // 动态导入调试组件
 // 注意: V10是最终版修复程序，使用了多重策略确保翻译不会被覆盖
@@ -55,7 +56,10 @@ export default function LangLayout({
     <TranslationProvider initialLang={lang}>
       <Suspense fallback={<Loading />}>
         <Navigation currentLang={lang} />
-        {children}
+        <main className="flex-1 min-h-screen">
+          {children}
+        </main>
+        <Footer />
         <Toaster position="bottom-center" />
       </Suspense>
       {/* 翻译修复组件，仅在中文页面加载 */}
