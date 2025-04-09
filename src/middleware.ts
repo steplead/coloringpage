@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { match as matchLocale } from '@formatjs/intl-localematcher';
-import Negotiator from 'negotiator';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
 const locales = SUPPORTED_LANGUAGES.map(lang => lang.code);
@@ -14,20 +12,19 @@ function getLocaleFromRequest(request: NextRequest): string {
     return cookieLocale;
   }
 
-  // If no cookie, detect from browser preferences
-  let negotiatorHeaders: Record<string, string> = {};
-  request.headers.forEach((value, key) => {
-    negotiatorHeaders[key] = value;
-  });
+  // Get accept-language header
+  const acceptLanguage = request.headers.get('accept-language') || '';
+  const preferredLocale = acceptLanguage
+    .split(',')[0]
+    ?.split('-')[0]
+    ?.toLowerCase();
 
-  try {
-    const negotiator = new Negotiator({ headers: negotiatorHeaders });
-    const languages = negotiator.languages().filter(Boolean);
-    return languages[0]?.split('-')[0] || defaultLocale;
-  } catch (error) {
-    console.error('Error detecting locale:', error);
-    return defaultLocale;
+  // Check if the preferred locale is supported
+  if (preferredLocale && locales.includes(preferredLocale)) {
+    return preferredLocale;
   }
+
+  return defaultLocale;
 }
 
 export function middleware(request: NextRequest) {
@@ -45,35 +42,46 @@ export function middleware(request: NextRequest) {
   }
 
   // Check if the path starts with a supported locale
-  const pathnameHasLocale = locales.some(
+  const pathnameLocale = locales.find(
     locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  if (pathnameHasLocale) {
-    return NextResponse.next();
+  if (pathnameLocale) {
+    // If URL has supported locale, forward as-is
+    const response = NextResponse.next();
+    response.cookies.set('NEXT_LOCALE', pathnameLocale);
+    return response;
   }
 
-  // Redirect to the same path with locale
+  // Get locale from request
   const locale = getLocaleFromRequest(request);
-  const redirectPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
   
-  // Create redirect response
-  const response = NextResponse.redirect(new URL(redirectPath, request.url));
+  // Clone the URL and add the locale prefix
+  const url = request.nextUrl.clone();
+  url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+
+  // Instead of redirecting, rewrite the request
+  const response = NextResponse.rewrite(url);
   
-  // Set cookie
+  // Set locale cookie
   response.cookies.set('NEXT_LOCALE', locale, {
     path: '/',
-    maxAge: 60 * 60 * 24 * 365,
+    maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
   });
 
   return response;
 }
 
-// Specify which paths should be handled by this middleware
 export const config = {
   matcher: [
-    // Match all paths except static files and API routes
-    '/((?!api/|_next/|favicon.ico).*)',
+    /*
+     * Match all paths except:
+     * 1. /api (API routes)
+     * 2. /_next (Next.js internals)
+     * 3. /favicon.ico (favicon file)
+     * 4. all files in the public folder
+     */
+    '/((?!api/|_next/|favicon.ico|.*\\.).*)',
   ],
 }; 
