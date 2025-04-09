@@ -14,8 +14,8 @@ import { Navigation } from '@/components/Navigation'
 import Loading from './loading'
 
 // 动态导入调试组件
-// 注意: V9是最新版修复程序，使用了更高级的DOM API拦截
-const FixTranslationsV9 = dynamic(() => import('@/app/debug/fix-translations-v9'), { ssr: false })
+// 注意: V10是最终版修复程序，使用了多重策略确保翻译不会被覆盖
+const FixTranslationsV10 = dynamic(() => import('@/app/debug/fix-translations-v10'), { ssr: false })
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -76,7 +76,7 @@ export default function RootLayout({
             <Toaster position="bottom-center" />
           </Suspense>
           {/* 翻译修复组件，仅在中文页面加载 */}
-          {lang === 'zh' && <FixTranslationsV9 />}
+          {lang === 'zh' && <FixTranslationsV10 />}
         </TranslationProvider>
         <Analytics />
         <Script
