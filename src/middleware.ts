@@ -28,15 +28,16 @@ function getLocaleFromRequest(request: NextRequest): string {
 }
 
 export function middleware(request: NextRequest) {
-  // Get the pathname from the URL
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   // Skip middleware for API routes, static files, etc.
   if (
     pathname.startsWith('/api/') ||
     pathname.includes('.') ||
     pathname.startsWith('/_next/') ||
-    pathname.startsWith('/favicon')
+    pathname.startsWith('/favicon') ||
+    pathname.startsWith('/static/') ||
+    pathname.startsWith('/images/')
   ) {
     return NextResponse.next();
   }
@@ -47,20 +48,25 @@ export function middleware(request: NextRequest) {
   );
 
   if (pathnameLocale) {
-    // If URL has supported locale, forward as-is
+    // If URL has supported locale, forward as-is and set cookie
     const response = NextResponse.next();
-    response.cookies.set('NEXT_LOCALE', pathnameLocale);
+    response.cookies.set('NEXT_LOCALE', pathnameLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
     return response;
   }
 
   // Get locale from request
   const locale = getLocaleFromRequest(request);
   
-  // Clone the URL and add the locale prefix
-  const url = request.nextUrl.clone();
+  // Create new URL with locale prefix
+  const url = new URL(request.url);
   url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+  url.search = search; // Preserve query parameters
 
-  // Instead of redirecting, rewrite the request
+  // Create response with rewrite
   const response = NextResponse.rewrite(url);
   
   // Set locale cookie
@@ -75,13 +81,12 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all paths except:
-     * 1. /api (API routes)
-     * 2. /_next (Next.js internals)
-     * 3. /favicon.ico (favicon file)
-     * 4. all files in the public folder
-     */
-    '/((?!api/|_next/|favicon.ico|.*\\.).*)',
+    // Match all paths except those that start with:
+    // - api (API routes)
+    // - _next (Next.js internals)
+    // - static (static files)
+    // - images (static images)
+    // - favicon.ico, robots.txt, sitemap.xml (public files)
+    '/((?!api/|_next/|static/|images/|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
 }; 
