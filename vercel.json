@@ -28,16 +28,8 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/",
-      "destination": "/en"
-    },
-    {
-      "source": "/zh",
-      "destination": "/zh/index"
-    },
-    {
-      "source": "/en",
-      "destination": "/en/index"
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ],
   "headers": [
