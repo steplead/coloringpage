@@ -79,9 +79,26 @@ export function middleware(request: NextRequest) {
   if (
     pathname.startsWith('/api/') ||
     pathname.includes('.') ||
-    pathname.startsWith('/_next/')
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/favicon')
   ) {
     return NextResponse.next();
+  }
+  
+  // Special handling for root path
+  if (pathname === '/') {
+    const requestLocale = getLocaleFromRequest(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${requestLocale}`;
+    
+    const response = NextResponse.redirect(url);
+    response.cookies.set('NEXT_LOCALE', requestLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
+    
+    return response;
   }
   
   // Get locale from the path or from the request
@@ -107,10 +124,6 @@ export function middleware(request: NextRequest) {
     });
     return response;
   }
-  
-  // Prepare to redirect:
-  // 1. If path has a different locale, replace it
-  // 2. If path has no locale, add our locale
   
   // Get the path without locale
   const pathWithoutLocale = pathnameLocale
