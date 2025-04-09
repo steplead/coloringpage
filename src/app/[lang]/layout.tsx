@@ -13,56 +13,41 @@ import { Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import Loading from './loading'
 
-// 动态导入调试和修复组件
-const FixTranslationsV7 = dynamic(() => import('@/app/debug/fix-translations-v7'), { ssr: false })
+// 动态导入所有调试组件
+// 注意: V8是最新最强大的修复版本
+const FixTranslationsV8 = dynamic(() => import('@/app/debug/fix-translations-v8'), { ssr: false })
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'AI Coloring Page Generator',
-  description: 'Create coloring pages with AI',
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-}
-
-export async function generateMetadata({
-  params: { lang },
-}: {
-  params: { lang: string }
-}) {
-  // 如果语言不受支持，返回默认元数据
-  if (!SUPPORTED_LANGUAGES.some(l => l.code === lang)) {
-    return metadata
-  }
-
+export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
+  // Get the current language
+  const lang = params.lang;
+  
+  // Find language details
+  const languageInfo = SUPPORTED_LANGUAGES.find(l => l.code === lang);
+  const languageName = languageInfo?.name || 'English';
+  
   return {
     title: {
-      default: lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator',
-      template: '%s | ' + (lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator'),
+      template: '%s | AI Coloring Page Generator',
+      default: `AI Coloring Page Generator - ${languageName}`,
     },
-    description:
-      lang === 'zh'
-        ? '使用人工智能创建独特的涂色页，适合儿童和成人'
-        : 'Create unique coloring pages with artificial intelligence, perfect for kids and adults',
-    openGraph: {
-      title: lang === 'zh' ? 'AI涂色页生成器' : 'AI Coloring Page Generator',
-      description:
-        lang === 'zh'
-          ? '使用人工智能创建独特的涂色页，适合儿童和成人'
-          : 'Create unique coloring pages with artificial intelligence, perfect for kids and adults',
+    description: `Create beautiful coloring pages with AI. Available in ${languageName}.`,
+    alternates: {
+      canonical: `https://ai-coloringpage.com/${lang}`,
+      languages: {
+        'x-default': 'https://ai-coloringpage.com',
+      },
     },
-  }
+  };
 }
 
-export function generateStaticParams() {
-  return SUPPORTED_LANGUAGES.map((lang) => ({ lang: lang.code }))
+export async function generateStaticParams() {
+  return SUPPORTED_LANGUAGES.map(lang => ({
+    lang: lang.code,
+  }));
 }
 
-// 中间件检查语言是否支持
 export default function RootLayout({
   params: { lang },
   children,
@@ -75,7 +60,11 @@ export default function RootLayout({
   }
 
   return (
-    <html lang={lang}>
+    <html 
+      lang={lang}
+      className={inter.className}
+      suppressHydrationWarning={true}
+    >
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
@@ -86,8 +75,8 @@ export default function RootLayout({
             {children}
             <Toaster position="bottom-center" />
           </Suspense>
-          {/* 修复中文翻译 - 注意: 当前最新版本为 V7，替代之前所有版本 */}
-          {lang === 'zh' && <FixTranslationsV7 />}
+          {/* 翻译修复组件，仅在中文页面加载 */}
+          {lang === 'zh' && <FixTranslationsV8 />}
         </TranslationProvider>
         <Analytics />
         <Script
