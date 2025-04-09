@@ -321,5 +321,26 @@
       "message": "我们这边出了点问题。请稍后再试。",
       "button": "重试"
     }
+  },
+  "home.page": {
+    "title": "AI涂色页生成器",
+    "subtitle": "使用AI创建独特的涂色页面",
+    "createNow": "立即创建",
+    "viewGallery": "查看画廊"
+  },
+  "howItWorks": {
+    "title": "使用方法",
+    "step1": {
+      "title": "描述您想要的图像",
+      "description": "输入您想要涂色页的描述，例如\"在花园里的小猫\""
+    },
+    "step2": {
+      "title": "选择您喜欢的风格",
+      "description": "从多种艺术风格中选择，定制您的涂色页外观"
+    },
+    "step3": {
+      "title": "下载并打印",
+      "description": "准备好后，下载并打印您的涂色页"
+    }
   }
 } 

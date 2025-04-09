@@ -24,13 +24,12 @@ export default function CreatePage({ params }: { params: { lang: string } }) {
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title={<TranslatedText translationKey="create.title" fallback="Create Your Coloring Page" lang={lang} />}
+        title={<TranslatedText translationKey="create.title" fallback="Create Your Coloring Page" />}
         description={
           <span className="text-sm sm:text-base break-words">
             <TranslatedText 
               translationKey="create.subtitle" 
               fallback="Choose a creation method below and let our AI generate a beautiful coloring page for you" 
-              lang={lang}
             />
           </span>
         }

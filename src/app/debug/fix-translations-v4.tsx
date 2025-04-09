@@ -2,324 +2,245 @@
 
 import { useEffect, useRef } from 'react';
 
-// V4增强版 - 专注于解决异步加载覆盖问题和React状态更新触发的重渲染
-export default function FixTranslationsV4() {
-  const fixCountRef = useRef(0);
-  const observerRef = useRef<MutationObserver | null>(null);
-  const originalFetchRef = useRef<typeof window.fetch | null>(null);
-  const intervalRefs = useRef<NodeJS.Timeout[]>([]);
+// 设置版本号
+const VERSION = 'V4';
+
+// 日志前缀
+const LOG_PREFIX = `[FixTranslations${VERSION}]`;
+
+// 翻译字典
+const translations: Record<string, string> = {
+  // 标题翻译
+  'How it works': '使用方法',
+  'Describe your image': '描述您想要的图像',
+  'Choose your style': '选择您喜欢的风格',
+  'Download and print': '下载并打印',
   
-  useEffect(() => {
-    // 只在中文页面执行
-    if (!window.location.pathname.includes('/zh')) return;
-    
-    console.log('[FixV4] 启动增强版翻译修复 - 专注解决异步加载和React重渲染问题');
+  // 描述翻译
+  'Enter a description of what you want in your coloring page, like "cat in a garden"': 
+    '输入您想要涂色页的描述，例如"在花园里的小猫"',
+  'Select from various art styles to customize the look of your coloring page': 
+    '从多种艺术风格中选择，定制您的涂色页外观',
+  'Once ready, download and print your coloring page': 
+    '准备好后，下载并打印您的涂色页'
+};
 
-    // 翻译字典
-    const translations: Record<string, string> = {
-      "title": "描述您想要的图像",
-      "description": "输入文字描述，我们的AI将创建匹配的涂色页",
-      "home.howItWorks.title": "使用方法",
-      "home.methods.describe.title": "描述您想要的图像",
-      "home.methods.describe.description": "输入文字描述，我们的AI将创建匹配的涂色页",
-      "home.methods.style.title": "选择您喜欢的风格",
-      "home.methods.style.description": "从多种艺术风格中选择，定制您的涂色页外观",
-      "home.methods.advanced.title": "高级设置",
-      "home.methods.advanced.description": "调整细节参数，获得完全符合您需求的涂色页",
-      "home.testimonials.title": "用户评价",
-      "home.testimonials.1.text": "我的孩子们喜欢这些涂色页！每次我们都能创建新的独特图案。",
-      "home.testimonials.1.author": "李明，两个孩子的父亲",
-      "home.testimonials.2.text": "作为一名教师，这是我找到的最好的资源之一。我可以为我的学生创建主题涂色页。",
-      "home.testimonials.2.author": "王老师，小学教师",
-      "home.testimonials.3.text": "我用它来放松和减压。创建自己想象的场景然后给它上色非常有趣。",
-      "home.testimonials.3.author": "张女士，艺术爱好者",
-      "home.testimonials.cta": "立即开始创建"
-    };
-
-    // 记录已修复的元素，避免重复修复
-    const fixedElements = new WeakMap<Element, boolean>();
+/**
+ * 创建防抖函数
+ */
+function debounce(func: Function, wait: number, immediate: boolean = false) {
+  let timeout: NodeJS.Timeout | null = null;
+  
+  return function(this: any, ...args: any[]) {
+    const context = this;
     
-    // 主要修复函数
-    const performFix = () => {
-      fixCountRef.current++;
-      const fixId = fixCountRef.current;
-      
-      console.log(`[FixV4 #${fixId}] 开始扫描修复`);
-      let fixedCount = 0;
-      
-      // 1. 修复标题
-      document.querySelectorAll('h2').forEach(h2 => {
-        if (fixedElements.has(h2)) return;
-        
-        const text = h2.textContent?.trim();
-        if (text === 'Create Coloring Pages Your Way' || 
-            text === 'How It Works' || 
-            text === 'home.howItWorks.title') {
-          h2.textContent = '使用方法';
-          fixedElements.set(h2, true);
-          fixedCount++;
-        }
-      });
-      
-      // 2. 修复卡片标题
-      const titleEls = Array.from(document.querySelectorAll('h3'))
-        .filter(h3 => h3.textContent?.trim() === 'title');
-        
-      titleEls.forEach((h3, idx) => {
-        if (fixedElements.has(h3)) return;
-        
-        if (idx === 0) {
-          h3.textContent = translations['home.methods.describe.title'];
-        } else if (idx === 1) {
-          h3.textContent = translations['home.methods.style.title'];
-        } else if (idx === 2) {
-          h3.textContent = translations['home.methods.advanced.title'];
-        } else {
-          h3.textContent = translations['title'];
-        }
-        
-        fixedElements.set(h3, true);
-        fixedCount++;
-      });
-      
-      // 3. 修复卡片描述
-      const descEls = Array.from(document.querySelectorAll('p'))
-        .filter(p => p.textContent?.trim() === 'description');
-        
-      descEls.forEach((p, idx) => {
-        if (fixedElements.has(p)) return;
-        
-        if (idx === 0) {
-          p.textContent = translations['home.methods.describe.description'];
-        } else if (idx === 1) {
-          p.textContent = translations['home.methods.style.description'];
-        } else if (idx === 2) {
-          p.textContent = translations['home.methods.advanced.description'];
-        } else {
-          p.textContent = translations['description'];
-        }
-        
-        fixedElements.set(p, true);
-        fixedCount++;
-      });
-      
-      // 4. 修复评价
-      document.querySelectorAll('p').forEach(p => {
-        if (fixedElements.has(p)) return;
-        
-        const text = p.textContent?.trim();
-        if (text === '"home.testimonials.1.text"') {
-          p.textContent = `"${translations['home.testimonials.1.text']}"`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        } else if (text === '"home.testimonials.2.text"') {
-          p.textContent = `"${translations['home.testimonials.2.text']}"`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        } else if (text === '"home.testimonials.3.text"') {
-          p.textContent = `"${translations['home.testimonials.3.text']}"`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        } else if (text === '- home.testimonials.1.author') {
-          p.textContent = `- ${translations['home.testimonials.1.author']}`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        } else if (text === '- home.testimonials.2.author') {
-          p.textContent = `- ${translations['home.testimonials.2.author']}`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        } else if (text === '- home.testimonials.3.author') {
-          p.textContent = `- ${translations['home.testimonials.3.author']}`;
-          fixedElements.set(p, true);
-          fixedCount++;
-        }
-      });
-      
-      if (fixedCount > 0) {
-        console.log(`[FixV4 #${fixId}] 修复了 ${fixedCount} 处翻译`);
-      }
+    const later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
     };
     
-    // 设置MutationObserver监控DOM变化
-    const setupObserver = () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-      
-      observerRef.current = new MutationObserver(() => {
-        // 使用requestAnimationFrame批量处理
-        window.requestAnimationFrame(() => {
-          performFix();
-        });
-      });
-      
-      // 监控整个文档
-      observerRef.current.observe(document.body, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-        attributes: false
-      });
-      
-      console.log('[FixV4] MutationObserver已设置，正在监控DOM变化');
-    };
+    const callNow = immediate && !timeout;
     
-    // 1. 拦截翻译API - 解决异步加载覆盖问题
-    const interceptTranslationAPI = () => {
-      if (originalFetchRef.current === null) {
-        originalFetchRef.current = window.fetch;
-      }
-      
-      window.fetch = async function(input, init) {
-        const url = typeof input === 'string' 
-          ? input 
-          : input instanceof Request ? input.url : '';
-          
-        if (url.includes('/api/i18n') && url.includes('zh')) {
-          console.log('[FixV4] 拦截到翻译API请求:', url);
-          
-          try {
-            // 先获取原始响应
-            const response = await originalFetchRef.current!(input, init);
-            const clone = response.clone();
-            
-            // 获取响应内容
-            const translations = await clone.json();
-            console.log('[FixV4] 原始翻译数据:', translations);
-            
-            // 创建增强版的响应
-            // 这里我们可以修改translations对象，但保持响应格式一致
-            
-            // 使用安全的方式设置定时器
-            const originalSetTimeout = window.setTimeout;
-            originalSetTimeout(performFix, 0);
-            originalSetTimeout(performFix, 100);
-            originalSetTimeout(performFix, 500);
-            originalSetTimeout(performFix, 1000);
-            
-            return response;
-          } catch (error) {
-            console.error('[FixV4] 拦截翻译API时出错:', error);
-            return originalFetchRef.current!(input, init);
-          }
-        }
-        
-        return originalFetchRef.current!(input, init);
-      };
-      
-      console.log('[FixV4] 已拦截fetch API，监控翻译请求');
-    };
-    
-    // 2. 拦截React状态更新 - 解决React重渲染问题
-    const interceptReactStateUpdates = () => {
-      // 拦截setTimeout，确保我们的修复函数在React批量更新后执行
-      const originalSetTimeout = window.setTimeout;
-      
-      // 创建一个新的setTimeout函数，保留原始功能并添加额外的特性
-      const newSetTimeout = function(
-        handler: TimerHandler, 
-        timeout?: number | undefined
-      ): number {
-        // 获取调用栈以检测是否来自React
-        const stack = new Error().stack || '';
-        const isReactStateUpdate = stack.includes('react') || 
-                                  stack.includes('ReactDOM') || 
-                                  (typeof handler === 'function' && 
-                                   handler.toString().includes('setState'));
-        
-        if (isReactStateUpdate && timeout && timeout < 50) {
-          console.log('[FixV4] 检测到可能的React状态更新');
-          
-          // 包装原始处理程序
-          const wrappedHandler = function(this: any) {
-            // 先执行原始处理程序
-            if (typeof handler === 'function') {
-              (handler as Function).call(this);
-            } else if (typeof handler === 'string') {
-              eval(handler);
-            }
-            
-            // 在处理程序执行后修复DOM
-            originalSetTimeout(performFix, 0);
-          };
-          
-          return originalSetTimeout(wrappedHandler as TimerHandler, timeout);
-        }
-        
-        return originalSetTimeout(handler, timeout);
-      };
-      
-      // 添加__promisify__属性，修复TypeScript类型错误
-      Object.defineProperty(newSetTimeout, '__promisify__', {
-        value: originalSetTimeout.__promisify__,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      });
-      
-      // 替换原始setTimeout
-      window.setTimeout = newSetTimeout as typeof window.setTimeout;
-      
-      console.log('[FixV4] 已拦截setTimeout，监控React状态更新');
-    };
-    
-    // 执行初始修复
-    performFix();
-    
-    // 设置观察器
-    setupObserver();
-    
-    // 拦截翻译API - 最可能的原因1
-    interceptTranslationAPI();
-    
-    // 拦截React状态更新 - 最可能的原因2
-    interceptReactStateUpdates();
-    
-    // 设置定时执行 - 不管怎样每隔一段时间都强制检查
-    intervalRefs.current.push(setInterval(performFix, 300));   // 每0.3秒
-    intervalRefs.current.push(setInterval(performFix, 3000));  // 每3秒强制刷新
-    
-    // 页面加载完成后再次修复
-    if (document.readyState !== 'complete') {
-      window.addEventListener('load', performFix, { once: true });
+    if (timeout) {
+      clearTimeout(timeout);
     }
     
-    // 添加全局方法
-    window._fixTranslationsV4 = performFix;
-    console.log('[FixV4] 已添加全局修复函数 window._fixTranslationsV4()');
+    timeout = setTimeout(later, wait);
     
-    // 清理
+    if (callNow) {
+      func.apply(context, args);
+    }
+  };
+}
+
+/**
+ * V4版专注于修复"使用方法"部分的翻译
+ */
+export default function FixTranslationsV4() {
+  const fixCountRef = useRef(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const fixTriggeredRef = useRef(false);
+  
+  // 替换文本的主函数
+  const fixTranslations = (): number => {
+    try {
+      console.log(`${LOG_PREFIX} 开始执行"使用方法"部分翻译修复，第${fixCountRef.current + 1}次尝试`);
+      
+      let replacementCount = 0;
+      
+      // 查找"使用方法"部分的容器
+      const howItWorksSection = Array.from(document.querySelectorAll('section')).find(section => {
+        const h2 = section.querySelector('h2');
+        return h2 && (h2.textContent === 'How it works' || h2.textContent === '使用方法');
+      });
+      
+      if (!howItWorksSection) {
+        console.log(`${LOG_PREFIX} 未找到"使用方法"部分，可能页面尚未加载完成`);
+        return 0;
+      }
+      
+      // 处理标题
+      const mainTitle = howItWorksSection.querySelector('h2');
+      if (mainTitle && mainTitle.textContent === 'How it works') {
+        mainTitle.textContent = '使用方法';
+        replacementCount++;
+        console.log(`${LOG_PREFIX} 已替换主标题`);
+      }
+      
+      // 处理步骤容器
+      const stepContainers = howItWorksSection.querySelectorAll('div > div');
+      
+      stepContainers.forEach((container, index) => {
+        const title = container.querySelector('h3');
+        const description = container.querySelector('p');
+        
+        if (title && translations[title.textContent || '']) {
+          title.textContent = translations[title.textContent || ''];
+          replacementCount++;
+        }
+        
+        if (description && translations[description.textContent || '']) {
+          description.textContent = translations[description.textContent || ''];
+          replacementCount++;
+        }
+      });
+      
+      // 更新计数并记录结果
+      fixCountRef.current++;
+      console.log(`${LOG_PREFIX} 本次修复完成，替换了${replacementCount}处文本`);
+      
+      // 如果已经修复过足够次数且没有找到可替换的内容，则考虑停止
+      if (fixCountRef.current > 10 && replacementCount === 0) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+          console.log(`${LOG_PREFIX} 连续10次未发现需要替换的内容，停止检查`);
+        }
+      }
+      
+      return replacementCount;
+    } catch (error) {
+      console.error(`${LOG_PREFIX} 修复过程中出错:`, error);
+      return 0;
+    }
+  };
+  
+  // 创建一个防抖版本的翻译修复函数
+  const debouncedFixTranslations = debounce(() => {
+    fixTriggeredRef.current = true;
+    fixTranslations();
+  }, 100);
+  
+  useEffect(() => {
+    // 初始运行
+    console.log(`${LOG_PREFIX} 组件已加载，开始初始化翻译修复程序`);
+    
+    // 立即执行一次
+    setTimeout(() => {
+      fixTranslations();
+    }, 500);
+    
+    // 保存原始方法的引用
+    const originalSetTimeout = window.setTimeout;
+    const originalSetInterval = window.setInterval;
+    
+    // 重新实现setTimeout，添加翻译修复功能
+    const newSetTimeout = function(handler: TimerHandler, timeout?: number, ...args: any[]): number {
+      const wrappedCallback = function(this: unknown) {
+        // 执行原始回调
+        if (typeof handler === 'function') {
+          handler.apply(this, args);
+        } else if (typeof handler === 'string') {
+          eval(handler);
+        }
+        
+        // 执行我们的翻译修复（延迟执行以确保DOM更新）
+        originalSetTimeout(debouncedFixTranslations as TimerHandler, 50);
+      };
+      
+      return originalSetTimeout(wrappedCallback as TimerHandler, timeout);
+    };
+    
+    // 重新实现setInterval，添加翻译修复功能
+    const newSetInterval = function(handler: TimerHandler, timeout?: number, ...args: any[]): number {
+      const wrappedCallback = function(this: unknown) {
+        // 执行原始回调
+        if (typeof handler === 'function') {
+          handler.apply(this, args);
+        } else if (typeof handler === 'string') {
+          eval(handler);
+        }
+        
+        // 执行我们的翻译修复（延迟执行以确保DOM更新）
+        originalSetTimeout(debouncedFixTranslations as TimerHandler, 50);
+      };
+      
+      return originalSetInterval(wrappedCallback as TimerHandler, timeout);
+    };
+    
+    // 添加__promisify__属性，保持TypeScript兼容性
+    Object.defineProperty(newSetTimeout, '__promisify__', { 
+      value: originalSetTimeout.__promisify__, 
+      enumerable: false 
+    });
+    Object.defineProperty(newSetInterval, '__promisify__', { 
+      value: originalSetInterval.__promisify__, 
+      enumerable: false 
+    });
+    
+    // 安全地替换全局方法
+    window.setTimeout = newSetTimeout as typeof window.setTimeout;
+    window.setInterval = newSetInterval as typeof window.setInterval;
+    
+    // 建立定时检查
+    intervalRef.current = setInterval(() => {
+      fixTranslations();
+    }, 2000);
+    
+    // 添加全局访问点
+    window._fixTranslationsV4 = fixTranslations;
+    
+    // 监听DOM变化
+    const observer = new MutationObserver((mutations) => {
+      debouncedFixTranslations();
+    });
+    
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true
+    });
+    
+    // 清理函数
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
       
-      // 清除所有定时器
-      intervalRefs.current.forEach(clearInterval);
-      intervalRefs.current = [];
+      // 恢复原始函数
+      window.setTimeout = originalSetTimeout;
+      window.setInterval = originalSetInterval;
       
-      window.removeEventListener('load', performFix);
-      
-      // 恢复原始fetch
-      if (originalFetchRef.current) {
-        window.fetch = originalFetchRef.current;
+      // 移除全局访问点
+      if ('_fixTranslationsV4' in window) {
+        delete window._fixTranslationsV4;
       }
       
-      // 恢复原始setTimeout
-      if (window.setTimeout !== setTimeout) {
-        window.setTimeout = setTimeout;
-      }
+      // 断开观察者
+      observer.disconnect();
       
-      delete window._fixTranslationsV4;
+      console.log(`${LOG_PREFIX} 组件已卸载，清理完成`);
     };
   }, []);
   
+  // 这个组件不渲染任何可见内容
   return null;
 }
 
-// TypeScript类型声明
+// 为TypeScript声明全局接口
 declare global {
   interface Window {
-    _fixTranslationsV4?: () => void;
+    _fixTranslationsV4?: () => number;
   }
 } 

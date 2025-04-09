@@ -22,7 +22,6 @@ interface SocialShareButtonsProps {
   imageUrl: string;
   description?: string;
   className?: string;
-  lang?: string;
 }
 
 export default function SocialShareButtons({
@@ -31,7 +30,6 @@ export default function SocialShareButtons({
   imageUrl,
   description = 'Check out this coloring page I found!',
   className = '',
-  lang = 'en',
 }: SocialShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
@@ -86,9 +84,8 @@ export default function SocialShareButtons({
       {copied && (
         <span className="text-sm text-green-600 font-medium ml-2">
           <TranslatedText
-            translationKey="common.linkCopied"
+            path="common.linkCopied"
             fallback="Link copied!"
-            lang={lang}
           />
         </span>
       )}

@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import { DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import TranslatedText from './TranslatedText';
+import { FaSpinner, FaFilePdf } from 'react-icons/fa';
 
 interface PDFDownloadProps {
   imageUrl: string;
   title: string;
-  lang?: string;
 }
 
-export default function PDFDownload({ imageUrl, title, lang = 'en' }: PDFDownloadProps) {
+export default function PDFDownload({ imageUrl, title }: PDFDownloadProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,12 +85,12 @@ export default function PDFDownload({ imageUrl, title, lang = 'en' }: PDFDownloa
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <TranslatedText translationKey="download.generating" fallback="Generating PDF..." lang={lang} />
+            <TranslatedText path="download.generating" fallback="Generating PDF..." />
           </>
         ) : (
           <>
             <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
-            <TranslatedText translationKey="download.pdfButton" fallback="Download as PDF" lang={lang} />
+            <TranslatedText path="download.pdfButton" fallback="Download as PDF" />
           </>
         )}
       </button>
@@ -98,18 +98,16 @@ export default function PDFDownload({ imageUrl, title, lang = 'en' }: PDFDownloa
       {error && (
         <div className="mt-2 text-sm text-red-600">
           <TranslatedText 
-            translationKey="download.error" 
-            fallback={`Error: ${error}`} 
-            lang={lang} 
+            path="download.error" 
+            fallback={`Error: ${error}`}
           />
         </div>
       )}
       
       <div className="mt-2 text-xs text-gray-500">
         <TranslatedText 
-          translationKey="download.pdfNote" 
-          fallback="PDF includes a high-quality version perfect for printing" 
-          lang={lang} 
+          path="download.pdfNote" 
+          fallback="PDF includes a high-quality version perfect for printing"
         />
       </div>
     </div>

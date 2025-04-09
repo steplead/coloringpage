@@ -8,146 +8,159 @@ import { useTranslation } from '@/lib/i18n/context';
 
 interface LanguageSelectorProps {
   currentLang?: string;
-  onLanguageChange?: (lang: string) => void;
+  align?: 'left' | 'right';
   className?: string;
-  dropdownPosition?: 'top' | 'bottom';
 }
 
-export default function LanguageSelector({ 
+export default function LanguageSelector({
   currentLang,
-  onLanguageChange,
+  align = 'right',
   className = '',
-  dropdownPosition = 'bottom'
 }: LanguageSelectorProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isChanging, setIsChanging] = useState(false);
-  const selectorRef = useRef<HTMLDivElement>(null);
-  const { language: contextLang, setLanguage } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(currentLang || 'en');
+  const { setLanguage, language, isLoading, refreshTranslations, lastError } = useTranslation();
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
-  // Use the language from props or context
-  const selectedLang = currentLang || contextLang;
-
-  // Get the current language info
-  const currentLanguage = SUPPORTED_LANGUAGES.find(lang => lang.code === selectedLang) || SUPPORTED_LANGUAGES[0];
-
-  // Helper to get path without language prefix
-  const getPathWithoutLocale = (path: string): string => {
-    // If the path is just '/' return it
-    if (path === '/') return '';
-    
-    // Split path into segments
-    const segments = path.split('/');
-    
-    // Check if the first segment is a language code
-    if (segments.length > 1) {
-      const potentialLocale = segments[1];
-      if (SUPPORTED_LANGUAGES.some(lang => lang.code === potentialLocale)) {
-        // Remove the language segment
-        segments.splice(1, 1);
-        return segments.join('/') || '/';
-      }
-    }
-    
-    return path;
-  };
-
-  const handleLanguageSelect = async (languageCode: string) => {
-    if (languageCode === selectedLang || isChanging) return;
-    
-    setIsChanging(true);
-    setIsOpen(false);
-    
-    try {
-      console.log('Changing language to:', languageCode);
-      
-      // Update translations in the context
-      await setLanguage(languageCode);
-      
-      // Call the onLanguageChange callback if provided
-      if (onLanguageChange) {
-        onLanguageChange(languageCode);
-      }
-      
-      // Build the new URL with the updated language code
-      const pathWithoutLocale = getPathWithoutLocale(pathname);
-      const newPath = `/${languageCode}${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`;
-      
-      // Use the router to navigate to the new URL
-      router.push(newPath);
-    } catch (error) {
-      console.error('Failed to change language:', error);
-    } finally {
-      setIsChanging(false);
-    }
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (!(target as Element).closest('.language-selector')) {
-        setIsOpen(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
+  // 切换下拉菜单
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  // 关闭下拉菜单
+  const closeDropdown = (e: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+  
+  // 监听点击事件关闭菜单
+  useEffect(() => {
+    document.addEventListener('mousedown', closeDropdown);
+    return () => {
+      document.removeEventListener('mousedown', closeDropdown);
+    };
+  }, []);
+  
+  // 同步内部状态和外部传入的语言
+  useEffect(() => {
+    if (currentLang) {
+      setSelectedLanguage(currentLang);
+    } else if (language) {
+      setSelectedLanguage(language);
+    }
+  }, [currentLang, language]);
+  
+  // 获取当前语言
+  const displayLang = currentLang || language || 'en';
+  const currentLanguageInfo = SUPPORTED_LANGUAGES.find(l => l.code === displayLang);
+  
+  // 强制刷新翻译
+  const handleForceRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    refreshTranslations();
+  };
+  
+  // 清除翻译缓存
+  const handleClearCache = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    clearTranslationCache();
+  };
+  
+  // 更改语言
+  const handleLanguageChange = async (langCode: string) => {
+    if (langCode === selectedLanguage) {
+      setIsOpen(false);
+      return;
+    }
+    
+    try {
+      // 更新上下文中的语言
+      await setLanguage(langCode);
+      
+      // 更新URL路径中的语言
+      const pathSegments = pathname.split('/');
+      const isLangPath = SUPPORTED_LANGUAGES.some(lang => pathSegments[1] === lang.code);
+      
+      let newPath = '';
+      if (isLangPath) {
+        // 替换现有语言部分
+        pathSegments[1] = langCode;
+        newPath = pathSegments.join('/');
+      } else {
+        // 添加新语言部分
+        newPath = `/${langCode}${pathname}`;
+      }
+      
+      // 导航到新路径
+      router.push(newPath);
+      
+      // 更新选中的语言
+      setSelectedLanguage(langCode);
+    } catch (error) {
+      console.error('Error changing language:', error);
+    } finally {
+      // 关闭下拉菜单
+      setIsOpen(false);
+    }
+  };
+  
   return (
-    <div ref={selectorRef} className={`relative language-selector ${className}`}>
+    <div 
+      className={`relative ${className}`}
+      ref={dropdownRef}
+    >
       <button
+        className={`flex items-center justify-between px-3 py-2 rounded-md border border-gray-200 bg-white hover:bg-gray-50 ${isLoading ? 'opacity-70' : ''}`}
         onClick={toggleDropdown}
-        className="flex items-center justify-between w-full px-2 py-1.5 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        aria-haspopup="true"
-        aria-expanded={isOpen ? 'true' : 'false'}
-        disabled={isChanging}
+        disabled={isLoading}
+        title={lastError ? `Translation error: ${lastError}` : undefined}
       >
-        <div className="flex items-center space-x-2">
-          <span className="text-base">{currentLanguage.flag}</span>
-          <span className="text-sm font-medium">{currentLanguage.nativeName}</span>
-        </div>
-        <svg
-          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
+        <span className="mr-2">{currentLanguageInfo?.flag || '🌍'}</span>
+        <span>{currentLanguageInfo?.nativeName || displayLang}</span>
+        <span className="ml-2">▼</span>
       </button>
-
+      
       {isOpen && (
-        <div 
-          className={`absolute ${dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'} right-0 w-full bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200`}
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="language-selector"
-        >
-          {SUPPORTED_LANGUAGES.map((language) => (
-            <button
-              key={language.code}
-              onClick={() => handleLanguageSelect(language.code)}
-              className={`flex items-center px-3 py-1.5 text-sm w-full text-left hover:bg-gray-50 ${
-                selectedLang === language.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-              }`}
-              role="menuitem"
-              disabled={isChanging}
-            >
-              <span className="text-base mr-2">{language.flag}</span>
-              <span>{language.nativeName}</span>
-            </button>
-          ))}
+        <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[180px]`}>
+          <div className="py-1 max-h-64 overflow-y-auto">
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <button
+                key={lang.code}
+                className={`w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center justify-between ${lang.code === selectedLanguage ? 'bg-blue-50 text-blue-600' : ''}`}
+                onClick={() => handleLanguageChange(lang.code)}
+              >
+                <div className="flex items-center">
+                  <span className="mr-3">{lang.flag}</span>
+                  <span>{lang.nativeName}</span>
+                </div>
+                {lang.code === selectedLanguage && (
+                  <span className="text-blue-600">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+          
+          {process.env.NODE_ENV === 'development' && (
+            <div className="border-t border-gray-200 py-1">
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm text-gray-700 flex items-center"
+                onClick={handleForceRefresh}
+              >
+                <span className="mr-3">🔄</span>
+                <span>刷新当前语言</span>
+              </button>
+              <button
+                className="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm text-gray-700 flex items-center"
+                onClick={handleClearCache}
+              >
+                <span className="mr-3">🗑️</span>
+                <span>清除缓存并刷新</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

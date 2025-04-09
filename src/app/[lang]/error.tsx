@@ -33,17 +33,15 @@ export default function ErrorPage({
         <div className="p-6 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             <TranslatedText 
-              translationKey="errors.appError.title" 
+              path="errors.appError.title" 
               fallback="Something went wrong" 
-              lang={lang} 
             />
           </h1>
           
           <p className="text-gray-600 mb-6">
             <TranslatedText 
-              translationKey="errors.appError.message" 
+              path="errors.appError.message" 
               fallback="We're sorry, but we encountered an error while processing your request." 
-              lang={lang} 
             />
           </p>
           
@@ -53,9 +51,8 @@ export default function ErrorPage({
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               <TranslatedText 
-                translationKey="errors.tryAgain" 
+                path="errors.tryAgain" 
                 fallback="Try Again" 
-                lang={lang}
               />
             </button>
             
@@ -64,9 +61,8 @@ export default function ErrorPage({
               className="block w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
             >
               <TranslatedText 
-                translationKey="common.backToHome" 
+                path="common.backToHome" 
                 fallback="Return to Home" 
-                lang={lang}
               />
             </Link>
           </div>

@@ -14,6 +14,12 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [displayLang, setDisplayLang] = useState(currentLang);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // When component mounts, mark it as mounted
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // When currentLang changes, update the displayLang
   useEffect(() => {
@@ -41,6 +47,24 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
     { name: 'nav.about', href: '/about' },
   ];
 
+  // If not mounted yet, return a simple loading state
+  if (!isMounted) {
+    return (
+      <header className="bg-white shadow-md sticky top-0 z-50 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex justify-between items-center h-14 md:h-16">
+            <div className="animate-pulse bg-gray-200 h-6 w-32 rounded"></div>
+            <div className="hidden md:flex space-x-4">
+              {[1,2,3,4].map((i) => (
+                <div key={i} className="animate-pulse bg-gray-200 h-6 w-20 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="bg-white shadow-md sticky top-0 z-50 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -49,7 +73,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
           {/* Logo */}
           <Link href={getLocalizedHref('/')} className="flex items-center flex-shrink-0 max-w-[60%]">
             <span className="text-base sm:text-lg md:text-xl font-bold text-blue-600 tracking-tight truncate">
-              <TranslatedText translationKey="common.appName" fallback="Coloring AI" lang={displayLang} />
+              <TranslatedText translationKey="common.appName" fallback="Coloring AI" />
             </span>
           </Link>
 
@@ -67,23 +91,22 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                       : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
                   }`}
                 >
-                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={displayLang} />
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} />
                 </Link>
               );
             })}
             
             {/* Language Selector - Desktop */}
             <LanguageSelector 
-              currentLang={displayLang} 
-              className="ml-1 lg:ml-2"
-              onLanguageChange={(lang) => setDisplayLang(lang)}
+              currentLang={displayLang}
+              className="ml-2 hidden lg:flex"
             />
             
             <Link 
               href={getLocalizedHref('/create')} 
               className="ml-2 lg:ml-4 bg-blue-600 hover:bg-blue-700 text-white px-3 lg:px-4 py-2 rounded-md text-xs lg:text-sm font-medium transition-colors duration-200"
             >
-              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" />
             </Link>
           </nav>
 
@@ -137,9 +160,8 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
         <div className="md:hidden border-t border-gray-100">
           <div className="px-2 py-2">
             <LanguageSelector 
-              currentLang={displayLang} 
-              className="w-full"
-              onLanguageChange={(lang) => setDisplayLang(lang)}
+              currentLang={displayLang}
+              className="w-full" 
             />
           </div>
         </div>
@@ -162,7 +184,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} lang={displayLang} />
+                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} />
                 </Link>
               );
             })}
@@ -171,7 +193,7 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
               className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
-              <TranslatedText translationKey="nav.createNow" fallback="Create Now" lang={displayLang} />
+              <TranslatedText translationKey="nav.createNow" fallback="Create Now" />
             </Link>
           </div>
         </div>

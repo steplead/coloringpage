@@ -39,17 +39,15 @@ export default function GalleryNotFound() {
             
             <h1 className="text-center text-2xl font-bold text-gray-900 mb-2">
               <TranslatedText 
-                translationKey="gallery.notFound.title" 
-                fallback="Coloring Page Not Found" 
-                lang={currentLang} 
+                path="gallery.notFound.title" 
+                fallback="Coloring Page Not Found"
               />
             </h1>
             
             <p className="text-center text-gray-600 mb-6">
               <TranslatedText 
-                translationKey="gallery.notFound.message" 
-                fallback="We couldn't find the coloring page you were looking for. It might have been removed or never existed." 
-                lang={currentLang} 
+                path="gallery.notFound.message" 
+                fallback="We couldn't find the coloring page you were looking for. It might have been removed or never existed."
               />
             </p>
             
@@ -60,9 +58,8 @@ export default function GalleryNotFound() {
               >
                 <ArrowLeftIcon className="h-4 w-4" />
                 <TranslatedText 
-                  translationKey="gallery.notFound.browseGallery" 
-                  fallback="Browse Gallery" 
-                  lang={currentLang} 
+                  path="gallery.notFound.browseGallery" 
+                  fallback="Browse Gallery"
                 />
               </Link>
               
@@ -72,9 +69,8 @@ export default function GalleryNotFound() {
               >
                 <PencilSquareIcon className="h-4 w-4" />
                 <TranslatedText 
-                  translationKey="gallery.notFound.createNew" 
-                  fallback="Create a New Coloring Page" 
-                  lang={currentLang} 
+                  path="gallery.notFound.createNew" 
+                  fallback="Create a New Coloring Page"
                 />
               </Link>
             </div>
@@ -84,31 +80,27 @@ export default function GalleryNotFound() {
             <div className="text-sm text-gray-500">
               <h3 className="font-medium text-gray-900 mb-2">
                 <TranslatedText 
-                  translationKey="gallery.notFound.suggestions.title" 
-                  fallback="Why am I seeing this page?" 
-                  lang={currentLang} 
+                  path="gallery.notFound.suggestions.title" 
+                  fallback="Why am I seeing this page?"
                 />
               </h3>
               <ul className="list-disc pl-5 space-y-1">
                 <li>
                   <TranslatedText 
-                    translationKey="gallery.notFound.suggestions.reason1" 
-                    fallback="The coloring page may have been deleted" 
-                    lang={currentLang} 
+                    path="gallery.notFound.suggestions.reason1" 
+                    fallback="The coloring page may have been deleted"
                   />
                 </li>
                 <li>
                   <TranslatedText 
-                    translationKey="gallery.notFound.suggestions.reason2" 
-                    fallback="The URL might be incorrect or outdated" 
-                    lang={currentLang} 
+                    path="gallery.notFound.suggestions.reason2" 
+                    fallback="The URL might be incorrect or outdated"
                   />
                 </li>
                 <li>
                   <TranslatedText 
-                    translationKey="gallery.notFound.suggestions.reason3" 
-                    fallback="You might have followed a broken link" 
-                    lang={currentLang} 
+                    path="gallery.notFound.suggestions.reason3" 
+                    fallback="You might have followed a broken link"
                   />
                 </li>
               </ul>
@@ -121,9 +113,8 @@ export default function GalleryNotFound() {
               >
                 <MagnifyingGlassIcon className="h-4 w-4 mr-1" />
                 <TranslatedText 
-                  translationKey="nav.home" 
-                  fallback="Go to Home Page" 
-                  lang={currentLang} 
+                  path="nav.home" 
+                  fallback="Go to Home Page"
                 />
               </Link>
             </div>

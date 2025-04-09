@@ -1,4 +1,4 @@
-import './globals.css'
+import '@/app/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { notFound } from 'next/navigation'
@@ -20,10 +20,7 @@ const FixTranslationsV10 = dynamic(() => import('@/app/debug/fix-translations-v1
 const inter = Inter({ subsets: ['latin'] })
 
 export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
-  // Get the current language
   const lang = params.lang;
-  
-  // Find language details
   const languageInfo = SUPPORTED_LANGUAGES.find(l => l.code === lang);
   const languageName = languageInfo?.name || 'English';
   
@@ -38,6 +35,9 @@ export async function generateMetadata({ params }: { params: { lang: string } })
       languages: {
         'x-default': 'https://ai-coloringpage.com',
       },
+    },
+    icons: {
+      icon: '/favicon.ico',
     },
   };
 }
@@ -62,13 +62,10 @@ export default function RootLayout({
   return (
     <html 
       lang={lang}
-      className={inter.className}
-      suppressHydrationWarning={true}
+      className={cn(inter.className)}
+      suppressHydrationWarning
     >
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body className={cn(inter.className, 'bg-gray-50')}>
+      <body className={cn('bg-gray-50 min-h-screen')}>
         <TranslationProvider initialLang={lang}>
           <Suspense fallback={<Loading />}>
             <Navigation currentLang={lang} />
@@ -81,9 +78,10 @@ export default function RootLayout({
         <Analytics />
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-92597486097093773"
-          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          data-ad-client="ca-pub-92597486097093773"
           strategy="lazyOnload"
+          crossOrigin="anonymous"
         />
       </body>
     </html>
