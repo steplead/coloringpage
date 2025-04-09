@@ -57,40 +57,36 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get the locale from the request
-  const locale = getLocaleFromRequest(request);
-
-  // Create a response with the appropriate headers
-  const response = NextResponse.next();
-  response.headers.set('x-pathname', pathname);
-  response.headers.set('x-locale', locale);
+  // Special handling for root path
+  if (pathname === '/') {
+    const locale = getLocaleFromRequest(request);
+    const url = new URL(request.url);
+    url.pathname = `/${locale}`;
+    
+    return NextResponse.redirect(url);
+  }
 
   // Check if the path starts with a locale
   const segments = pathname.split('/');
   const firstSegment = segments[1];
   const hasLocale = locales.includes(firstSegment);
 
-  // If we're at the root or the path doesn't have a locale, redirect
+  // If no locale in path, redirect
   if (!hasLocale) {
+    const locale = getLocaleFromRequest(request);
     const url = new URL(request.url);
-    url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+    url.pathname = `/${locale}${pathname}`;
     
-    const redirectResponse = NextResponse.redirect(url);
-    redirectResponse.headers.set('x-pathname', pathname);
-    redirectResponse.headers.set('x-locale', locale);
-    
-    // Set the locale cookie
-    redirectResponse.cookies.set('NEXT_LOCALE', locale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    });
-    
-    return redirectResponse;
+    return NextResponse.redirect(url);
   }
 
-  // Set the locale cookie for non-redirect responses too
-  response.cookies.set('NEXT_LOCALE', locale, {
+  // For paths with valid locale, just add headers and cookies
+  const response = NextResponse.next();
+  response.headers.set('x-pathname', pathname);
+  response.headers.set('x-locale', firstSegment);
+  
+  // Set the locale cookie
+  response.cookies.set('NEXT_LOCALE', firstSegment, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365, // 1 year
     sameSite: 'lax',
@@ -101,7 +97,13 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next)
-    '/((?!_next|api|favicon.ico).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }; 
