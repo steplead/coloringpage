@@ -13,9 +13,9 @@ import { Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
 import Loading from './loading'
 
-// 动态导入所有调试组件
-// 注意: V8是最新最强大的修复版本
-const FixTranslationsV8 = dynamic(() => import('@/app/debug/fix-translations-v8'), { ssr: false })
+// 动态导入调试组件
+// 注意: V9是最新版修复程序，使用了更高级的DOM API拦截
+const FixTranslationsV9 = dynamic(() => import('@/app/debug/fix-translations-v9'), { ssr: false })
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -76,7 +76,7 @@ export default function RootLayout({
             <Toaster position="bottom-center" />
           </Suspense>
           {/* 翻译修复组件，仅在中文页面加载 */}
-          {lang === 'zh' && <FixTranslationsV8 />}
+          {lang === 'zh' && <FixTranslationsV9 />}
         </TranslationProvider>
         <Analytics />
         <Script
