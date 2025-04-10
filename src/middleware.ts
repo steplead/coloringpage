@@ -83,24 +83,21 @@ export function middleware(request: NextRequest) {
   ) {
     return NextResponse.next();
   }
-  
-  // Special handling for root path '/' - always redirect to the correct locale
+
+  // Special handling for root path
   if (pathname === '/') {
     const requestLocale = getLocaleFromRequest(request);
     const url = request.nextUrl.clone();
     url.pathname = `/${requestLocale}`;
     
-    const redirectResponse = NextResponse.redirect(url);
-    redirectResponse.cookies.set('NEXT_LOCALE', requestLocale, {
+    const response = NextResponse.redirect(url);
+    response.cookies.set('NEXT_LOCALE', requestLocale, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
       sameSite: 'lax',
     });
     
-    redirectResponse.headers.set('x-pathname', pathname);
-    redirectResponse.headers.set('x-locale', requestLocale);
-    
-    return redirectResponse;
+    return response;
   }
   
   // Get locale from the path or from the request
@@ -127,26 +124,19 @@ export function middleware(request: NextRequest) {
     return response;
   }
   
-  // Prepare to redirect:
-  // 1. If path has a different locale, replace it
-  // 2. If path has no locale, add our locale
-  
   // Get the path without locale
   const pathWithoutLocale = pathnameLocale
     ? getPathWithoutLocale(pathname, pathnameLocale)
     : pathname;
   
-  // For non-root paths, construct the new path with the locale
-  const url = request.nextUrl.clone();
+  // Add the final locale to create the localized URL
+  const segments = pathWithoutLocale.split('/');
+  segments.splice(1, 0, finalLocale); // Insert locale after the first '/'
+  const newPathname = segments.join('/');
   
-  // Ensure we don't add unnecessary trailing slashes
-  if (pathWithoutLocale === '/') {
-    url.pathname = `/${finalLocale}`;
-  } else {
-    const segments = pathWithoutLocale.split('/').filter(Boolean);
-    segments.unshift(finalLocale);
-    url.pathname = `/${segments.join('/')}`;
-  }
+  // Create the URL with the new pathname and preserve search params
+  const url = request.nextUrl.clone();
+  url.pathname = newPathname;
   
   // Redirect to the localized URL
   const redirectResponse = NextResponse.redirect(url);
@@ -159,7 +149,7 @@ export function middleware(request: NextRequest) {
   });
   
   // Also add the pathname header to the redirect response
-  redirectResponse.headers.set('x-pathname', url.pathname);
+  redirectResponse.headers.set('x-pathname', newPathname);
   redirectResponse.headers.set('x-locale', finalLocale);
   
   return redirectResponse;
