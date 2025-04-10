@@ -27,6 +27,7 @@ This project was created by JL to make it easy for anyone to generate custom col
 - 🌐 Internationalization (i18n) with support for multiple languages
 - 🔄 Automatic language detection based on browser settings
 - 📰 Auto-generated Blog with SEO-optimized educational coloring content
+- 🔐 Admin dashboard for content management
 
 ## How to Use
 
@@ -72,8 +73,21 @@ Discover educational articles about coloring and creative activities:
    - Keyword-rich tags for topic discovery
 5. Content is optimized for educational value, search engines, and creative inspiration
 
+### Admin Dashboard
+
+Manage your blog content through a secure admin panel:
+
+1. Access the admin panel at `/admin` (password protected)
+2. View a list of all blog posts with status, creation date, and tags
+3. Create new blog posts with a user-friendly form editor
+4. Edit existing posts with full content and metadata control
+5. Delete posts or toggle their published status
+6. Auto-generate blog posts in bulk with configurable settings
+7. Preview posts before publishing
+
 ## Latest Updates
 
+- **Admin Dashboard (2024-06-18)**: Added a comprehensive admin dashboard for blog management, including a post editor, bulk generation tool, and content moderation features.
 - **Enhanced Blog SEO (2024-06-17)**: Upgraded blog generation with comprehensive SEO features including structured data, schema.org markup, meta tags optimization, and keyword-rich content. Improved article structure with better heading hierarchy and semantic HTML.
 
 ## Internationalization (i18n)
