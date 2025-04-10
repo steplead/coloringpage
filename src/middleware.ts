@@ -84,22 +84,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Special handling for root path - Always redirect to default language
-  if (pathname === '/') {
-    const locale = getLocaleFromRequest(request);
-    const url = request.nextUrl.clone();
-    url.pathname = `/${locale}`;
-    
-    const response = NextResponse.redirect(url);
-    response.cookies.set('NEXT_LOCALE', locale, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-      sameSite: 'lax',
-    });
-    
-    return response;
-  }
-  
   // Get locale from the path or from the request
   const pathnameLocale = getLocaleFromPath(pathname);
   const requestLocale = getLocaleFromRequest(request);
