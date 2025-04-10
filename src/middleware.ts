@@ -91,15 +91,46 @@ export function middleware(request: NextRequest) {
   // Determine which locale to use
   const finalLocale = pathnameLocale || requestLocale;
   
-  // Clone headers to add custom values
-  const response = NextResponse.next();
+  // Always redirect if there's no locale in the path
+  // This ensures that "/" and any path without locale gets redirected
+  if (!pathnameLocale) {
+    // Get the path without locale
+    const pathWithoutLocale = pathname;
+    
+    // Add the final locale to create the localized URL
+    const segments = pathWithoutLocale.split('/');
+    segments.splice(1, 0, finalLocale); // Insert locale after the first '/'
+    const newPathname = segments.join('/');
+    
+    // Create the URL with the new pathname and preserve search params
+    const url = request.nextUrl.clone();
+    url.pathname = newPathname;
+    
+    // Redirect to the localized URL
+    const redirectResponse = NextResponse.redirect(url);
+    
+    // Set the locale cookie
+    redirectResponse.cookies.set('NEXT_LOCALE', finalLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
+    
+    // Also add the pathname header to the redirect response
+    redirectResponse.headers.set('x-pathname', newPathname);
+    redirectResponse.headers.set('x-locale', finalLocale);
+    
+    return redirectResponse;
+  }
   
-  // Add pathname header for the root layout to use
-  response.headers.set('x-pathname', pathname);
-  response.headers.set('x-locale', finalLocale);
-  
-  // If path already has a locale that matches our final locale, just proceed
+  // If path already has a correct locale, just proceed
   if (pathnameLocale === finalLocale) {
+    const response = NextResponse.next();
+    
+    // Add pathname header for the root layout to use
+    response.headers.set('x-pathname', pathname);
+    response.headers.set('x-locale', finalLocale);
+    
     response.cookies.set('NEXT_LOCALE', finalLocale, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -108,14 +139,9 @@ export function middleware(request: NextRequest) {
     return response;
   }
   
-  // Prepare to redirect:
-  // 1. If path has a different locale, replace it
-  // 2. If path has no locale, add our locale
-  
+  // Handle the case when path has a different locale than the one we want to use
   // Get the path without locale
-  const pathWithoutLocale = pathnameLocale
-    ? getPathWithoutLocale(pathname, pathnameLocale)
-    : pathname;
+  const pathWithoutLocale = getPathWithoutLocale(pathname, pathnameLocale);
   
   // Add the final locale to create the localized URL
   const segments = pathWithoutLocale.split('/');
