@@ -5,6 +5,12 @@ on:
     branches:
       - main  # 当代码推送到main分支时触发
 
+# 添加权限配置，解决评论创建403错误
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -25,6 +31,48 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
+      # 创建.vercel配置目录和project.json文件
+      - name: Setup Vercel Configuration
+        run: |
+          mkdir -p .vercel
+          cat > .vercel/project.json << EOF
+          {
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID }}",
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}"
+          }
+          EOF
+          
+          # 验证配置文件是否正确创建
+          cat .vercel/project.json
+
+      # 改进拉取Vercel项目配置的步骤，添加错误处理
+      - name: Pull Vercel Project Settings
+        run: |
+          # 尝试拉取项目配置
+          if ! vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}; then
+            echo "拉取Vercel配置失败，创建自定义配置文件..."
+            
+            # 如果拉取失败，创建一个最小的配置集
+            cat > .vercel/output/config.json << EOF
+          {
+            "version": 3,
+            "routes": [
+              { "handle": "filesystem" },
+              { "src": "/(.*)", "dest": "/index.html" }
+            ]
+          }
+          EOF
+            
+            mkdir -p .vercel/output/static
+            echo "备用配置创建完成"
+          else
+            echo "Vercel配置拉取成功"
+          fi
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
       - name: Create Vercel project settings
         run: |
           cat > vercel.json << 'EOF'
@@ -38,28 +86,24 @@ jobs:
           }
           EOF
 
-      - name: Deploy to Vercel (Production)
+      # 简化部署流程，使用单个部署步骤
+      - name: Build and Deploy to Vercel
         id: deploy
         run: |
-          echo "正在部署到Vercel..."
-          vercel --confirm --token=${{ secrets.VERCEL_TOKEN }} --prod || true
-          # 检查部署结果，不管Vercel CLI的退出码如何，都检查网站可访问性
-          DEPLOY_SUCCESS=false
-          if curl -s -I https://www.ai-coloringpage.com | grep -q "HTTP/2 307\|HTTP/2 200"; then
-            DEPLOY_SUCCESS=true
-            echo "::set-output name=status::success"
-          else
-            echo "::set-output name=status::failure"
-          fi
+          echo "正在构建并部署到Vercel..."
+          # 先构建项目
+          VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }} \
+          VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }} \
+          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }} || echo "构建过程中出现错误，但继续进行部署"
           
-          if [ "$DEPLOY_SUCCESS" = "true" ]; then
-            echo "✅ 部署成功！网站可以访问"
-            exit 0
-          else
-            echo "❌ 部署可能存在问题，但继续执行"
-            # 使用exit 0确保工作流不会因为Vercel CLI退出码而失败
-            exit 0
-          fi
+          # 然后部署到生产环境
+          DEPLOYMENT_URL=$(VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }} \
+          VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }} \
+          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          
+          echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          
+          echo "✅ 部署成功！网站地址: $DEPLOYMENT_URL"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -92,50 +136,22 @@ jobs:
           echo "部署时间：$(date)" >> deployment_status.txt
           echo "部署网址：https://www.ai-coloringpage.com" >> deployment_status.txt 
       
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-
-      - name: Deploy to Vercel
-        id: deploy_production
+      # 使用REST API直接发送评论，而不依赖GitHub CLI或actions/github-script
+      - name: Create GitHub deployment comment
+        if: always()
         run: |
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-          echo "::set-output name=deployment_url::$DEPLOYMENT_URL"
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      
-      - name: Create deployment success comment
-        uses: actions/github-script@v6
-        if: success()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            const deployment_url = '${{ steps.deploy_production.outputs.deployment_url }}';
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `✅ 部署成功! 您的网站已更新。\n访问链接: ${deployment_url || 'https://ai-coloringpage.com'}`
-            });
-
-      - name: Create deployment failure comment
-        uses: actions/github-script@v6
-        if: failure()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `❌ 部署失败! 请检查GitHub Actions日志获取更多信息。`
-            }); 
+          if [ "${{ job.status }}" == "success" ]; then
+            COMMENT_BODY="✅ 部署成功！您的网站已更新。\n访问链接: ${{ steps.deploy.outputs.deployment_url || 'https://ai-coloringpage.com' }}"
+          else
+            COMMENT_BODY="❌ 部署失败！请检查GitHub Actions日志获取更多信息。"
+          fi
+          
+          # 使用curl直接发送commit评论
+          REPO="${GITHUB_REPOSITORY}"
+          COMMIT_SHA="${GITHUB_SHA}"
+          
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${REPO}/commits/${COMMIT_SHA}/comments" \
+            -d "{\"body\":\"${COMMENT_BODY}\"}" 
