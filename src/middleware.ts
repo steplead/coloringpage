@@ -84,6 +84,25 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
+  // Special case for root path '/' - always redirect to default locale
+  // This ensures we don't get a 404 on the root path
+  if (pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}`;
+    
+    const redirectResponse = NextResponse.redirect(url);
+    redirectResponse.cookies.set('NEXT_LOCALE', defaultLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
+    
+    redirectResponse.headers.set('x-pathname', `/${defaultLocale}`);
+    redirectResponse.headers.set('x-locale', defaultLocale);
+    
+    return redirectResponse;
+  }
+  
   // Get locale from the path or from the request
   const pathnameLocale = getLocaleFromPath(pathname);
   const requestLocale = getLocaleFromRequest(request);
