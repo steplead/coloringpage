@@ -75,11 +75,12 @@ function getPathWithoutLocale(pathname: string, locale: string): string {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
-  // Skip middleware for API routes, static files, etc.
+  // Skip middleware for API routes, static files, admin routes, etc.
   if (
     pathname.startsWith('/api/') ||
     pathname.includes('.') ||
-    pathname.startsWith('/_next/')
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/admin')
   ) {
     return NextResponse.next();
   }
@@ -170,5 +171,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|admin).*)'],
 }; 

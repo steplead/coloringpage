@@ -221,7 +221,7 @@ export default function BlogAdminPage() {
                         Edit
                       </Link>
                       <a 
-                        href={`/blog/${post.slug}`} 
+                        href={`/en/blog/${post.slug}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
