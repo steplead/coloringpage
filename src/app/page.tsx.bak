@@ -20,14 +20,7 @@ export const metadata: Metadata = {
   },
 };
 
-// 明确定义传入组件的Props类型
-interface HomeProps {
-  params?: { 
-    lang?: string 
-  }
-}
-
-export default function Home({ params }: HomeProps) {
+export default function Home({ params }: { params?: { lang?: string } }) {
   // Get the current language from params or headers
   const headersList = headers();
   const headerLang = headersList.get('x-locale'); 
@@ -97,21 +90,21 @@ export default function Home({ params }: HomeProps) {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              <TranslatedText translationKey="home.hero.title" fallback="Create Beautiful Coloring Pages with AI" />
+              <TranslatedText path="home.hero.title" fallback="Create Beautiful Coloring Pages with AI" />
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              <TranslatedText translationKey="home.hero.subtitle" fallback="Turn your ideas into stunning coloring pages in seconds. Perfect for kids, teachers, and coloring enthusiasts." />
+              <TranslatedText path="home.hero.subtitle" fallback="Turn your ideas into stunning coloring pages in seconds. Perfect for kids, teachers, and coloring enthusiasts." />
             </p>
             <div className="flex justify-center space-x-4">
               <Link href="/create" className="px-8 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors shadow-md">
-                <TranslatedText translationKey="home.hero.createButton" fallback="Create Now" />
+                <TranslatedText path="home.hero.createButton" fallback="Create Now" />
               </Link>
               <a href="#how-it-works" className="px-8 py-3 bg-white text-blue-600 rounded-full font-medium border border-blue-200 hover:bg-blue-50 transition-colors">
-                <TranslatedText translationKey="home.hero.learnButton" fallback="Learn More" />
+                <TranslatedText path="home.hero.learnButton" fallback="Learn More" />
               </a>
             </div>
             <div className="mt-4 text-gray-500">
-              <TranslatedText translationKey="home.hero.stats" fallback="Over 5,000 coloring pages created" />
+              <TranslatedText path="home.hero.stats" fallback="Over 5,000 coloring pages created" />
             </div>
           </div>
 
@@ -145,7 +138,7 @@ export default function Home({ params }: HomeProps) {
       <section id="how-it-works" className="w-full py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
-            <TranslatedText translationKey="home.howItWorks.title" fallback="Create Coloring Pages Your Way" />
+            <TranslatedText path="home.howItWorks.title" fallback="Create Coloring Pages Your Way" />
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -159,7 +152,7 @@ export default function Home({ params }: HomeProps) {
                   <TranslatedText path={method.description} fallback={method.description.split('.').pop()} />
                 </p>
                 <Link href={method.link} className="inline-block px-6 py-2 bg-blue-100 text-blue-600 rounded-full font-medium hover:bg-blue-200 transition-colors">
-                  <TranslatedText translationKey="common.tryIt" fallback="Try It" />
+                  <TranslatedText path="common.tryIt" fallback="Try It" />
                 </Link>
               </div>
             ))}
@@ -171,10 +164,10 @@ export default function Home({ params }: HomeProps) {
       <section className="w-full py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4 sm:mb-6 break-words hyphens-auto">
-            <TranslatedText translationKey="home.styles.title" fallback="Choose Your Style" />
+            <TranslatedText path="home.styles.title" fallback="Choose Your Style" />
           </h2>
           <p className="text-base sm:text-xl text-center text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-12">
-            <TranslatedText translationKey="home.styles.subtitle" fallback="Select from multiple artistic styles to create the perfect coloring page" />
+            <TranslatedText path="home.styles.subtitle" fallback="Select from multiple artistic styles to create the perfect coloring page" />
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -200,7 +193,7 @@ export default function Home({ params }: HomeProps) {
       <section className="w-full py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
-            <TranslatedText translationKey="home.testimonials.title" fallback="What Our Users Say" />
+            <TranslatedText path="home.testimonials.title" fallback="What Our Users Say" />
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -214,7 +207,7 @@ export default function Home({ params }: HomeProps) {
 
           <div className="text-center mt-12">
             <Link href="/create" className="px-8 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors shadow-md inline-block">
-              <TranslatedText translationKey="home.testimonials.cta" fallback="Start Creating Now" />
+              <TranslatedText path="home.testimonials.cta" fallback="Start Creating Now" />
             </Link>
           </div>
         </div>
@@ -224,7 +217,7 @@ export default function Home({ params }: HomeProps) {
       <section className="w-full py-16 px-4 bg-blue-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
-            <TranslatedText translationKey="home.features.title" fallback="Why Choose Our AI Coloring Page Generator?" />
+            <TranslatedText path="home.features.title" fallback="Why Choose Our AI Coloring Page Generator?" />
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -256,13 +249,13 @@ export default function Home({ params }: HomeProps) {
       <section className="w-full py-16 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 break-words hyphens-auto">
-            <TranslatedText translationKey="home.cta.title" fallback="Ready to Create Your First Coloring Page?" />
+            <TranslatedText path="home.cta.title" fallback="Ready to Create Your First Coloring Page?" />
           </h2>
           <p className="text-base sm:text-xl max-w-2xl mx-auto mb-8">
-            <TranslatedText translationKey="home.cta.subtitle" fallback="Start creating beautiful coloring pages for free. No sign-up required." />
+            <TranslatedText path="home.cta.subtitle" fallback="Start creating beautiful coloring pages for free. No sign-up required." />
           </p>
           <Link href="/create" className="px-10 py-4 bg-white text-blue-600 rounded-full font-medium hover:bg-blue-50 transition-colors shadow-lg inline-block">
-            <TranslatedText translationKey="home.cta.button" fallback="Start Creating for Free" />
+            <TranslatedText path="home.cta.button" fallback="Start Creating for Free" />
           </Link>
         </div>
       </section>
@@ -271,7 +264,7 @@ export default function Home({ params }: HomeProps) {
       <section className="w-full py-16 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 mb-8 sm:mb-12 break-words hyphens-auto">
-            <TranslatedText translationKey="home.faq.title" fallback="Frequently Asked Questions" />
+            <TranslatedText path="home.faq.title" fallback="Frequently Asked Questions" />
           </h2>
 
           {[1, 2, 3, 4, 5].map((num) => (

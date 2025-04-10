@@ -25,16 +25,16 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
-          <TranslatedText translationKey="common.backToHome" fallback="Back to Home" />
+          <TranslatedText path="common.backToHome" fallback="Back to Home" />
         </Link>
       </div>
 
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900">
-          <TranslatedText translationKey="create.title" fallback="Create Your Coloring Page" />
+          <TranslatedText path="create.title" fallback="Create Your Coloring Page" />
         </h1>
         <p className="text-center text-gray-600 mt-3 max-w-2xl mx-auto">
-          <TranslatedText translationKey="create.subtitle" fallback="Choose a creation method below and let our AI generate a beautiful coloring page for you" />
+          <TranslatedText path="create.subtitle" fallback="Choose a creation method below and let our AI generate a beautiful coloring page for you" />
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            <TranslatedText translationKey="create.tabs.describe" fallback="Describe It" />
+            <TranslatedText path="create.tabs.describe" fallback="Describe It" />
           </button>
           <button
             onClick={() => setActiveTab('photo')}
@@ -59,7 +59,7 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            <TranslatedText translationKey="create.tabs.photo" fallback="Convert Photo" />
+            <TranslatedText path="create.tabs.photo" fallback="Convert Photo" />
           </button>
           <button
             onClick={() => setActiveTab('draw')}
@@ -69,7 +69,7 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            <TranslatedText translationKey="create.tabs.draw" fallback="Draw & Enhance" />
+            <TranslatedText path="create.tabs.draw" fallback="Draw & Enhance" />
           </button>
         </div>
       </div>
@@ -83,16 +83,16 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
         {activeTab === 'photo' && (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <h2 className="text-2xl font-bold mb-4">
-              <TranslatedText translationKey="create.photo.title" fallback="Convert Photo to Coloring Page" />
+              <TranslatedText path="create.photo.title" fallback="Convert Photo to Coloring Page" />
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              <TranslatedText translationKey="create.photo.description" fallback="This feature is coming soon! Upload and convert your photos into coloring pages." />
+              <TranslatedText path="create.photo.description" fallback="This feature is coming soon! Upload and convert your photos into coloring pages." />
             </p>
             <button
               onClick={() => setActiveTab('describe')}
               className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
             >
-              <TranslatedText translationKey="create.photo.fallbackButton" fallback="Try Describe It Instead" />
+              <TranslatedText path="create.photo.fallbackButton" fallback="Try Describe It Instead" />
             </button>
           </div>
         )}
@@ -100,16 +100,16 @@ export default function CreatePage({ params }: { params?: { lang?: string } }) {
         {activeTab === 'draw' && (
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <h2 className="text-2xl font-bold mb-4">
-              <TranslatedText translationKey="create.draw.title" fallback="Draw & Enhance" />
+              <TranslatedText path="create.draw.title" fallback="Draw & Enhance" />
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              <TranslatedText translationKey="create.draw.description" fallback="Coming soon! Draw a basic sketch and let our AI enhance it into a beautiful coloring page." />
+              <TranslatedText path="create.draw.description" fallback="Coming soon! Draw a basic sketch and let our AI enhance it into a beautiful coloring page." />
             </p>
             <button
               onClick={() => setActiveTab('describe')}
               className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors"
             >
-              <TranslatedText translationKey="create.draw.fallbackButton" fallback="Try Describe It Instead" />
+              <TranslatedText path="create.draw.fallbackButton" fallback="Try Describe It Instead" />
             </button>
           </div>
         )}

@@ -88,15 +88,15 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" />}
-          description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
+          title={<TranslatedText path="gallery.title" fallback="Coloring Page Gallery" />}
+          description={<TranslatedText path="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center py-16">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
             <p className="mt-4 text-gray-600">
-              <TranslatedText translationKey="common.loading" fallback="Loading coloring pages..." />
+              <TranslatedText path="common.loading" fallback="Loading coloring pages..." />
             </p>
           </div>
         </div>
@@ -108,8 +108,8 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
     return (
       <div className="min-h-screen bg-gray-50">
         <PageHeader
-          title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" />}
-          description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
+          title={<TranslatedText path="gallery.title" fallback="Coloring Page Gallery" />}
+          description={<TranslatedText path="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
         />
         
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -118,23 +118,23 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <h2 className="text-xl font-bold text-gray-700 mb-2">
-              <TranslatedText translationKey="gallery.errors.title" fallback="Unable to Load Gallery" />
+              <TranslatedText path="gallery.errors.title" fallback="Unable to Load Gallery" />
             </h2>
             <p className="text-gray-600 mb-6">
-              <TranslatedText translationKey="gallery.errors.message" fallback="We encountered an issue retrieving our coloring pages collection. Please try again later." />
+              <TranslatedText path="gallery.errors.message" fallback="We encountered an issue retrieving our coloring pages collection. Please try again later." />
             </p>
             <div className="flex justify-center space-x-4">
               <button 
                 onClick={() => window.location.reload()}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <TranslatedText translationKey="gallery.refreshButton" fallback="Refresh Page" />
+                <TranslatedText path="gallery.refreshButton" fallback="Refresh Page" />
               </button>
               <Link 
                 href="/create" 
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <TranslatedText translationKey="gallery.createButton" fallback="Create a Coloring Page" />
+                <TranslatedText path="gallery.createButton" fallback="Create a Coloring Page" />
               </Link>
             </div>
           </div>
@@ -146,8 +146,8 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHeader
-        title={<TranslatedText translationKey="gallery.title" fallback="Coloring Page Gallery" />}
-        description={<TranslatedText translationKey="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
+        title={<TranslatedText path="gallery.title" fallback="Coloring Page Gallery" />}
+        description={<TranslatedText path="gallery.subtitle" fallback="Browse our collection of AI-generated coloring pages." />}
       />
 
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -161,7 +161,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-800">
-                <TranslatedText translationKey="gallery.introText" fallback="Browse our collection of AI-generated coloring pages. Click on any image to view, print or download." />
+                <TranslatedText path="gallery.introText" fallback="Browse our collection of AI-generated coloring pages. Click on any image to view, print or download." />
               </p>
             </div>
           </div>
@@ -176,23 +176,23 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
             <svg className="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
-            <TranslatedText translationKey="gallery.createYourOwnButton" fallback="Create Your Own Coloring Page" />
+            <TranslatedText path="gallery.createYourOwnButton" fallback="Create Your Own Coloring Page" />
           </Link>
           <p className="mt-2 text-sm text-gray-500">
-            <TranslatedText translationKey="gallery.createPrompt" fallback="Don't see what you're looking for? Create your own personalized coloring page!" />
+            <TranslatedText path="gallery.createPrompt" fallback="Don't see what you're looking for? Create your own personalized coloring page!" />
           </p>
         </div>
 
         {/* Filters */}
         <div className="mb-8 bg-white p-5 rounded-lg shadow-sm border border-gray-200">
           <h2 className="text-lg font-medium text-gray-800 mb-4">
-            <TranslatedText translationKey="gallery.filters.title" fallback="Find the Perfect Coloring Page" />
+            <TranslatedText path="gallery.filters.title" fallback="Find the Perfect Coloring Page" />
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                <TranslatedText translationKey="gallery.filters.category" fallback="Category:" />
+                <TranslatedText path="gallery.filters.category" fallback="Category:" />
               </label>
               <select
                 id="category-filter"
@@ -200,18 +200,18 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                 onChange={(e) => handleFilterChange('category', e.target.value || undefined)}
                 className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value=""><TranslatedText translationKey="gallery.filters.allCategories" fallback="All Categories" /></option>
-                <option value="animals"><TranslatedText translationKey="create.categories.animals" fallback="Animals" /></option>
-                <option value="fantasy"><TranslatedText translationKey="create.categories.fantasy" fallback="Fantasy" /></option>
-                <option value="nature"><TranslatedText translationKey="create.categories.nature" fallback="Nature" /></option>
-                <option value="holidays"><TranslatedText translationKey="create.categories.holidays" fallback="Holidays" /></option>
-                <option value="characters"><TranslatedText translationKey="create.categories.characters" fallback="Characters" /></option>
+                <option value=""><TranslatedText path="gallery.filters.allCategories" fallback="All Categories" /></option>
+                <option value="animals"><TranslatedText path="create.categories.animals" fallback="Animals" /></option>
+                <option value="fantasy"><TranslatedText path="create.categories.fantasy" fallback="Fantasy" /></option>
+                <option value="nature"><TranslatedText path="create.categories.nature" fallback="Nature" /></option>
+                <option value="holidays"><TranslatedText path="create.categories.holidays" fallback="Holidays" /></option>
+                <option value="characters"><TranslatedText path="create.categories.characters" fallback="Characters" /></option>
               </select>
             </div>
             
             <div>
               <label htmlFor="style-filter" className="block text-sm font-medium text-gray-700 mb-2">
-                <TranslatedText translationKey="gallery.filters.style" fallback="Style:" />
+                <TranslatedText path="gallery.filters.style" fallback="Style:" />
               </label>
               <select
                 id="style-filter"
@@ -219,11 +219,11 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                 onChange={(e) => handleFilterChange('style', e.target.value || undefined)}
                 className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value=""><TranslatedText translationKey="gallery.filters.allStyles" fallback="All Styles" /></option>
-                <option value="cartoon"><TranslatedText translationKey="create.styleOptions.cartoon" fallback="Cartoon" /></option>
-                <option value="realistic"><TranslatedText translationKey="create.styleOptions.realistic" fallback="Realistic" /></option>
-                <option value="manga"><TranslatedText translationKey="gallery.styles.manga" fallback="Manga" /></option>
-                <option value="abstract"><TranslatedText translationKey="gallery.styles.abstract" fallback="Abstract" /></option>
+                <option value=""><TranslatedText path="gallery.filters.allStyles" fallback="All Styles" /></option>
+                <option value="cartoon"><TranslatedText path="create.styleOptions.cartoon" fallback="Cartoon" /></option>
+                <option value="realistic"><TranslatedText path="create.styleOptions.realistic" fallback="Realistic" /></option>
+                <option value="manga"><TranslatedText path="gallery.styles.manga" fallback="Manga" /></option>
+                <option value="abstract"><TranslatedText path="gallery.styles.abstract" fallback="Abstract" /></option>
               </select>
             </div>
           </div>
@@ -232,7 +232,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
             <div className="mt-4 flex items-center justify-between">
               <div className="text-sm text-gray-600">
                 <TranslatedText 
-                  translationKey="gallery.filters.activeFilters" 
+                  path="gallery.filters.activeFilters" 
                   fallback="Active filters:" 
                 />
                 {category && (
@@ -253,7 +253,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                 }}
                 className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
               >
-                <TranslatedText translationKey="gallery.filters.clearFilters" fallback="Clear Filters" />
+                <TranslatedText path="gallery.filters.clearFilters" fallback="Clear Filters" />
                 <svg className="ml-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -268,10 +268,10 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             <h2 className="text-xl font-bold text-gray-700 mb-2">
-              <TranslatedText translationKey="gallery.noImages.title" fallback="No Coloring Pages Found" />
+              <TranslatedText path="gallery.noImages.title" fallback="No Coloring Pages Found" />
             </h2>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              <TranslatedText translationKey="gallery.noImages.message" fallback="We couldn't find any coloring pages matching your current filters. Try different filters or create your own!" />
+              <TranslatedText path="gallery.noImages.message" fallback="We couldn't find any coloring pages matching your current filters. Try different filters or create your own!" />
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <button
@@ -281,14 +281,14 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                 }}
                 className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
               >
-                <TranslatedText translationKey="gallery.filters.clearFilters" fallback="Clear Filters" />
+                <TranslatedText path="gallery.filters.clearFilters" fallback="Clear Filters" />
               </button>
               
               <Link
                 href="/create"
                 className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
               >
-                <TranslatedText translationKey="gallery.createYourOwn" fallback="Create Your Own" />
+                <TranslatedText path="gallery.createYourOwn" fallback="Create Your Own" />
               </Link>
             </div>
           </div>
@@ -296,9 +296,9 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
           <>
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               {category || style ? (
-                <TranslatedText translationKey="gallery.filteredResults" fallback="Filtered Results" />
+                <TranslatedText path="gallery.filteredResults" fallback="Filtered Results" />
               ) : (
-                <TranslatedText translationKey="gallery.allColoringPages" fallback="All Coloring Pages" />
+                <TranslatedText path="gallery.allColoringPages" fallback="All Coloring Pages" />
               )}
               <span className="text-sm font-normal text-gray-500 ml-2">({images.length} pages)</span>
             </h2>
@@ -350,7 +350,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                           <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                           <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
                         </svg>
-                        <TranslatedText translationKey="gallery.clickToView" fallback="Click to view" />
+                        <TranslatedText path="gallery.clickToView" fallback="Click to view" />
                       </div>
                     </div>
                   </div>
@@ -364,15 +364,15 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                 <div>
                   <p className="text-sm text-gray-700">
                     <TranslatedText
-                      translationKey="gallery.pagination.showing"
+                      path="gallery.pagination.showing"
                       fallback="Showing"
                     />{' '}
                     <span className="font-medium">{(page - 1) * limit + 1}</span>{' '}
-                    <TranslatedText translationKey="gallery.pagination.to" fallback="to" />{' '}
+                    <TranslatedText path="gallery.pagination.to" fallback="to" />{' '}
                     <span className="font-medium">{Math.min(page * limit, (page - 1) * limit + images.length)}</span>{' '}
-                    <TranslatedText translationKey="gallery.pagination.of" fallback="of" />{' '}
+                    <TranslatedText path="gallery.pagination.of" fallback="of" />{' '}
                     <span className="font-medium">{images.length}</span>{' '}
-                    <TranslatedText translationKey="gallery.pagination.results" fallback="results" />
+                    <TranslatedText path="gallery.pagination.results" fallback="results" />
                   </p>
                 </div>
                 <div className="mt-4 sm:mt-0">
@@ -382,7 +382,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                       disabled={page === 1}
                       className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 ${page === 1 ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
                     >
-                      <span className="sr-only"><TranslatedText translationKey="gallery.pagination.previous" fallback="Previous" /></span>
+                      <span className="sr-only"><TranslatedText path="gallery.pagination.previous" fallback="Previous" /></span>
                       <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -400,7 +400,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
                       disabled={images.length < limit}
                       className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 ${images.length < limit ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}`}
                     >
-                      <span className="sr-only"><TranslatedText translationKey="gallery.pagination.next" fallback="Next" /></span>
+                      <span className="sr-only"><TranslatedText path="gallery.pagination.next" fallback="Next" /></span>
                       <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                       </svg>
