@@ -8,6 +8,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # 添加权限配置
+    permissions:
+      contents: read
+      deployments: write
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -102,39 +107,16 @@ jobs:
         id: deploy_prebuilt
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "部署URL: $DEPLOYMENT_URL"
           echo "::set-output name=deployment_url::$DEPLOYMENT_URL"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       
-      - name: Create deployment success comment
-        uses: actions/github-script@v6
-        if: success()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            const deployment_url = '${{ steps.deploy_prebuilt.outputs.deployment_url }}';
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `✅ 部署成功! 您的网站已更新。\n访问链接: ${deployment_url || 'https://ai-coloringpage.com'}`
-            });
-
-      - name: Create deployment failure comment
-        uses: actions/github-script@v6
-        if: failure()
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
-            
-            await github.rest.repos.createCommitComment({
-              owner,
-              repo,
-              commit_sha,
-              body: `❌ 部署失败! 请检查GitHub Actions日志获取更多信息。`
-            }); 
+      - name: Deployment Summary
+        run: |
+          echo "=== 部署摘要 ==="
+          echo "✅ 网站已部署到: https://www.ai-coloringpage.com"
+          echo "✅ 时间: $(date)"
+          echo "==================" 
