@@ -84,6 +84,25 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
+  // Special handling for root path '/' - always redirect to the correct locale
+  if (pathname === '/') {
+    const requestLocale = getLocaleFromRequest(request);
+    const url = request.nextUrl.clone();
+    url.pathname = `/${requestLocale}`;
+    
+    const redirectResponse = NextResponse.redirect(url);
+    redirectResponse.cookies.set('NEXT_LOCALE', requestLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      sameSite: 'lax',
+    });
+    
+    redirectResponse.headers.set('x-pathname', pathname);
+    redirectResponse.headers.set('x-locale', requestLocale);
+    
+    return redirectResponse;
+  }
+  
   // Get locale from the path or from the request
   const pathnameLocale = getLocaleFromPath(pathname);
   const requestLocale = getLocaleFromRequest(request);
@@ -117,14 +136,17 @@ export function middleware(request: NextRequest) {
     ? getPathWithoutLocale(pathname, pathnameLocale)
     : pathname;
   
-  // Add the final locale to create the localized URL
-  const segments = pathWithoutLocale.split('/');
-  segments.splice(1, 0, finalLocale); // Insert locale after the first '/'
-  const newPathname = segments.join('/');
-  
-  // Create the URL with the new pathname and preserve search params
+  // For non-root paths, construct the new path with the locale
   const url = request.nextUrl.clone();
-  url.pathname = newPathname;
+  
+  // Ensure we don't add unnecessary trailing slashes
+  if (pathWithoutLocale === '/') {
+    url.pathname = `/${finalLocale}`;
+  } else {
+    const segments = pathWithoutLocale.split('/').filter(Boolean);
+    segments.unshift(finalLocale);
+    url.pathname = `/${segments.join('/')}`;
+  }
   
   // Redirect to the localized URL
   const redirectResponse = NextResponse.redirect(url);
@@ -137,7 +159,7 @@ export function middleware(request: NextRequest) {
   });
   
   // Also add the pathname header to the redirect response
-  redirectResponse.headers.set('x-pathname', newPathname);
+  redirectResponse.headers.set('x-pathname', url.pathname);
   redirectResponse.headers.set('x-locale', finalLocale);
   
   return redirectResponse;
