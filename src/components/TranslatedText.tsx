@@ -123,3 +123,6 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
 
   return <span className={className}>{fallback}</span>;
 };
+
+// 添加默认导出
+export default TranslatedText;
