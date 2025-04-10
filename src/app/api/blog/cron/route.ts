@@ -5,7 +5,7 @@ import { createSlug } from '@/utils/string';
 
 // Default settings
 const DEFAULT_POST_COUNT = 1;
-const DEFAULT_POST_LENGTH = 800;
+const DEFAULT_POST_LENGTH = 1200;
 
 // Read configuration from environment variables if available
 const getConfig = () => {
@@ -15,29 +15,102 @@ const getConfig = () => {
   };
 };
 
-// Blog topics for automatic generation
+// Blog topics for automatic generation - enhanced with more targeted keywords for SEO
 const blogTopics = [
-  'Creative coloring techniques for beginners',
-  'Educational benefits of coloring for children',
-  'Coloring for stress relief and mindfulness',
-  'Using coloring pages in the classroom',
-  'How to color with markers and achieve blending effects',
-  'Seasonal coloring activities for families',
-  'Coloring and cognitive development in children',
-  'Adult coloring trends and benefits',
-  'Coloring pages for special needs education',
-  'Printable coloring pages for different age groups',
-  'History of coloring books and coloring pages',
-  'Digital vs traditional coloring: pros and cons',
-  'Therapeutic benefits of coloring for adults',
-  'Using coloring pages to teach art principles',
-  'Coloring contests and community activities',
+  'Educational dinosaur coloring pages for preschoolers',
+  'Mindfulness coloring pages for stress relief',
+  'Animal coloring pages with fun facts for kids',
+  'Holiday-themed coloring activities for family time',
+  'Ocean animals coloring pages with educational content',
+  'Space and planets coloring pages for science learning',
+  'Seasonal nature coloring pages for children',
+  'Fairy tale coloring pages with storytelling prompts',
+  'Transportation coloring pages for toddlers',
+  'Farm animals coloring pages with learning activities',
+  'Motivational quote coloring pages for teens',
+  'STEM-themed coloring pages for elementary students',
+  'World cultures coloring pages with geography facts',
+  'Food and nutrition coloring pages for health education',
+  'Alphabet and number coloring pages for early literacy',
 ];
 
 // Get random topics from the list
 function getRandomTopics(count: number): string[] {
   const shuffled = [...blogTopics].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
+}
+
+/**
+ * Extract keywords from a topic for better SEO
+ */
+function extractKeywords(topic: string): string[] {
+  // Convert to lowercase and remove common stop words
+  const stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'is', 'are', 'for', 'with', 'in', 'on', 'at', 'to', 'of'];
+  
+  // Extract and filter words
+  const words = topic.toLowerCase()
+    .replace(/[^\w\s]/g, '') // Remove punctuation
+    .split(/\s+/) // Split by whitespace
+    .filter(word => word.length > 3) // Only include words longer than 3 chars
+    .filter(word => !stopWords.includes(word)); // Remove stop words
+  
+  // Add some related coloring keywords
+  const coloringKeywords = ['coloring', 'printable', 'pages', 'activities', 'educational', 'kids'];
+  
+  // Combine and remove duplicates
+  const combined = [...words, ...coloringKeywords];
+  const uniqueKeywords = Array.from(new Set(combined));
+  
+  // Return up to 10 keywords
+  return uniqueKeywords.slice(0, 10);
+}
+
+/**
+ * Generate SEO-friendly tags from keywords
+ */
+function generateTags(keywords: string[]): string[] {
+  // Add some standard tags
+  const standardTags = ['coloring pages', 'printable', 'activities', 'kids activities'];
+  
+  // Combine with keywords
+  const combined = [...standardTags, ...keywords];
+  
+  // Create compound tags
+  const compoundTags = keywords.map(kw => `${kw} coloring pages`);
+  
+  // Combine all tags and make unique
+  const allTags = [...standardTags, ...combined, ...compoundTags];
+  const uniqueTags = Array.from(new Set(allTags));
+  
+  // Return up to 8 tags
+  return uniqueTags.slice(0, 8);
+}
+
+/**
+ * Find related image for the blog post
+ */
+async function findRelatedImage(keywords: string[]) {
+  // Try to find an image that matches at least one keyword
+  for (const keyword of keywords) {
+    const { data, error } = await supabase
+      .from('images')
+      .select('id, image_url')
+      .ilike('prompt', `%${keyword}%`)
+      .limit(5);
+    
+    if (!error && data && data.length > 0) {
+      return data[Math.floor(Math.random() * data.length)];
+    }
+  }
+  
+  // If no matches found, just get a random image
+  const { data } = await supabase
+    .from('images')
+    .select('id, image_url')
+    .order('created_at', { ascending: false })
+    .limit(10);
+    
+  return data && data.length > 0 ? data[Math.floor(Math.random() * data.length)] : null;
 }
 
 /**
@@ -53,6 +126,8 @@ export async function GET(request: NextRequest) {
   try {
     for (const topic of topics) {
       try {
+        console.log(`Generating blog post for topic: ${topic}`);
+        
         // Generate blog post content using Gemini
         const blogContent = await generateBlogPost(topic, config.postLength);
         
@@ -61,62 +136,61 @@ export async function GET(request: NextRequest) {
           continue;
         }
         
-        // For TypeScript, treat blogContent as a string
-        const contentStr = typeof blogContent === 'string' 
-          ? blogContent 
-          : blogContent.content || '';
-        
-        // Parse the content to separate title from body
-        const titleMatch = contentStr.match(/^#\s+(.+?)(?:\n|$)/);
-        const title = titleMatch ? titleMatch[1].trim() : `${topic} - Guide and Tips`;
-        
-        // Remove the title from content for body
-        const bodyContent = titleMatch 
-          ? contentStr.replace(/^#\s+(.+?)(?:\n|$)/, '')
-          : contentStr;
+        // Extract content components
+        const { title, content, description } = blogContent;
         
         // Create a slug from the title
         const slug = createSlug(title);
         
-        // Choose a random featured image from existing images
-        const { data: images } = await supabase
-          .from('images')
-          .select('image_url')
-          .limit(10);
+        // Extract keywords for SEO
+        const keywords = extractKeywords(topic);
         
-        const featuredImageUrl = images && images.length > 0
-          ? images[Math.floor(Math.random() * images.length)].image_url
-          : undefined;
+        // Generate tags
+        const tags = generateTags(keywords);
         
-        // Extract keywords for tags
-        const keywords = topic.toLowerCase().split(' ')
-          .filter(word => word.length > 3)
-          .map(word => word.replace(/[^a-z0-9]/g, ''));
+        // Find related image
+        const relatedImage = await findRelatedImage(keywords);
+        const featuredImageUrl = relatedImage?.image_url;
+        const relatedImageId = relatedImage?.id;
         
-        // Add some standard tags
-        const tagsArray = [...keywords, 'coloring', 'art', 'creative'];
-        const uniqueTags = Array.from(new Set(tagsArray)).slice(0, 5);
-        
-        // Generate a meta description
-        let metaDescription = `Learn about ${topic} with our comprehensive guide.`;
-        const cleanedContent = bodyContent
-          .replace(/[#*_{}[\]()]/g, '')
-          .split('\n')
-          .filter((line: string) => line.trim().length > 0);
-          
-        if (cleanedContent.length > 0 && cleanedContent[0]) {
-          metaDescription = cleanedContent[0].slice(0, 160);
-        }
+        // Create additional SEO data
+        const seoData = {
+          keywords: keywords,
+          primaryKeyword: topic,
+          canonicalUrl: `/blog/${slug}`,
+          structuredData: {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": title,
+            "description": description,
+            "image": featuredImageUrl,
+            "author": {
+              "@type": "Organization",
+              "name": "AI Coloring Page"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "AI Coloring Page",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://ai-coloringpage.com/logo.png"
+              }
+            },
+            "datePublished": new Date().toISOString()
+          }
+        };
         
         // Insert into database
         const { error } = await supabase.from('blog_posts').insert({
           title,
           slug,
-          content: bodyContent,
-          meta_description: metaDescription,
+          content,
+          meta_description: description,
           featured_image_url: featuredImageUrl,
-          tags: uniqueTags,
+          related_coloring_page_id: relatedImageId,
+          tags,
           is_published: true,
+          seo_data: seoData
         });
         
         if (error) {
@@ -124,8 +198,8 @@ export async function GET(request: NextRequest) {
           results.push({ topic, success: false, error: error.message });
         } else {
           successCount++;
-          results.push({ topic, success: true });
-          console.log(`Successfully created blog post: ${title}`);
+          results.push({ topic, success: true, slug });
+          console.log(`Successfully created blog post: ${title} (${slug})`);
         }
       } catch (err: any) {
         console.error(`Error generating blog post for topic "${topic}":`, err);

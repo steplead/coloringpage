@@ -17,6 +17,12 @@ interface BlogPost {
   tags: string[];
   is_published: boolean;
   created_at: string;
+  seo_data?: {
+    keywords?: string[];
+    primaryKeyword?: string;
+    canonicalUrl?: string;
+    structuredData?: any;
+  };
 }
 
 // Dynamic metadata for SEO
@@ -30,13 +36,32 @@ export async function generateMetadata({ params }: { params: { slug: string, lan
     };
   }
   
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+  
   return {
     title: `${post.title} | Coloring Page Blog`,
     description: post.meta_description || `Learn about ${post.title} and explore related coloring activities.`,
+    keywords: post.seo_data?.keywords?.join(', ') || post.tags?.join(', ') || '',
     openGraph: {
       title: post.title,
       description: post.meta_description,
+      url: `${siteUrl}/${params.lang}/blog/${post.slug}`,
+      siteName: 'AI Coloring Page',
+      images: post.featured_image_url ? [{ url: post.featured_image_url, alt: post.title }] : [],
+      locale: params.lang,
+      type: 'article',
+      publishedTime: post.created_at,
+      authors: ['AI Coloring Page'],
+      tags: post.tags
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.meta_description,
       images: post.featured_image_url ? [post.featured_image_url] : []
+    },
+    alternates: {
+      canonical: post.seo_data?.canonicalUrl || `${siteUrl}/blog/${post.slug}`
     }
   };
 }
@@ -136,8 +161,37 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
     ? await getColoringPageById(post.related_coloring_page_id) 
     : null;
   
+  // Prepare structured data for SEO
+  const structuredData = post.seo_data?.structuredData || {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.meta_description,
+    "image": post.featured_image_url,
+    "author": {
+      "@type": "Organization",
+      "name": "AI Coloring Page"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI Coloring Page",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ai-coloringpage.com/logo.png"
+      }
+    },
+    "datePublished": post.created_at,
+    "dateModified": post.created_at
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Schema.org structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
       {/* Hero Section with Featured Image */}
       <div className="relative">
         {post.featured_image_url ? (

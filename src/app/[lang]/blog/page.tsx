@@ -6,6 +6,41 @@ import { supabase } from '@/lib/supabase';
 import { truncateText, stripHtml } from '@/utils/string';
 import TranslatedText from '@/components/TranslatedText';
 
+// Define metadata for SEO
+export async function generateMetadata({ params }: { params: { lang: string } }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+  
+  return {
+    title: 'Coloring Page Blog | Tips, Ideas & Educational Activities',
+    description: 'Discover creative coloring activities, educational benefits, and coloring tips for kids and adults. Free printable resources for parents and teachers.',
+    keywords: 'coloring pages, coloring activities, kids activities, educational coloring, printable coloring pages, coloring benefits',
+    openGraph: {
+      title: 'Coloring Page Blog | Tips & Educational Activities',
+      description: 'Discover creative coloring activities, educational benefits, and coloring tips for kids and adults.',
+      url: `${siteUrl}/${params.lang}/blog`,
+      siteName: 'AI Coloring Page',
+      images: [
+        {
+          url: `${siteUrl}/images/blog-cover.jpg`,
+          width: 1200,
+          height: 630,
+          alt: 'AI Coloring Page Blog'
+        }
+      ],
+      locale: params.lang,
+      type: 'website'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Coloring Page Blog | Tips & Activities',
+      description: 'Creative coloring activities, educational benefits, and printable resources.'
+    },
+    alternates: {
+      canonical: `${siteUrl}/blog`
+    }
+  };
+}
+
 // Revalidate content every hour to ensure fresh content
 export const revalidate = 3600; // seconds
 
@@ -55,8 +90,80 @@ export default async function BlogPage({
 }) {
   const blogPosts = await getBlogPosts();
   
+  // Prepare structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Coloring Page Blog",
+    "description": "Discover creative coloring activities, educational benefits, and coloring tips for kids and adults.",
+    "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com'}/${lang}/blog`,
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI Coloring Page",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ai-coloringpage.com/logo.png"
+      }
+    },
+    "itemListElement": blogPosts.map((post, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `/${lang}/blog/${post.slug}`,
+      "name": post.title
+    }))
+  };
+  
+  // Prepare breadcrumb structured data
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": `/${lang}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": `/${lang}/blog`
+      }
+    ]
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Schema.org structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
+      {/* Breadcrumb structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+      />
+      
+      {/* Breadcrumb Navigation */}
+      <nav className="max-w-7xl mx-auto pt-4 px-4 sm:px-6 lg:px-8">
+        <ol className="flex text-sm text-gray-500">
+          <li className="flex items-center">
+            <Link href={`/${lang}`} className="hover:text-gray-700">
+              <TranslatedText translationKey="breadcrumb.home" fallback="Home" />
+            </Link>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </li>
+          <li className="font-medium text-gray-700">
+            <TranslatedText translationKey="breadcrumb.blog" fallback="Blog" />
+          </li>
+        </ol>
+      </nav>
+      
       <PageHeader
         title={<TranslatedText translationKey="blog.title" fallback="Coloring Page Blog" />}
         description={<TranslatedText translationKey="blog.description" fallback="Discover creative coloring activities, educational benefits, and coloring tips for kids and adults." />}
@@ -83,7 +190,7 @@ export default async function BlogPage({
         {blogPosts && blogPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post) => (
-              <div 
+              <article 
                 key={post.id} 
                 className="bg-white overflow-hidden shadow-sm rounded-lg transition-transform hover:shadow-lg hover:-translate-y-1"
               >
@@ -119,16 +226,16 @@ export default async function BlogPage({
                     >
                       <TranslatedText translationKey="common.readMore" fallback="Read more →" />
                     </Link>
-                    <span className="text-sm text-gray-500">
+                    <time dateTime={post.created_at} className="text-sm text-gray-500">
                       {new Date(post.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
                       })}
-                    </span>
+                    </time>
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         ) : (

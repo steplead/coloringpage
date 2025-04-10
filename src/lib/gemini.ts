@@ -68,7 +68,7 @@ export async function generateOptimizedPrompt(userPrompt: string): Promise<strin
  * @param targetLength The approximate target length in words
  * @returns Generated blog post content
  */
-export async function generateBlogPost(topic: string, targetLength = 1000): Promise<{
+export async function generateBlogPost(topic: string, targetLength = 1200): Promise<{
   title: string;
   content: string;
   description: string;
@@ -91,32 +91,53 @@ export async function generateBlogPost(topic: string, targetLength = 1000): Prom
       },
       body: JSON.stringify({
         prompt: `
-          Write a comprehensive blog post about ${topic} coloring pages.
+          Create a comprehensive, SEO-optimized blog post about "${topic}" for our coloring pages website.
           
-          The blog post should include:
-          1. An engaging title with the keyword "${topic} coloring pages"
-          2. An introduction explaining why ${topic} coloring pages are popular and beneficial
-          3. A section on educational benefits of coloring this theme
-          4. Creative ideas for using these coloring pages
-          5. A brief history or fun facts about the ${topic} theme
-          6. Tips for coloring techniques appropriate for this theme
-          7. A conclusion encouraging readers to download and try our coloring pages
+          CONTENT STRUCTURE REQUIREMENTS:
+          1. CREATE A COMPELLING TITLE:
+             - Include the primary keyword "${topic}" prominently
+             - Make it engaging, between 50-60 characters
+             - Format with proper title capitalization
           
-          Format the post with clear HTML headings (h1, h2, h3) and paragraphs.
-          Include 2-3 keyword-rich subheadings.
-          Optimize the content for SEO while maintaining a natural, engaging tone.
-          Target audience: parents and teachers looking for educational coloring activities.
-          Word count: around ${targetLength} words.
+          2. CREATE A META DESCRIPTION:
+             - Summarize the content in exactly 150-160 characters
+             - Include primary and secondary keywords naturally
+             - Add a clear call-to-action
           
-          Also provide a short meta description (under 160 characters) for SEO purposes.
+          3. WRITE A COMPREHENSIVE POST WITH THESE SECTIONS:
+             - Introduction (engaging hook + why these coloring pages are beneficial)
+             - Educational Benefits (with specific age-appropriate learning outcomes)
+             - Creative Activities and Ideas (practical applications)
+             - Developmental Benefits (cognitive, motor skills, emotional benefits)
+             - Interesting Facts or History (about the topic)
+             - Coloring Techniques or Tips (specific to the theme)
+             - Conclusion with call-to-action to download our coloring pages
           
-          Structure your response as:
+          SEO OPTIMIZATION REQUIREMENTS:
+          - Use proper HTML formatting with h1, h2, h3 heading hierarchy
+          - Include the primary keyword in the first 100 words
+          - Add 3-5 related keywords naturally throughout the text
+          - Create bulleted or numbered lists for better readability
+          - Keep paragraphs short (3-5 sentences maximum)
+          - Include a strong call-to-action in the conclusion
+          - Total word count: ${targetLength}-${targetLength+200} words
+          
+          TARGET AUDIENCE: Parents and educators looking for educational, fun activities for children
+          
+          CONTENT QUALITY GUIDELINES:
+          - Write in a conversational, engaging tone
+          - Use active voice and present tense where possible
+          - Include practical, actionable advice
+          - Make content comprehensive and valuable to readers
+          - Avoid generic filler text or fluff
+          
+          Format your response exactly as follows:
           TITLE: [Your title here]
           META-DESCRIPTION: [Your meta description here]
-          CONTENT: [The full blog post content with HTML formatting]
+          CONTENT: [The full blog post with proper HTML formatting]
         `,
         temperature: 0.7,
-        maxTokens: Math.max(2048, targetLength * 2), // Ensure token limit is sufficient
+        maxTokens: Math.max(4096, targetLength * 3), // Increased token limit for quality content
       }),
     });
     
@@ -130,8 +151,8 @@ export async function generateBlogPost(topic: string, targetLength = 1000): Prom
     const generatedText = data.text.trim();
     
     // Parse the generated text to extract title, description, and content
-    const titleMatch = generatedText.match(/TITLE:\s*(.*?)(?=META-DESCRIPTION:|$)/);
-    const descriptionMatch = generatedText.match(/META-DESCRIPTION:\s*(.*?)(?=CONTENT:|$)/);
+    const titleMatch = generatedText.match(/TITLE:\s*(.*?)(?=META-DESCRIPTION:|$)/m);
+    const descriptionMatch = generatedText.match(/META-DESCRIPTION:\s*(.*?)(?=CONTENT:|$)/m);
     const contentMatch = generatedText.match(/CONTENT:\s*([\s\S]*?)$/);
     
     return {
