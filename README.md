@@ -26,6 +26,7 @@ This project was created by JL to make it easy for anyone to generate custom col
 - 💾 Database integration for saving and sharing creations
 - 🌐 Internationalization (i18n) with support for multiple languages
 - 🔄 Automatic language detection based on browser settings
+- 📰 Auto-generated Blog with educational coloring content
 
 ## How to Use
 
@@ -56,6 +57,16 @@ Explore a collection of community-created coloring pages:
 4. Use the "View" button to see the full page
 5. Use the "Print" button to open a print-optimized version
 6. Follow the printing instructions for best results
+
+### Blog
+
+Discover educational articles about coloring and creative activities:
+
+1. Visit the "Blog" section from the main navigation
+2. Browse through articles about coloring benefits, techniques, and ideas
+3. Articles are automatically generated daily with creative coloring topics
+4. Each article may include related coloring pages that you can download
+5. Content is optimized for educational value and creative inspiration
 
 ## Internationalization (i18n)
 
