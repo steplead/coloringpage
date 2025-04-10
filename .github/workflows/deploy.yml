@@ -91,6 +91,7 @@ jobs:
           echo "部署状态：成功" > deployment_status.txt
           echo "部署时间：$(date)" >> deployment_status.txt
           echo "部署网址：https://www.ai-coloringpage.com" >> deployment_status.txt 
+      
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
@@ -99,7 +100,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
       - name: Deploy to Vercel
-        id: deploy
+        id: deploy_production
         run: |
           DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
           echo "::set-output name=deployment_url::$DEPLOYMENT_URL"
@@ -115,7 +116,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const commit_sha = context.sha;
-            const deployment_url = '${{ steps.deploy.outputs.deployment_url }}';
+            const deployment_url = '${{ steps.deploy_production.outputs.deployment_url }}';
             
             await github.rest.repos.createCommitComment({
               owner,
