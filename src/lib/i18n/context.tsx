@@ -422,16 +422,3 @@ export function TranslationProvider({
       {children}
     </TranslationContext.Provider>
   );
-} 
-        language,
-        setLanguage,
-        isLoading,
-        getTranslation,
-        refreshTranslations,
-        lastError,
-      }}
-    >
-      {children}
-    </TranslationContext.Provider>
-  );
-} 

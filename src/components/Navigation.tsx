@@ -200,28 +200,3 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
       )}
     </header>
   );
-} 
-                  className={`block px-3 py-2 rounded-md text-sm font-medium ${
-                    pathname === localizedHref || pathname === link.href
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <TranslatedText translationKey={link.name} fallback={link.name.split('.')[1]} />
-                </Link>
-              );
-            })}
-            <Link
-              href={getLocalizedHref('/create')}
-              className="block mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              <TranslatedText translationKey="nav.createNow" fallback="Create Now" />
-            </Link>
-          </div>
-        </div>
-      )}
-    </header>
-  );
-} 
