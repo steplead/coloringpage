@@ -1,14 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { createSlug } from '@/utils/string';
 
-export default function CreateBlogPost() {
+interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  meta_description: string;
+  featured_image_url?: string;
+  tags: string[];
+  is_published: boolean;
+}
+
+export default function EditBlogPost({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   
   const [formData, setFormData] = useState({
     title: '',
@@ -18,6 +31,43 @@ export default function CreateBlogPost() {
     tags: '',
     is_published: true
   });
+
+  // Fetch the blog post data when the component mounts
+  useEffect(() => {
+    const fetchBlogPost = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .eq('id', params.id)
+          .single();
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (!data) {
+          throw new Error('Blog post not found');
+        }
+
+        setFormData({
+          title: data.title || '',
+          content: data.content || '',
+          meta_description: data.meta_description || '',
+          featured_image_url: data.featured_image_url || '',
+          tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
+          is_published: data.is_published
+        });
+      } catch (err: any) {
+        console.error('Error fetching blog post:', err);
+        setError(`Failed to load blog post: ${err.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogPost();
+  }, [params.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -31,8 +81,9 @@ export default function CreateBlogPost() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSaving(true);
     setError('');
+    setMessage('');
 
     try {
       // Create a slug from the title
@@ -44,7 +95,7 @@ export default function CreateBlogPost() {
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0);
 
-      // Create blog post object
+      // Update blog post object
       const blogPost = {
         title: formData.title,
         slug,
@@ -52,43 +103,66 @@ export default function CreateBlogPost() {
         meta_description: formData.meta_description,
         featured_image_url: formData.featured_image_url || null,
         tags,
-        is_published: formData.is_published
+        is_published: formData.is_published,
+        updated_at: new Date().toISOString()
       };
 
       // Save to Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('blog_posts')
-        .insert([blogPost])
-        .select('id');
+        .update(blogPost)
+        .eq('id', params.id);
 
       if (error) {
         throw error;
       }
 
-      // Redirect to the blog admin page
-      router.push('/admin/blog');
+      setMessage('Blog post updated successfully!');
       
     } catch (err: any) {
-      console.error('Error creating blog post:', err);
-      setError(`Failed to create blog post: ${err.message}`);
+      console.error('Error updating blog post:', err);
+      setError(`Failed to update blog post: ${err.message}`);
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[200px]">
+        <div className="text-gray-500">Loading blog post...</div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Create New Blog Post
+            Edit Blog Post
           </h2>
+        </div>
+        <div className="flex mt-4 md:mt-0 md:ml-4">
+          <button
+            type="button"
+            onClick={() => router.push('/admin/blog')}
+            className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          >
+            Back to List
+          </button>
         </div>
       </div>
 
       {error && (
         <div className="mb-6 p-4 rounded-md bg-red-50 text-red-800">
           {error}
+        </div>
+      )}
+
+      {message && (
+        <div className="mb-6 p-4 rounded-md bg-green-50 text-green-800">
+          {message}
         </div>
       )}
 
@@ -155,6 +229,15 @@ export default function CreateBlogPost() {
               onChange={handleChange}
               className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
             />
+            {formData.featured_image_url && (
+              <div className="mt-2">
+                <img 
+                  src={formData.featured_image_url} 
+                  alt="Featured image preview" 
+                  className="h-32 w-auto object-cover rounded-md"
+                />
+              </div>
+            )}
           </div>
 
           <div>
@@ -182,7 +265,7 @@ export default function CreateBlogPost() {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="is_published" className="ml-2 block text-sm text-gray-900">
-              Publish immediately
+              Published
             </label>
           </div>
 
@@ -196,10 +279,10 @@ export default function CreateBlogPost() {
             </button>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSaving}
               className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {isLoading ? 'Saving...' : 'Save Blog Post'}
+              {isSaving ? 'Saving...' : 'Update Blog Post'}
             </button>
           </div>
         </form>

@@ -118,30 +118,6 @@ async function findRelatedImage(keywords: string[]) {
  * This endpoint is designed to be called by a cron job service like Vercel Cron
  */
 export async function GET(request: NextRequest) {
-  // Check for authentication header when called from the admin interface
-  const authHeader = request.headers.get('authorization');
-  const refererHeader = request.headers.get('referer') || '';
-  const isAdminRequest = refererHeader.includes('/admin/blog');
-  
-  // 管理员密钥（生产环境中应该从环境变量获取）
-  const ADMIN_KEY = process.env.ADMIN_API_KEY || 'admin-secret-key';
-
-  // For admin requests, require authentication
-  if (isAdminRequest && (!authHeader || !authHeader.startsWith('Bearer '))) {
-    console.warn('Unauthorized attempt to run blog generation from admin interface');
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  
-  // 如果是管理请求，验证令牌
-  if (isAdminRequest) {
-    const token = authHeader!.split(' ')[1];
-    if (token !== ADMIN_KEY) {
-      console.warn('Unauthorized attempt to run blog generation: Invalid admin key');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  }
-  
-  // Normal execution logic continues
   const config = getConfig();
   const topics = getRandomTopics(config.postCount);
   let successCount = 0;

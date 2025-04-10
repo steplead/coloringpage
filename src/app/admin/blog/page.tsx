@@ -141,37 +141,29 @@ export default function BlogAdminPage() {
   const totalPages = Math.ceil(blogPosts.length / postsPerPage);
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Blog Management</h1>
-        <div className="flex space-x-4">
+    <div>
+      <div className="md:flex md:items-center md:justify-between mb-8">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+            Blog Post Management
+          </h2>
+        </div>
+        <div className="flex mt-4 md:mt-0 md:ml-4">
           <Link 
-            href="/admin/blog/create" 
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
+            href="/admin/blog/create"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Create New Post
           </Link>
-          <button
-            onClick={generateBlogPosts}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md"
-            disabled={isGenerating}
-          >
-            {isGenerating ? 'Generating...' : 'Generate Posts'}
-          </button>
         </div>
       </div>
-      
-      {message && (
-        <div className="bg-green-50 text-green-800 p-4 rounded-md mb-6">
-          {message}
+
+      {(message || error) && (
+        <div className={`mb-6 p-4 rounded-md ${error ? 'bg-red-50 text-red-800' : 'bg-green-50 text-green-800'}`}>
+          {message || error}
         </div>
       )}
-      {error && (
-        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-6">
-          {error}
-        </div>
-      )}
-      
+
       <div className="bg-white shadow-sm rounded-lg mb-8">
         <div className="p-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Generate New Blog Posts</h3>
@@ -191,6 +183,13 @@ export default function BlogAdminPage() {
                 ))}
               </select>
             </div>
+            <button
+              onClick={generateBlogPosts}
+              disabled={isGenerating}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50"
+            >
+              {isGenerating ? 'Generating...' : 'Generate Blog Posts'}
+            </button>
           </div>
         </div>
       </div>
@@ -215,6 +214,12 @@ export default function BlogAdminPage() {
                       <h3 className="text-sm font-medium text-blue-600 truncate">{post.title}</h3>
                     </div>
                     <div className="flex flex-shrink-0 space-x-2">
+                      <Link 
+                        href={`/admin/blog/edit/${post.id}`}
+                        className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+                      >
+                        Edit
+                      </Link>
                       <a 
                         href={`/blog/${post.slug}`} 
                         target="_blank" 
