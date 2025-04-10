@@ -110,19 +110,19 @@ export default function DebugPage() {
           <div>
             <h3 className="font-semibold mb-2">常用翻译</h3>
             <div className="space-y-2">
-              <p><strong>标题:</strong> <TranslatedText path="home.hero.title" fallback="首页标题" /></p>
-              <p><strong>副标题:</strong> <TranslatedText path="home.hero.subtitle" fallback="首页副标题" /></p>
-              <p><strong>按钮:</strong> <TranslatedText path="home.hero.createButton" fallback="创建按钮" /></p>
-              <p><strong>功能标题:</strong> <TranslatedText path="home.features.title" fallback="功能标题" /></p>
+              <p><strong>标题:</strong> <TranslatedText translationKey="home.hero.title" fallback="首页标题" /></p>
+              <p><strong>副标题:</strong> <TranslatedText translationKey="home.hero.subtitle" fallback="首页副标题" /></p>
+              <p><strong>按钮:</strong> <TranslatedText translationKey="home.hero.createButton" fallback="创建按钮" /></p>
+              <p><strong>功能标题:</strong> <TranslatedText translationKey="home.features.title" fallback="功能标题" /></p>
             </div>
           </div>
           
           <div>
             <h3 className="font-semibold mb-2">Features 部分</h3>
             <div className="space-y-2">
-              <p><strong>快速:</strong> <TranslatedText path="home.features.fast.title" fallback="快速标题" /> - <TranslatedText path="home.features.fast.desc" fallback="快速描述" /></p>
-              <p><strong>风格:</strong> <TranslatedText path="home.features.styles.title" fallback="风格标题" /> - <TranslatedText path="home.features.styles.desc" fallback="风格描述" /></p>
-              <p><strong>随处:</strong> <TranslatedText path="home.features.everywhere.title" fallback="随处标题" /> - <TranslatedText path="home.features.everywhere.desc" fallback="随处描述" /></p>
+              <p><strong>快速:</strong> <TranslatedText translationKey="home.features.fast.title" fallback="快速标题" /> - <TranslatedText translationKey="home.features.fast.desc" fallback="快速描述" /></p>
+              <p><strong>风格:</strong> <TranslatedText translationKey="home.features.styles.title" fallback="风格标题" /> - <TranslatedText translationKey="home.features.styles.desc" fallback="风格描述" /></p>
+              <p><strong>随处:</strong> <TranslatedText translationKey="home.features.everywhere.title" fallback="随处标题" /> - <TranslatedText translationKey="home.features.everywhere.desc" fallback="随处描述" /></p>
             </div>
           </div>
         </div>

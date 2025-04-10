@@ -18,6 +18,8 @@ export default function LanguageHomePage({ params }: { params: { lang: string } 
     redirect('/en');
   }
   
-  // Reuse the original HomePage component
-  return <HomePage params={{ lang }} />;
+  // 传递lang参数到HomePage组件
+  return (
+    <HomePage params={{ lang }} />
+  );
 } 

@@ -75,7 +75,7 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
           <p className="mt-4 text-gray-600">
-            <TranslatedText path="print.loading" fallback="Loading coloring page..." />
+            <TranslatedText translationKey="print.loading" fallback="Loading coloring page..." />
           </p>
         </div>
       </div>
@@ -90,23 +90,23 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <h1 className="text-xl font-bold text-gray-900 mb-2">
-            <TranslatedText path="print.errorTitle" fallback="Failed to load coloring page" />
+            <TranslatedText translationKey="print.errorTitle" fallback="Failed to load coloring page" />
           </h1>
           <p className="text-gray-600 mb-6">
-            {error || <TranslatedText path="print.errorMessage" fallback="The coloring page you requested could not be found." />}
+            {error || <TranslatedText translationKey="print.errorMessage" fallback="The coloring page you requested could not be found." />}
           </p>
           <div className="flex justify-center gap-4">
             <Link
               href="/gallery"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              <TranslatedText path="nav.gallery" fallback="Browse Gallery" />
+              <TranslatedText translationKey="nav.gallery" fallback="Browse Gallery" />
             </Link>
             <Link
               href="/"
               className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              <TranslatedText path="nav.home" fallback="Home" />
+              <TranslatedText translationKey="nav.home" fallback="Home" />
             </Link>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
               {image.title || image.prompt.substring(0, 50)}
             </h1>
             <p className="text-sm text-blue-100">
-              <TranslatedText path="print.readyToPrint" fallback="Ready to print. Use your browser's print function or click the button below." />
+              <TranslatedText translationKey="print.readyToPrint" fallback="Ready to print. Use your browser's print function or click the button below." />
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -133,14 +133,14 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
               className="inline-flex items-center px-4 py-2 rounded-md bg-blue-700 hover:bg-blue-800 text-white text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white"
             >
               <ArrowLeftIcon className="h-4 w-4 mr-1" />
-              <TranslatedText path="print.backToView" fallback="Back to View" />
+              <TranslatedText translationKey="print.backToView" fallback="Back to View" />
             </Link>
             <button
               onClick={() => window.print()}
               className="inline-flex items-center px-4 py-2 rounded-md bg-white text-blue-600 hover:bg-blue-50 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 focus:ring-white"
             >
               <PrinterIcon className="h-4 w-4 mr-1" />
-              <TranslatedText path="print.printButton" fallback="Print Page" />
+              <TranslatedText translationKey="print.printButton" fallback="Print Page" />
             </button>
           </div>
         </div>
@@ -186,37 +186,37 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
           <div className="bg-gray-100 py-3 px-6 border-b border-gray-200">
             <h2 className="text-lg font-medium text-gray-900 flex items-center">
               <AdjustmentsHorizontalIcon className="h-5 w-5 mr-2 text-blue-500" />
-              <TranslatedText path="print.instructionsTitle" fallback="Printing Instructions" />
+              <TranslatedText translationKey="print.instructionsTitle" fallback="Printing Instructions" />
             </h2>
           </div>
           
           <div className="p-6">
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                <TranslatedText path="print.stepsTitle" fallback="Follow these steps for best results:" />
+                <TranslatedText translationKey="print.stepsTitle" fallback="Follow these steps for best results:" />
               </h3>
               <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-600">
                 <li>
                   <TranslatedText 
-                    path="print.step1" 
+                    translationKey="print.step1" 
                     fallback="Click the 'Print Page' button above or use your browser's print function (usually Ctrl+P or Cmd+P)" 
                   />
                 </li>
                 <li>
                   <TranslatedText 
-                    path="print.step2" 
+                    translationKey="print.step2" 
                     fallback="In the print dialog that appears, make sure 'Fit to Page' is selected" 
                   />
                 </li>
                 <li>
                   <TranslatedText 
-                    path="print.step3" 
+                    translationKey="print.step3" 
                     fallback="For better results, disable headers and footers in your browser's print settings" 
                   />
                 </li>
                 <li>
                   <TranslatedText 
-                    path="print.step4" 
+                    translationKey="print.step4" 
                     fallback="Select 'Print Background Graphics' if that option is available" 
                   />
                 </li>
@@ -232,11 +232,11 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
                 </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-blue-800">
-                    <TranslatedText path="print.paperTipsTitle" fallback="Paper Tips" />
+                    <TranslatedText translationKey="print.paperTipsTitle" fallback="Paper Tips" />
                   </h3>
                   <p className="text-sm text-blue-700 mt-1">
                     <TranslatedText 
-                      path="print.paperTips" 
+                      translationKey="print.paperTips" 
                       fallback="For coloring, standard printer paper works well. For markers or watercolors, consider thicker paper (card stock or drawing paper)." 
                     />
                   </p>
@@ -253,11 +253,11 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
                 </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-amber-800">
-                    <TranslatedText path="print.troubleshootingTitle" fallback="Having Trouble?" />
+                    <TranslatedText translationKey="print.troubleshootingTitle" fallback="Having Trouble?" />
                   </h3>
                   <p className="text-sm text-amber-700 mt-1">
                     <TranslatedText 
-                      path="print.troubleshooting" 
+                      translationKey="print.troubleshooting" 
                       fallback="If the image appears cut off, try landscape orientation. If colors appear in preview, try printing in black & white mode." 
                     />
                   </p>
@@ -268,20 +268,20 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
           
           <div className="border-t border-gray-200 bg-gray-50 p-6">
             <h3 className="text-md font-medium text-gray-900 mb-3">
-              <TranslatedText path="print.morePages" fallback="Want more coloring pages?" />
+              <TranslatedText translationKey="print.morePages" fallback="Want more coloring pages?" />
             </h3>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/create"
                 className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <TranslatedText path="gallery.createYourOwn" fallback="Create Your Own" />
+                <TranslatedText translationKey="gallery.createYourOwn" fallback="Create Your Own" />
               </Link>
               <Link
                 href="/gallery"
                 className="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <TranslatedText path="nav.gallery" fallback="Browse Gallery" />
+                <TranslatedText translationKey="nav.gallery" fallback="Browse Gallery" />
               </Link>
             </div>
           </div>
