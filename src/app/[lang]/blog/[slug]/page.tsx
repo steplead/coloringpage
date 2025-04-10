@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import TranslatedText from '@/components/TranslatedText';
+import BlogPostTemplate, { BlogPostTemplateProps, generateBlogMetadata } from '@/lib/blog/postTemplate';
 
 // Types for blog posts
 interface BlogPost {
@@ -36,34 +37,11 @@ export async function generateMetadata({ params }: { params: { slug: string, lan
     };
   }
   
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+  // Convert from database format to template format
+  const templateData = convertToTemplateFormat(post, params.lang);
   
-  return {
-    title: `${post.title} | Coloring Page Blog`,
-    description: post.meta_description || `Learn about ${post.title} and explore related coloring activities.`,
-    keywords: post.seo_data?.keywords?.join(', ') || post.tags?.join(', ') || '',
-    openGraph: {
-      title: post.title,
-      description: post.meta_description,
-      url: `${siteUrl}/${params.lang}/blog/${post.slug}`,
-      siteName: 'AI Coloring Page',
-      images: post.featured_image_url ? [{ url: post.featured_image_url, alt: post.title }] : [],
-      locale: params.lang,
-      type: 'article',
-      publishedTime: post.created_at,
-      authors: ['AI Coloring Page'],
-      tags: post.tags
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.meta_description,
-      images: post.featured_image_url ? [post.featured_image_url] : []
-    },
-    alternates: {
-      canonical: post.seo_data?.canonicalUrl || `${siteUrl}/blog/${post.slug}`
-    }
-  };
+  // Use our standardized metadata generator
+  return generateBlogMetadata(templateData);
 }
 
 // Revalidate content every hour
@@ -149,6 +127,52 @@ async function getColoringPageById(id: string): Promise<ColoringPage | null> {
   }
 }
 
+// Convert database blog post to template format
+function convertToTemplateFormat(post: BlogPost, lang: string): BlogPostTemplateProps {
+  // Extract primary keyword from seo_data or use first tag
+  const primaryKeyword = post.seo_data?.primaryKeyword || (post.tags && post.tags.length > 0 ? post.tags[0] : 'coloring pages');
+  
+  // Create sections from content
+  // This is a simple implementation, in a real scenario you would parse the HTML content
+  // and convert it to discrete sections
+  const contentSections = post.content 
+    ? [{
+        heading: 'Overview',
+        content: post.content,
+      }]
+    : [];
+
+  // Extract FAQ data if available
+  // In a real scenario, you'd parse structured content for FAQs
+  const faqs = post.seo_data?.structuredData?.['@type'] === 'FAQPage' 
+    ? post.seo_data.structuredData.mainEntity?.map((item: any) => ({
+        question: item.name,
+        answer: item.acceptedAnswer.text
+      }))
+    : undefined;
+  
+  return {
+    title: post.title,
+    metaDescription: post.meta_description,
+    slug: post.slug,
+    primaryKeyword: primaryKeyword,
+    secondaryKeywords: post.seo_data?.keywords || post.tags || [],
+    featuredImageUrl: post.featured_image_url || `https://ai-coloringpage.com/images/blog/default.jpg`,
+    featuredImageAlt: `${post.title} - AI Coloring Page`,
+    authorName: 'AI Coloring Page Team',
+    publishDate: post.created_at,
+    modifiedDate: post.created_at,
+    category: (post.tags && post.tags.length > 0) ? post.tags[0] : 'Coloring Techniques',
+    tags: post.tags || [],
+    coloringPageExamples: [],  // Will be populated if relatedColoringPage is available
+    sections: contentSections,
+    faqs: faqs,
+    conclusion: `<p>We hope you enjoyed this article about ${primaryKeyword}. Remember that coloring is not just a fun activity, but also a great way to relieve stress and express creativity.</p>`,
+    callToAction: `<p>Ready to try your hand at coloring? Use our AI Coloring Page Generator to create custom designs that match your interests!</p>`,
+    relatedPosts: [] // Will be populated with related posts
+  };
+}
+
 export default async function BlogPostPage({ params }: { params: { slug: string, lang: string } }) {
   const post = await getBlogPostBySlug(params.slug);
   
@@ -161,179 +185,24 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
     ? await getColoringPageById(post.related_coloring_page_id) 
     : null;
   
-  // Prepare structured data for SEO
-  const structuredData = post.seo_data?.structuredData || {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": post.title,
-    "description": post.meta_description,
-    "image": post.featured_image_url,
-    "author": {
-      "@type": "Organization",
-      "name": "AI Coloring Page"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "AI Coloring Page",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://ai-coloringpage.com/logo.png"
-      }
-    },
-    "datePublished": post.created_at,
-    "dateModified": post.created_at
-  };
+  // Convert to template format
+  const templateData = convertToTemplateFormat(post, params.lang);
   
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Schema.org structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      
-      {/* Hero Section with Featured Image */}
-      <div className="relative">
-        {post.featured_image_url ? (
-          <div className="relative w-full h-64 md:h-96">
-            <Image
-              src={post.featured_image_url}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-          </div>
-        ) : (
-          <div className="bg-blue-700 w-full h-48 md:h-64"></div>
-        )}
-        
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center px-4 max-w-4xl">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              {post.title}
-            </h1>
-            <p className="text-white text-lg md:text-xl opacity-90 drop-shadow-md max-w-3xl mx-auto">
-              {post.meta_description}
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Main Content */}
-      <article className="max-w-4xl mx-auto my-12 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white p-6 md:p-8 rounded-lg shadow-sm">
-          {/* Post Metadata */}
-          <div className="mb-8 pb-4 border-b border-gray-200">
-            <div className="flex flex-wrap gap-2 mb-3">
-              {post.tags && post.tags.map((tag: string) => (
-                <span key={tag} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <time className="text-gray-500 text-sm">
-              {new Date(post.created_at).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </time>
-          </div>
-          
-          {/* Post Content */}
-          <div 
-            className="prose prose-blue max-w-none"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-          
-          {/* Related Coloring Page */}
-          {relatedColoringPage && (
-            <div className="mt-12 p-6 bg-blue-50 rounded-lg">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                <TranslatedText translationKey="blog.relatedColoringPage" fallback="Related Coloring Page" />
-              </h2>
-              <div className="flex flex-col md:flex-row gap-6 items-start">
-                <div className="w-full md:w-1/3 relative aspect-square rounded-lg overflow-hidden shadow-md">
-                  <Image
-                    src={relatedColoringPage.image_url}
-                    alt={relatedColoringPage.title || relatedColoringPage.prompt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 300px"
-                  />
-                </div>
-                <div className="w-full md:w-2/3">
-                  <h3 className="text-lg font-medium mb-2">
-                    {relatedColoringPage.title || relatedColoringPage.prompt}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    <TranslatedText translationKey="blog.tryColoring" fallback="Try coloring this design related to the article topic!" />
-                  </p>
-                  <Link
-                    href={`/${params.lang}/gallery/${relatedColoringPage.id}`}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <TranslatedText translationKey="blog.downloadPage" fallback="Download This Page" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Related Articles */}
-          {relatedPosts.length > 0 && (
-            <div className="mt-12">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                <TranslatedText translationKey="blog.relatedArticles" fallback="Related Articles" />
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {relatedPosts.map(relatedPost => (
-                  <Link 
-                    key={relatedPost.id} 
-                    href={`/${params.lang}/blog/${relatedPost.slug}`}
-                    className="group block"
-                  >
-                    <div className="bg-gray-50 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
-                      {relatedPost.featured_image_url && (
-                        <div className="relative h-40 w-full">
-                          <Image
-                            src={relatedPost.featured_image_url}
-                            alt={relatedPost.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform"
-                            sizes="(max-width: 768px) 100vw, 300px"
-                          />
-                        </div>
-                      )}
-                      <div className="p-4">
-                        <h3 className="text-md font-medium text-gray-900 group-hover:text-blue-600 line-clamp-2 transition-colors">
-                          {relatedPost.title}
-                        </h3>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Back Button */}
-          <div className="mt-12 pt-6 border-t border-gray-100">
-            <Link 
-              href={`/${params.lang}/blog`}
-              className="inline-flex items-center text-blue-600 hover:text-blue-800"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              <TranslatedText translationKey="common.backToBlog" fallback="Back to Blog" />
-            </Link>
-          </div>
-        </div>
-      </article>
-    </div>
-  );
+  // Add related coloring page to template data
+  if (relatedColoringPage) {
+    templateData.coloringPageExamples = [{
+      url: relatedColoringPage.image_url,
+      title: relatedColoringPage.title || relatedColoringPage.prompt,
+      alt: `${relatedColoringPage.title || relatedColoringPage.prompt} - Coloring Page`
+    }];
+  }
+  
+  // Add related posts to template data
+  templateData.relatedPosts = relatedPosts.map(relatedPost => ({
+    title: relatedPost.title,
+    slug: relatedPost.slug
+  }));
+  
+  // Return the standardized blog post template
+  return <BlogPostTemplate {...templateData} />;
 } 
