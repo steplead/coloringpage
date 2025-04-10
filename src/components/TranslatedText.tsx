@@ -124,4 +124,4 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
   return <span className={className}>{fallback}</span>;
 };
 
-export default TranslatedText; 
+export default TranslatedText;
