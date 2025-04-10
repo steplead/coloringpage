@@ -141,21 +141,37 @@ export default function BlogAdminPage() {
   const totalPages = Math.ceil(blogPosts.length / postsPerPage);
 
   return (
-    <div>
-      <div className="md:flex md:items-center md:justify-between mb-8">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Blog Post Management
-          </h2>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">Blog Management</h1>
+        <div className="flex space-x-4">
+          <Link 
+            href="/admin/blog/create" 
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
+          >
+            Create New Post
+          </Link>
+          <button
+            onClick={generateBlogPosts}
+            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md"
+            disabled={isGenerating}
+          >
+            {isGenerating ? 'Generating...' : 'Generate Posts'}
+          </button>
         </div>
       </div>
-
-      {(message || error) && (
-        <div className={`mb-6 p-4 rounded-md ${error ? 'bg-red-50 text-red-800' : 'bg-green-50 text-green-800'}`}>
-          {message || error}
+      
+      {message && (
+        <div className="bg-green-50 text-green-800 p-4 rounded-md mb-6">
+          {message}
         </div>
       )}
-
+      {error && (
+        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-6">
+          {error}
+        </div>
+      )}
+      
       <div className="bg-white shadow-sm rounded-lg mb-8">
         <div className="p-6">
           <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Generate New Blog Posts</h3>
@@ -175,13 +191,6 @@ export default function BlogAdminPage() {
                 ))}
               </select>
             </div>
-            <button
-              onClick={generateBlogPosts}
-              disabled={isGenerating}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50"
-            >
-              {isGenerating ? 'Generating...' : 'Generate Blog Posts'}
-            </button>
           </div>
         </div>
       </div>
