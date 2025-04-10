@@ -422,4 +422,4 @@ export function TranslationProvider({
       {children}
     </TranslationContext.Provider>
   );
-};
+} 

@@ -104,11 +104,7 @@ const translations: Record<string, string> = {
 };
 
 // 具体针对特定元素的修复规则
-const specificFixRules: {
-  selector: string;
-  pattern: string;
-  translations: Record<number, string>;
-}[] = [
+const specificFixRules = [
   // 特性卡片修复 (针对.grid div中内容为"title"的h3元素)
   {
     selector: '.grid div h3, .features div h3',
@@ -247,13 +243,13 @@ export default function FixTranslationsV10() {
           // 判断元素是否包含pattern文本
           if (el.textContent?.trim() === rule.pattern) {
             // 尝试从索引映射中获取翻译
-            const translation = rule.translations[index];
+            const translation = rule.translations[index as keyof typeof rule.translations];
             
             if (translation) {
               // 应用翻译
               if (safeSetText(el, translation)) {
+                console.log(`[FixV10] 规则#${ruleIndex} 修复索引${index}: "${rule.pattern}" => "${translation}"`);
                 fixCount++;
-                console.log(`[FixV10] 规则#${ruleIndex} 修复了 ${rule.selector}[${index}]: ${rule.pattern} => ${translation}`);
               }
             }
           }
@@ -263,282 +259,259 @@ export default function FixTranslationsV10() {
       return fixCount;
     };
     
-    // 遍历并修复所有文本节点
+    // ===== 2. 主要修复函数 =====
+    
+    // 修复所有文本节点
     const fixAllTextNodes = (): number => {
+      console.log('[FixV10] 开始修复所有文本节点...');
       let fixCount = 0;
-      
-      // 递归处理所有文本节点
-      const processNode = (node: Node): void => {
-        // 处理文本节点
-        if (node.nodeType === Node.TEXT_NODE && node.textContent) {
-          const text = node.textContent.trim();
-          
-          // 检查文本是否需要翻译
-          if (text && translations[text] && node.textContent !== translations[text]) {
-            try {
-              isProcessingRef.current = true;
-              // 直接修改文本节点的值
-              node.textContent = translations[text];
-              fixCount++;
-            } catch (error) {
-              console.error('[FixV10] 修复文本节点出错:', error);
-            } finally {
-              isProcessingRef.current = false;
-            }
-          }
-        }
-        
-        // 递归处理所有子节点
-        else if (node.nodeType === Node.ELEMENT_NODE) {
-          // 排除脚本和样式标签
-          const tagName = (node as Element).tagName.toLowerCase();
-          if (tagName !== 'script' && tagName !== 'style') {
-            node.childNodes.forEach(processNode);
-          }
-        }
-      };
-      
-      try {
-        // 从body开始处理所有节点
-        if (document.body) {
-          processNode(document.body);
-        }
-      } catch (error) {
-        console.error('[FixV10] 遍历DOM树出错:', error);
-      }
-      
-      return fixCount;
-    };
-    
-    // 修复所有元素的内容
-    const fixAllElements = (): number => {
-      let fixCount = 0;
-      
-      // 获取所有可能包含文本的元素
-      const textElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, button, a, label, li, div');
-      
-      textElements.forEach(el => {
-        // 如果元素只有一个子节点且为文本节点，则检查是否需要翻译
-        if (el.childNodes.length === 1 && el.childNodes[0].nodeType === Node.TEXT_NODE && el.textContent) {
-          const text = el.textContent.trim();
-          
-          if (text && translations[text] && el.textContent !== translations[text]) {
-            if (safeSetText(el, translations[text])) {
-              fixCount++;
-            }
-          }
-        }
-      });
-      
-      return fixCount;
-    };
-    
-    // 执行完整的修复流程
-    const performFullFix = (): number => {
-      if (isProcessingRef.current) {
-        console.log('[FixV10] 已有修复正在进行中，跳过此次修复');
-        return 0;
-      }
-      
-      // 重置本次修复计数
-      fixCountRef.current = 0;
       
       try {
         isProcessingRef.current = true;
         
-        // 应用所有修复策略
-        let totalFixed = 0;
+        // 创建TreeWalker来遍历所有文本节点
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
         
-        // 1. 应用特定元素修复规则
-        totalFixed += applySpecificFixes();
+        // 收集需要修复的节点
+        const nodesToFix: Array<{node: Text, newValue: string}> = [];
         
-        // 2. 修复所有文本节点
-        totalFixed += fixAllTextNodes();
-        
-        // 3. 修复所有元素内容
-        totalFixed += fixAllElements();
-        
-        // 更新总修复计数
-        fixCountTotalRef.current += totalFixed;
-        
-        if (totalFixed > 0) {
-          console.log(`[FixV10] 本次修复了 ${totalFixed} 处翻译问题，总计: ${fixCountTotalRef.current}`);
+        // 首先遍历并标记
+        let textNode = walker.nextNode() as Text | null;
+        while (textNode) {
+          const text = textNode.nodeValue?.trim();
+          if (text && translations[text] && textNode.nodeValue !== translations[text]) {
+            nodesToFix.push({
+              node: textNode,
+              newValue: translations[text]
+            });
+          }
+          textNode = walker.nextNode() as Text | null;
         }
         
-        return totalFixed;
+        // 然后更新所有节点
+        nodesToFix.forEach(({node, newValue}) => {
+          node.nodeValue = newValue;
+          fixCount++;
+          console.log(`[FixV10] 修复文本节点: "${node.nodeValue?.trim()}" => "${newValue}"`);
+        });
+        
       } catch (error) {
-        console.error('[FixV10] 执行修复时出错:', error);
-        return 0;
+        console.error('[FixV10] 修复文本节点时出错:', error);
       } finally {
         isProcessingRef.current = false;
       }
+      
+      return fixCount;
     };
     
-    // 设置DOM变化观察器
-    const setupMutationObserver = () => {
-      // 如果浏览器支持MutationObserver
-      if (typeof MutationObserver !== 'undefined') {
-        // 创建一个观察器实例
-        const observer = new MutationObserver((mutations) => {
-          // 延迟处理，避免频繁触发修复
-          if (processingTimeoutRef.current) {
-            clearTimeout(processingTimeoutRef.current);
-          }
-          
-          processingTimeoutRef.current = setTimeout(() => {
-            // 检查是否有新增的节点或文本内容变化
-            const hasRelevantChanges = mutations.some(mutation => 
-              mutation.type === 'childList' || 
-              mutation.type === 'characterData' ||
-              (mutation.type === 'attributes' && mutation.attributeName === 'class')
-            );
-            
-            if (hasRelevantChanges) {
-              performFullFix();
+    // 修复所有元素的文本内容
+    const fixAllElements = (): number => {
+      let fixCount = 0;
+      
+      try {
+        // 选择所有可能包含文本的元素
+        const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, button, a, label, div, li');
+        
+        elements.forEach(el => {
+          // 如果元素只有一个文本子节点
+          if (el.childNodes.length === 1 && el.childNodes[0].nodeType === Node.TEXT_NODE) {
+            const text = el.textContent?.trim();
+            if (text && translations[text] && el.textContent !== translations[text]) {
+              if (safeSetText(el, translations[text])) {
+                fixCount++;
+              }
             }
-          }, 100); // 100ms延迟，减少频繁调用
+          }
         });
         
-        // 配置观察选项
-        const config = {
-          childList: true,     // 观察目标子节点的变动
-          subtree: true,       // 观察所有后代节点
-          characterData: true, // 观察节点内容或文本
-          attributes: true     // 观察属性变动
-        };
-        
-        // 开始观察document.body的所有变化
-        if (document.body) {
-          observer.observe(document.body, config);
-          console.log('[FixV10] DOM观察器已启动');
-        }
-        
-        // 返回清理函数
-        return () => {
-          observer.disconnect();
-          console.log('[FixV10] DOM观察器已停止');
-        };
+      } catch (error) {
+        console.error('[FixV10] 修复元素文本时出错:', error);
       }
       
-      return undefined;
+      return fixCount;
     };
     
-    // 捕获React状态更新
-    const patchReactSetState = () => {
-      // 尝试找到React根元素
-      const findReactRoot = () => {
-        // 尝试通过React开发者工具属性查找
-        const possibleRoots = document.querySelectorAll('[data-reactroot], #__next, #root');
-        
-        if (possibleRoots.length > 0) {
-          return possibleRoots[0];
-        }
-        
-        // 如果找不到明确的React根，返回body
-        return document.body;
-      };
+    // 完整修复函数
+    const performFullFix = (): number => {
+      // 重置当前修复计数
+      fixCountRef.current = 0;
       
-      // 检测到React可能更新了DOM
-      const reactUpdateDetected = () => {
-        // 延迟执行修复，让React完成渲染
-        if (processingTimeoutRef.current) {
-          clearTimeout(processingTimeoutRef.current);
-        }
-        
-        processingTimeoutRef.current = setTimeout(() => {
+      // 如果当前有处理中的定时器，先清除
+      if (processingTimeoutRef.current) {
+        clearTimeout(processingTimeoutRef.current);
+        processingTimeoutRef.current = null;
+      }
+      
+      console.log('[FixV10] 开始执行完整修复...');
+      
+      // 1. 首先应用特定修复规则
+      const specificFixCount = applySpecificFixes();
+      
+      // 2. 修复所有文本节点
+      const textNodeFixCount = fixAllTextNodes();
+      
+      // 3. 修复元素文本
+      const elementFixCount = fixAllElements();
+      
+      // 设置一个延迟，以便捕获React的后续渲染
+      processingTimeoutRef.current = setTimeout(() => {
+        // 如果上次修复有效果，再次尝试修复
+        if (fixCountRef.current > 0) {
           performFullFix();
-        }, 50); // 短延迟，确保React完成渲染
-      };
+        }
+        processingTimeoutRef.current = null;
+      }, 2000);
       
-      // 尝试覆盖React的setState方法
-      try {
-        // 找到React根元素
-        const reactRoot = findReactRoot();
+      // 返回总修复数
+      const totalFixed = specificFixCount + textNodeFixCount + elementFixCount;
+      console.log(`[FixV10] 完整修复完成: 特定规则=${specificFixCount}, 文本节点=${textNodeFixCount}, 元素=${elementFixCount}`);
+      
+      // 更新总修复计数
+      fixCountTotalRef.current += totalFixed;
+      
+      return totalFixed;
+    };
+    
+    // ===== 3. 设置观察者和触发器 =====
+    
+    // 创建DOM变更观察器
+    const setupMutationObserver = () => {
+      const observer = new MutationObserver((mutations) => {
+        // 检查是否有相关变更
+        let needsFix = false;
         
-        if (reactRoot) {
-          // 监听根元素的子树修改
-          const observer = new MutationObserver((mutations) => {
-            // 只关注可能由React更新引起的变化
-            const hasReactChanges = mutations.some(mutation => 
-              mutation.type === 'childList' || 
-              (mutation.type === 'attributes' && 
-               ['class', 'style', 'data-'].some(attr => 
-                 mutation.attributeName?.startsWith(attr) || false
-               )
-              )
-            );
-            
-            if (hasReactChanges) {
-              reactUpdateDetected();
+        for (const mutation of mutations) {
+          if (isProcessingRef.current) continue;
+          
+          if (
+            mutation.type === 'childList' || 
+            mutation.type === 'characterData'
+          ) {
+            needsFix = true;
+            break;
+          }
+        }
+        
+        if (needsFix) {
+          // 使用requestAnimationFrame确保在下一帧执行修复
+          requestAnimationFrame(() => {
+            console.log('[FixV10] DOM变更触发修复');
+            performFullFix();
+          });
+        }
+      });
+      
+      // 开始观察整个body
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+      
+      console.log('[FixV10] DOM变更观察器已设置');
+      
+      return observer;
+    };
+    
+    // 拦截React的setState
+    const patchReactSetState = () => {
+      try {
+        // 查找React Fiber节点
+        const findReactRoot = () => {
+          // 尝试查找React内部属性
+          const reactRoots = document.querySelectorAll('[data-reactroot]');
+          if (reactRoots.length > 0) {
+            return Array.from(reactRoots);
+          }
+          
+          // 或者查找React应用的根节点
+          return [document.getElementById('__next') || document.getElementById('root')];
+        };
+        
+        // 每当检测到React更新时执行修复
+        const reactUpdateDetected = () => {
+          console.log('[FixV10] 检测到React更新');
+          
+          // 等待React完成渲染
+          setTimeout(() => {
+            performFullFix();
+          }, 50);
+        };
+        
+        // 监听React根节点的变化
+        const roots = findReactRoot();
+        if (roots.length > 0 && roots[0]) {
+          const rootObserver = new MutationObserver(reactUpdateDetected);
+          
+          roots.forEach(root => {
+            if (root) {
+              rootObserver.observe(root, {
+                childList: true,
+                subtree: true,
+                attributes: true
+              });
             }
           });
           
-          // 配置React根元素观察选项
-          observer.observe(reactRoot, {
-            childList: true,
-            subtree: true,
-            attributes: true
-          });
+          console.log(`[FixV10] 已监听 ${roots.length} 个React根节点`);
           
-          console.log('[FixV10] React更新检测器已启动');
-          
-          // 返回清理函数
-          return () => {
-            observer.disconnect();
-            console.log('[FixV10] React更新检测器已停止');
-          };
+          return rootObserver;
+        } else {
+          console.log('[FixV10] 未找到React根节点');
+          return null;
         }
       } catch (error) {
-        console.error('[FixV10] 设置React更新检测器时出错:', error);
+        console.error('[FixV10] 修补React setState失败:', error);
+        return null;
       }
-      
-      return undefined;
     };
     
-    // 挂载全局修复函数
-    if (typeof window !== 'undefined') {
-      (window as any)._forceFixV10 = () => {
-        console.log('[FixV10] 手动触发修复...');
-        return performFullFix();
-      };
-    }
+    // ===== 4. 初始化和清理 =====
     
-    // ===== 2. 启动修复流程 =====
+    // 初始化修复
+    console.log('[FixV10] 初始化修复流程');
     
-    // 初始化DOM API修补
+    // 修补DOM API
     patchDOMTextContentSetter();
     
-    // 设置定时器，定期进行完整修复
-    const intervalId = setInterval(() => {
-      performFullFix();
-    }, 5000); // 每5秒进行一次完整修复
-    
-    // 设置DOM变化观察器
-    const cleanupMutationObserver = setupMutationObserver();
-    
-    // 设置React更新检测
-    const cleanupReactPatcher = patchReactSetState();
-    
-    // 执行初始修复
+    // 立即执行第一次完整修复
     setTimeout(() => {
       performFullFix();
-    }, 500); // 延迟500ms执行初始修复，等待页面完全加载
+    }, 500);
     
-    // 清理函数
+    // 设置DOM观察器
+    const domObserver = setupMutationObserver();
+    
+    // 尝试修补React
+    const reactObserver = patchReactSetState();
+    
+    // 设置定期修复
+    const fixInterval = setInterval(() => {
+      performFullFix();
+    }, 5000);
+    
+    // 暴露全局方法进行调试
+    window._forceFixV10 = () => {
+      console.log('[FixV10] 手动触发完整修复');
+      const count = performFullFix();
+      console.log(`[FixV10] 手动修复完成, 修复了 ${count} 处文本`);
+      console.log(`[FixV10] 自启动以来总共修复了 ${fixCountTotalRef.current} 处文本`);
+    };
+    
+    // 返回清理函数
     return () => {
-      // 清理DOM变化观察器
-      if (cleanupMutationObserver) {
-        cleanupMutationObserver();
-      }
+      console.log('[FixV10] 清理修复程序...');
       
-      // 清理React更新检测
-      if (cleanupReactPatcher) {
-        cleanupReactPatcher();
-      }
+      // 清除观察器
+      domObserver.disconnect();
+      reactObserver?.disconnect();
       
-      // 清理定时器
-      clearInterval(intervalId);
-      
+      // 清除定时器
+      clearInterval(fixInterval);
       if (processingTimeoutRef.current) {
         clearTimeout(processingTimeoutRef.current);
       }
@@ -551,39 +524,23 @@ export default function FixTranslationsV10() {
             get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.get,
             configurable: true
           });
-          console.log('[FixV10] 已恢复原始DOM API');
-        } catch (error) {
-          console.error('[FixV10] 恢复DOM API时出错:', error);
+        } catch (e) {
+          console.error('[FixV10] 恢复原始textContent方法失败:', e);
         }
       }
       
-      // 移除全局函数
-      if (typeof window !== 'undefined') {
-        delete (window as any)._forceFixV10;
-      }
-      
-      console.log('[FixV10] 翻译修复程序已清理，总计修复了 ' + fixCountTotalRef.current + ' 处翻译问题');
+      // 移除全局方法
+      delete window._forceFixV10;
     };
-  }, []); // 仅在组件挂载时运行一次
+  }, []);
   
-  // 这个组件不渲染任何可见内容
   return null;
 }
 
-// 为Window接口添加我们的全局函数
+// 全局类型声明
 declare global {
   interface Window {
     _forceFixV10?: () => void;
   }
-}
-
-// 设置全局函数，便于调试
-function initializeGlobalFix(forceFixFn: () => number) {
-  if (typeof window !== 'undefined') {
-    window._forceFixV10 = () => {
-      const count = forceFixFn();
-      console.log(`[FixTranslationsV10] 手动修复完成，修复了 ${count} 处文本`);
-      return;
-    };
-  }
 } 
+ 

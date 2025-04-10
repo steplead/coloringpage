@@ -200,4 +200,4 @@ export function Navigation({ currentLang = 'en' }: NavigationProps) {
       )}
     </header>
   );
-}
+} 
