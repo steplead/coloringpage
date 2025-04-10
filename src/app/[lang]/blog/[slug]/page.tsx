@@ -133,14 +133,63 @@ function convertToTemplateFormat(post: BlogPost, lang: string): BlogPostTemplate
   const primaryKeyword = post.seo_data?.primaryKeyword || (post.tags && post.tags.length > 0 ? post.tags[0] : 'coloring pages');
   
   // Create sections from content
-  // This is a simple implementation, in a real scenario you would parse the HTML content
-  // and convert it to discrete sections
-  const contentSections = post.content 
-    ? [{
-        heading: 'Overview',
+  // Parse the HTML content to create proper sections
+  let contentSections = [];
+  
+  if (post.content) {
+    // First, try to extract sections based on h2 tags
+    const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
+    let h2Matches = [];
+    let match;
+    
+    // Use exec instead of matchAll for better compatibility
+    while ((match = h2Regex.exec(post.content)) !== null) {
+      h2Matches.push({
+        fullMatch: match[0],
+        headingText: match[1],
+        index: match.index
+      });
+    }
+    
+    if (h2Matches && h2Matches.length > 0) {
+      // Get content between h2 tags
+      for (let i = 0; i < h2Matches.length; i++) {
+        const heading = h2Matches[i].headingText.replace(/<[^>]*>/g, ''); // Remove any HTML tags inside the heading
+        let content;
+        
+        if (i < h2Matches.length - 1) {
+          // Get content between this h2 and the next
+          const startIdx = h2Matches[i].index + h2Matches[i].fullMatch.length;
+          const endIdx = h2Matches[i+1].index;
+          content = post.content.substring(startIdx, endIdx);
+        } else {
+          // Get content after the last h2
+          const startIdx = h2Matches[i].index + h2Matches[i].fullMatch.length;
+          content = post.content.substring(startIdx);
+        }
+        
+        contentSections.push({
+          heading,
+          content
+        });
+      }
+    } else {
+      // If no h2 tags, check for strong tags or other structure
+      // For now, just create a single section
+      contentSections = [{
+        heading: 'About ' + primaryKeyword,
         content: post.content,
-      }]
-    : [];
+      }];
+    }
+  } else {
+    // If no content at all, create a default section
+    contentSections = [{
+      heading: 'About ' + primaryKeyword,
+      content: `<p>Explore the joy of ${primaryKeyword} with our comprehensive guide. 
+      Coloring is a wonderful activity for all ages, offering benefits from stress relief to 
+      creative expression.</p>`,
+    }];
+  }
 
   // Extract FAQ data if available
   // In a real scenario, you'd parse structured content for FAQs
@@ -149,7 +198,16 @@ function convertToTemplateFormat(post: BlogPost, lang: string): BlogPostTemplate
         question: item.name,
         answer: item.acceptedAnswer.text
       }))
-    : undefined;
+    : [
+        {
+          question: `What are the benefits of ${primaryKeyword}?`,
+          answer: `<p>${primaryKeyword} offer numerous benefits, including stress reduction, improved focus, enhanced fine motor skills, and creative expression. Regular coloring has been shown to help reduce anxiety and promote mindfulness.</p>`
+        },
+        {
+          question: `How do I get started with ${primaryKeyword}?`,
+          answer: `<p>Getting started with ${primaryKeyword} is easy! Simply download and print the designs you like, gather your favorite coloring supplies (colored pencils, markers, or crayons), and find a comfortable, well-lit space to begin. Start with simpler designs if you're a beginner.</p>`
+        }
+      ];
   
   return {
     title: post.title,
@@ -167,8 +225,8 @@ function convertToTemplateFormat(post: BlogPost, lang: string): BlogPostTemplate
     coloringPageExamples: [],  // Will be populated if relatedColoringPage is available
     sections: contentSections,
     faqs: faqs,
-    conclusion: `<p>We hope you enjoyed this article about ${primaryKeyword}. Remember that coloring is not just a fun activity, but also a great way to relieve stress and express creativity.</p>`,
-    callToAction: `<p>Ready to try your hand at coloring? Use our AI Coloring Page Generator to create custom designs that match your interests!</p>`,
+    conclusion: `<p>We hope you enjoyed this article about ${primaryKeyword}. Remember that coloring is not just a fun activity, but also a great way to relieve stress and express creativity. Regular practice can improve focus, patience, and artistic skills for both children and adults.</p>`,
+    callToAction: `<p>Ready to try your hand at coloring? Use our AI Coloring Page Generator to create custom ${primaryKeyword} that match your interests! With just a few clicks, you can generate unique designs perfectly suited to your preferences.</p>`,
     relatedPosts: [] // Will be populated with related posts
   };
 }
