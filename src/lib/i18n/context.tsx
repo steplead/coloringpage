@@ -423,3 +423,15 @@ export function TranslationProvider({
     </TranslationContext.Provider>
   );
 } 
+        language,
+        setLanguage,
+        isLoading,
+        getTranslation,
+        refreshTranslations,
+        lastError,
+      }}
+    >
+      {children}
+    </TranslationContext.Provider>
+  );
+} 

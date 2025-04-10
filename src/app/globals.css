@@ -190,3 +190,30 @@ img {
   height: auto;
   display: block;
 } 
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 添加平滑滚动效果 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 确保所有图片都有合适的展示方式 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+} 

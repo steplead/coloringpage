@@ -125,3 +125,13 @@ const TranslatedText: React.FC<TranslatedTextProps> = ({
 };
 
 export default TranslatedText; 
+
+  // 如果翻译出错或没有找到翻译，使用fallback
+  if (lastError) {
+    console.warn(`Translation error for key ${key}:`, lastError);
+  }
+
+  return <span className={className}>{fallback}</span>;
+};
+
+export default TranslatedText; 

@@ -80,6 +80,7 @@ The application now uses URL-based language paths for improved SEO and user expe
 - **Automatic Detection**: First-time visitors are offered their preferred language based on browser settings
 - **SEO Optimization**: Complete with `hreflang` tags and language-specific sitemaps
 - **Persistent Selection**: Language preferences are saved for returning visitors
+- **Hydration Safe**: The architecture prevents React hydration errors in multi-language setup (see [Hydration Fixes](./docs/hydration-fixes.md))
 
 ### Multilingual Architecture
 
