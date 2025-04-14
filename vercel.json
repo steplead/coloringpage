@@ -53,7 +53,7 @@
   ],
   "crons": [
     {
-      "path": "/api/blog/cron",
+      "path": "/api/blog/auto-generate",
       "schedule": "0 0 * * *"
     }
   ]

@@ -1,0 +1,321 @@
+/* Enhanced Blog Post Styles */
+
+/* General Layout */
+.section {
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Typography */
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4299e1;
+  display: inline-block;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 1.5rem 0 0.75rem;
+}
+
+p {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #4a5568;
+  margin-bottom: 1.25rem;
+}
+
+/* Info Box */
+.info-box {
+  background-color: #ebf8ff;
+  border-left: 4px solid #4299e1;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0.25rem;
+}
+
+/* Techniques List */
+.techniques-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.techniques-list li {
+  position: relative;
+  padding: 0.75rem 0 0.75rem 2rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.techniques-list li:last-child {
+  border-bottom: none;
+}
+
+.techniques-list li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  color: #38a169;
+  font-weight: bold;
+}
+
+/* Color Palette */
+.color-palette {
+  background-color: #f7fafc;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.color-swatch {
+  height: 80px;
+  width: 80px;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.color-swatch span {
+  background-color: rgba(255,255,255,0.9);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Step-by-Step Guide */
+.steps {
+  counter-reset: step-counter;
+  list-style-type: none;
+  padding: 0;
+}
+
+.steps li {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.5rem 4rem;
+  margin-bottom: 2rem;
+  background-color: #f7fafc;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.steps li:before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 1rem;
+  top: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  background-color: #4299e1;
+  color: white;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.steps h3 {
+  margin-top: 0;
+  color: #2b6cb0;
+}
+
+.tip {
+  background-color: #fffaf0;
+  border-left: 4px solid #ed8936;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #744210;
+  border-radius: 0.25rem;
+}
+
+/* Technique Cards */
+.technique-card {
+  background-color: #f7fafc;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.technique-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.technique-card h3 {
+  color: #2b6cb0;
+  margin-top: 0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Call to Action */
+.call-to-action {
+  background-color: #ebf8ff;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.button {
+  display: inline-block;
+  background-color: #4299e1;
+  color: white;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #3182ce;
+}
+
+/* FAQ Section */
+.faq-item {
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.faq-item h3 {
+  background-color: #f7fafc;
+  margin: 0;
+  padding: 1rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.faq-item h3:after {
+  content: "+";
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 1.25rem;
+  transition: transform 0.2s;
+}
+
+.faq-item.active h3:after {
+  transform: rotate(45deg);
+}
+
+.faq-item div[itemprop="acceptedAnswer"] {
+  padding: 0 1rem 1rem;
+}
+
+/* Related Posts */
+.related-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #4299e1;
+  color: white;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.875rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
+  
+  .color-swatches {
+    justify-content: center;
+  }
+  
+  .steps li {
+    padding: 1.25rem 1rem 1.25rem 3.5rem;
+  }
+  
+  .steps li:before {
+    left: 0.75rem;
+    top: 1.25rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .call-to-action,
+  .back-to-top {
+    display: none;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  .steps li,
+  .technique-card {
+    page-break-inside: avoid;
+  }
+} 

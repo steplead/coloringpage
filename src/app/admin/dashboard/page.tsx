@@ -52,6 +52,7 @@ export default function AdminDashboard() {
   // Auto-generation settings
   const [autoPostCount, setAutoPostCount] = useState(1);
   const [autoPostLength, setAutoPostLength] = useState(800);
+  const [autoBlogEnabled, setAutoBlogEnabled] = useState(true);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [settingsMessage, setSettingsMessage] = useState('');
 
@@ -75,8 +76,8 @@ export default function AdminDashboard() {
         console.error('Error fetching stats:', error);
         // Set fallback data if API isn't implemented yet
         setStats({
-          totalBlogPosts: '3',
-          totalImages: '5',
+          totalBlogPosts: 'N/A',
+          totalImages: 'N/A',
         });
       }
     };
@@ -84,30 +85,37 @@ export default function AdminDashboard() {
     // Fetch current auto-generation settings
     const fetchSettings = async () => {
       try {
-        // First try to get settings from localStorage
+        // Try localStorage first
         const localSettings = localStorage.getItem('blog_settings');
         if (localSettings) {
           const parsed = JSON.parse(localSettings);
           setAutoPostCount(parsed.postCount || 1);
           setAutoPostLength(parsed.postLength || 800);
-          console.log('Using settings from localStorage:', parsed);
+          setAutoBlogEnabled(parsed.autoBlogEnabled !== undefined ? parsed.autoBlogEnabled : true);
         }
         
-        // Then try to get from API
+        // Then try API
         const response = await fetch('/api/admin/settings');
         const data = await response.json();
         
-        if (data.settings) {
-          setAutoPostCount(data.settings.postCount || 1);
-          setAutoPostLength(data.settings.postLength || 800);
-          console.log('Using settings from API:', data.settings);
+        if (response.ok && data.settings) {
+          const serverSettings = data.settings;
+          setAutoPostCount(serverSettings.postCount || 1);
+          setAutoPostLength(serverSettings.postLength || 800);
+          setAutoBlogEnabled(serverSettings.autoBlogEnabled !== undefined ? serverSettings.autoBlogEnabled : true);
           
-          // Update localStorage with latest from server
-          localStorage.setItem('blog_settings', JSON.stringify(data.settings));
+          // Update localStorage
+          localStorage.setItem('blog_settings', JSON.stringify(serverSettings));
+        } else if (!localSettings) {
+           // If API fails and no localStorage, use defaults
+           setAutoBlogEnabled(true); // Default to enabled
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
-        // Use defaults if settings can't be fetched
+        // Keep defaults or localStorage values if API fails
+        if (!localStorage.getItem('blog_settings')) {
+           setAutoBlogEnabled(true); // Default to enabled if everything fails
+        }
       }
     };
     
@@ -126,19 +134,20 @@ export default function AdminDashboard() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ count: 1, targetLength: 800 }),
+        body: JSON.stringify({ count: 1, targetLength: 2000 }),
       });
       
       const data = await response.json();
       
       if (data.success) {
-        setMessage(`Successfully generated ${data.generated} blog posts!`);
+        setMessage(`Successfully generated ${data.generated} blog posts! Failed: ${data.failed}. Check logs for details.`);
         // Update stats after generation
-        const newTotal = parseInt(stats.totalBlogPosts as string) + data.generated;
-        setStats({
-          ...stats,
-          totalBlogPosts: String(newTotal),
-        });
+        const blogResponse = await fetch('/api/admin/stats/blog');
+        const blogData = await blogResponse.json();
+        setStats(prev => ({
+          ...prev,
+          totalBlogPosts: String(blogData.count || parseInt(prev.totalBlogPosts as string) + data.generated),
+        }));
       } else {
         setMessage(`Failed to generate blog posts. ${data.error || ''}`);
       }
@@ -156,14 +165,15 @@ export default function AdminDashboard() {
     setSettingsMessage('');
     
     try {
-      // Always save to localStorage first as a backup
       const settings = {
         postCount: autoPostCount,
-        postLength: autoPostLength
+        postLength: autoPostLength,
+        autoBlogEnabled: autoBlogEnabled
       };
+      // Save to localStorage first
       localStorage.setItem('blog_settings', JSON.stringify(settings));
       
-      // Then try to save to API
+      // Save to API
       const response = await fetch('/api/admin/settings', {
         method: 'POST',
         headers: {
@@ -174,18 +184,18 @@ export default function AdminDashboard() {
       
       const data = await response.json();
       
-      if (data.success) {
+      if (response.ok && data.success) {
         setSettingsMessage('Settings saved successfully!');
       } else {
-        // If API save failed but localStorage worked, show a modified success message
-        setSettingsMessage('Settings saved locally. Server sync failed: ' + (data.error || 'Unknown error'));
+        setSettingsMessage('Settings saved locally. Server sync failed: ' + (data.error || response.statusText));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving settings:', error);
-      // If we can't reach the API but localStorage worked
-      setSettingsMessage('Settings saved locally. Could not connect to server.');
+      setSettingsMessage('Settings saved locally. Could not connect to server: ' + error.message);
     } finally {
       setIsSavingSettings(false);
+      // Optionally clear the message after a few seconds
+      setTimeout(() => setSettingsMessage(''), 5000);
     }
   };
 
@@ -214,19 +224,19 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <ActionCard
           title="Generate Blog Post"
-          description="Automatically generate a new blog post about coloring pages using AI."
+          description="Manually generate a single blog post using the auto-generation logic."
           buttonText={isLoading ? 'Generating...' : 'Generate Post'}
           onClick={handleGenerateBlogPosts}
         />
         <ActionCard
           title="Manage Blog Posts"
-          description="View, edit, or delete existing blog posts in the blog management interface."
+          description="View, edit, or delete existing blog posts."
           buttonText="Manage Posts"
           onClick={() => window.location.href = '/admin/blog'}
         />
         <ActionCard
           title="View Website"
-          description="Go to the public-facing website to see your changes."
+          description="Go to the public-facing website."
           buttonText="View Site"
           onClick={() => window.location.href = '/'}
         />
@@ -243,38 +253,54 @@ export default function AdminDashboard() {
           )}
           
           <p className="text-sm text-gray-600 mb-6">
-            Configure how many blog posts should be automatically generated each day. Posts will be published with random topics and featured images.
+            Configure how many blog posts should be automatically generated each day via the scheduled job.
           </p>
           
+          <div className="flex items-center mb-6">
+            <input
+              id="autoBlogEnabled"
+              name="autoBlogEnabled"
+              type="checkbox"
+              checked={autoBlogEnabled}
+              onChange={(e) => setAutoBlogEnabled(e.target.checked)}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="autoBlogEnabled" className="ml-2 block text-sm font-medium text-gray-700">
+              Enable Automatic Daily Posting
+            </label>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label htmlFor="postCount" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="postCount" className="block text-sm font-medium text-gray-700">
                 Daily Post Count
               </label>
               <select
                 id="postCount"
+                name="postCount"
                 value={autoPostCount}
-                onChange={(e) => setAutoPostCount(Number(e.target.value))}
+                onChange={(e) => setAutoPostCount(parseInt(e.target.value))}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                {[1, 2, 3, 5, 7, 10].map(count => (
-                  <option key={count} value={count}>{count} post{count > 1 ? 's' : ''} per day</option>
+                {[1, 2, 3, 4, 5].map(n => (
+                  <option key={n} value={n}>{`${n} post${n > 1 ? 's' : ''} per day`}</option>
                 ))}
               </select>
             </div>
             
             <div>
-              <label htmlFor="postLength" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="postLength" className="block text-sm font-medium text-gray-700">
                 Target Post Length (words)
               </label>
               <select
                 id="postLength"
+                name="postLength"
                 value={autoPostLength}
-                onChange={(e) => setAutoPostLength(Number(e.target.value))}
+                onChange={(e) => setAutoPostLength(parseInt(e.target.value))}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                {[500, 800, 1000, 1500, 2000].map(length => (
-                  <option key={length} value={length}>~{length} words</option>
+                {[800, 1000, 1500, 2000].map(len => (
+                  <option key={len} value={len}>{`~${len} words`}</option>
                 ))}
               </select>
             </div>
@@ -284,7 +310,7 @@ export default function AdminDashboard() {
             <button
               onClick={saveSettings}
               disabled={isSavingSettings}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
               {isSavingSettings ? 'Saving...' : 'Save Settings'}
             </button>

@@ -191,4 +191,215 @@ export interface ImageMetadata {
   description: string; // Meta description (150-160 chars)
   caption: string;    // Short caption for display
   keywords: string[]; // Relevant keywords for the image
+}
+
+/**
+ * Ensure an image has complete SEO metadata
+ * Fills in any missing metadata fields based on existing information
+ * 
+ * @param image The image record to enhance
+ * @returns Enhanced image record with complete SEO metadata
+ */
+export function ensureCompleteImageMetadata(image: any): any {
+  if (!image) return image;
+
+  const enhancedImage = { ...image };
+  
+  // Generate base prompt if missing
+  const basePrompt = image.prompt || 'coloring page';
+  
+  // Fill in missing title
+  if (!enhancedImage.title) {
+    enhancedImage.title = generateTitle(basePrompt, image.style);
+  }
+  
+  // Fill in missing alt text
+  if (!enhancedImage.alt_text) {
+    enhancedImage.alt_text = generateAltText(basePrompt, image.style);
+  }
+  
+  // Fill in missing SEO description
+  if (!enhancedImage.seo_description) {
+    enhancedImage.seo_description = generateDescription(basePrompt, image.style);
+  }
+  
+  // Fill in missing caption
+  if (!enhancedImage.caption) {
+    enhancedImage.caption = generateCaption(basePrompt, image.style);
+  }
+  
+  // Fill in missing keywords
+  if (!enhancedImage.keywords || !Array.isArray(enhancedImage.keywords) || enhancedImage.keywords.length === 0) {
+    enhancedImage.keywords = generateKeywords(basePrompt, image.style);
+  }
+  
+  // Fill in missing filename
+  if (!enhancedImage.seo_filename) {
+    enhancedImage.seo_filename = generateFilename(basePrompt);
+  }
+  
+  return enhancedImage;
+}
+
+/**
+ * Update image metadata in the database
+ * 
+ * @param supabase Supabase client instance
+ * @param imageId ID of the image to update
+ * @param metadata New metadata to apply
+ * @returns Result of the update operation
+ */
+export async function updateImageMetadata(supabase: any, imageId: string, metadata: any): Promise<any> {
+  try {
+    const { data, error } = await supabase
+      .from('images')
+      .update({
+        title: metadata.title,
+        alt_text: metadata.alt_text,
+        seo_description: metadata.seo_description,
+        caption: metadata.caption,
+        keywords: metadata.keywords,
+        seo_filename: metadata.seo_filename,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', imageId)
+      .select();
+      
+    if (error) {
+      console.error('Error updating image metadata:', error);
+      return { success: false, error };
+    }
+    
+    return { success: true, data };
+  } catch (error) {
+    console.error('Exception updating image metadata:', error);
+    return { success: false, error };
+  }
+}
+
+/**
+ * Ensure all images referenced in blog content have complete metadata
+ * 
+ * @param content HTML content of the blog post
+ * @param supabase Supabase client instance for database updates
+ */
+export async function ensureBlogImagesHaveMetadata(content: string, supabase: any): Promise<void> {
+  try {
+    // Extract all gallery image IDs from the content
+    const galleryRegex = /\/gallery\/([a-zA-Z0-9-]+)/g;
+    const matches = Array.from(content.matchAll(galleryRegex));
+    const imageIds = new Set<string>();
+    
+    for (const match of matches) {
+      if (match[1]) {
+        imageIds.add(match[1]);
+      }
+    }
+    
+    if (imageIds.size === 0) return;
+    
+    console.log(`Found ${imageIds.size} gallery images in blog content to check metadata`);
+    
+    // Check and update metadata for each image
+    for (const imageId of Array.from(imageIds)) {
+      const { data: image } = await supabase
+        .from('images')
+        .select('*')
+        .eq('id', imageId)
+        .single();
+      
+      if (image) {
+        // Check if image needs metadata enhancement
+        const needsUpdate = !image.title || 
+                           !image.alt_text || 
+                           !image.seo_description || 
+                           !image.caption || 
+                           !image.keywords || 
+                           !image.seo_filename;
+        
+        if (needsUpdate) {
+          console.log(`Enhancing metadata for image ${imageId}`);
+          const enhancedImage = ensureCompleteImageMetadata(image);
+          await updateImageMetadata(supabase, imageId, enhancedImage);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error ensuring blog images have metadata:', error);
+    // Continue without failing the entire process
+  }
+}
+
+/**
+ * Generate schema markup for blog posts
+ * Creates both Article and ImageObject schema.org structures
+ * 
+ * @param data Object containing blog post and image data
+ * @returns JSON-LD schema markup as a string
+ */
+export function generateBlogSchema(data: {
+  title: string;
+  description: string;
+  content: string;
+  slug: string;
+  image: any;
+  publishDate: string;
+  modifiedDate: string;
+  tags: string[];
+}): string {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+  
+  // Create Article schema
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: data.title,
+    description: data.description,
+    image: data.image?.image_url,
+    datePublished: data.publishDate,
+    dateModified: data.modifiedDate,
+    author: {
+      '@type': 'Organization',
+      name: 'AI Coloring Page',
+      url: baseUrl
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Coloring Page',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/logo.png`
+      }
+    },
+    keywords: data.tags.join(', '),
+    url: `${baseUrl}/blog/${data.slug}`,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${baseUrl}/blog/${data.slug}`
+    }
+  };
+  
+  // Create ImageObject schema for the featured image
+  const imageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageObject',
+    contentUrl: data.image?.image_url,
+    name: data.image?.title || data.title,
+    description: data.image?.seo_description || data.description,
+    caption: data.image?.caption || `A coloring page of ${data.title}`,
+    creditText: 'AI Coloring Page',
+    creator: {
+      '@type': 'Organization',
+      name: 'AI Coloring Page',
+      url: baseUrl
+    },
+    copyrightNotice: `© ${new Date().getFullYear()} AI Coloring Page`,
+    license: 'https://creativecommons.org/licenses/by-nc/4.0/'
+  };
+  
+  // Return both schemas
+  return JSON.stringify({
+    article: articleSchema,
+    image: imageSchema
+  });
 } 

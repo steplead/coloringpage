@@ -110,7 +110,7 @@ export default function BlogAdminPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ count: generationCount, targetLength: 800 }),
+        body: JSON.stringify({ count: generationCount, targetLength: 2000 }),
       });
       
       const data = await response.json();
