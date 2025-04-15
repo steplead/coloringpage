@@ -162,7 +162,7 @@ export default function LanguageHomePage({ params }: { params: { lang: string } 
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-white rounded-xl overflow-hidden shadow-md p-6 border border-gray-100">
                 <p className="text-sm sm:text-base text-gray-600 mb-4">
-                  &quot;<TranslatedText translationKey={testimonial.text} fallback={testimonial.text} />&quot;
+                  "<TranslatedText translationKey={testimonial.text} fallback={testimonial.text} />"
                 </p>
                 <p className="text-sm sm:text-base font-medium text-gray-800">
                   - <TranslatedText translationKey={testimonial.author} fallback={testimonial.author} />
