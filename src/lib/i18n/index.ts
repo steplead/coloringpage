@@ -111,6 +111,8 @@ export function isValidLanguage(language: string): boolean {
   return SUPPORTED_LANGUAGES.some(lang => lang.code === language);
 }
 
+// Removed duplicated getTranslation and loadTranslations functions below
+/*
 // Helper function to get nested translations
 export const getTranslation = (key: string, data: Record<string, any>, vars?: Record<string, any>): string => { // eslint-disable-line @typescript-eslint/no-explicit-any
   let translation = get(data, key);
@@ -146,3 +148,4 @@ export const loadTranslations = async (locale: string): Promise<Record<string, a
 };
 
 // ... existing code ... 
+*/ 
