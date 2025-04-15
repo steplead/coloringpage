@@ -362,3 +362,5 @@ To prevent duplicate content issues, the system implements:
 4. **Uniqueness Scoring**: Content receives a uniqueness score (0-100) based on Jaccard similarity
 5. **Keyword Optimization**: Each post uses unique keywords based on image metadata
 6. **Flesch-Kincaid Readability**: Content is analyzed for readability and optimized accordingly
+
+# Trigger deployment
