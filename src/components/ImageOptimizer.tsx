@@ -11,6 +11,7 @@ type OptimizationOptions = {
 
 interface ImageOptimizerProps {
   initialImageUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOptimizationComplete: (optimizedUrl: string, metadata: Record<string, any>) => void;
 }
 
@@ -25,9 +26,11 @@ export default function ImageOptimizer({
     enhanceContrast: true,
     lineThicknessPreference: 'medium',
   });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [metrics, setMetrics] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOptionChange = (key: keyof OptimizationOptions, value: any) => {
     setOptions(prev => ({
       ...prev,

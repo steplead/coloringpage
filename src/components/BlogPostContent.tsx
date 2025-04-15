@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BlogPost } from '@/lib/blog/blogService';
+// Removed unused import: import { BlogPost } from '@/lib/blog/blogService';
 
 type BlogPostContentProps = {
   title: string;

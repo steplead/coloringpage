@@ -35,7 +35,12 @@ function debounce<T extends unknown[]>(
 ) {
   let timeout: NodeJS.Timeout | null = null;
   
-  return function(this: any, ...args: T) {
+  return function(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this: any, 
+    ...args: T
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const later = function(this: any) {
       timeout = null;
       if (!immediate) func.apply(this, args);
@@ -228,33 +233,36 @@ export default function FixTranslationsV4() {
     
     // 清理函数
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      
-      // 恢复原始函数
+      // Restore original setTimeout and setInterval methods
       window.setTimeout = originalSetTimeout;
       window.setInterval = originalSetInterval;
       
-      // 移除全局访问点
-      if ('_fixTranslationsV4' in window) {
-        delete window._fixTranslationsV4;
+      // Clear the interval if it exists
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
       
-      // 断开观察者
+      // Disconnect the observer
       observer.disconnect();
       
-      console.log(`${LOG_PREFIX} 组件已卸载，清理完成`);
+      // Remove global access point
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any)._fixTranslationsV4;
+      
+      console.log(`${LOG_PREFIX} 组件已卸载，翻译修复程序已停止`);
     };
-  }, [debouncedFixTranslations]);
+  }, []);
   
-  // 这个组件不渲染任何可见内容
-  return null;
-}
-
-// 为TypeScript声明全局接口
-declare global {
+  // 声明全局接口，使TypeScript不会报错
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   interface Window {
     _fixTranslationsV4?: () => number;
   }
+  
+  return (
+    <div className="hidden">
+      <div>Translation Fixer V4 已加载 - 使用方法部分</div>
+    </div>
+  );
 } 

@@ -8,10 +8,11 @@
  * - Print adaptability testing
  */
 
-// import { promises as fs } from 'fs';
-// import { Readable } from 'stream';
+import * as fs from 'fs/promises';
+import crypto from 'crypto';
+// import path from 'path'; // Unused import removed
 import sharp from 'sharp';
-import path from 'path';
+import { getStorage, getSignedUrl } from '@/lib/storage';
 
 interface OptimizationResult {
   imageData: string;
@@ -292,4 +293,41 @@ export async function createThumbnail(
   // Convert back to base64
   const thumbnailBase64 = thumbnailBuffer.toString('base64');
   return `data:image/webp;base64,${thumbnailBase64}`;
+}
+
+export async function optimizeImage(
+  imageUrl: string, 
+  options: OptimizationOptions
+): Promise<{ optimizedUrl: string; metrics: OptimizationMetrics }> {
+  try {
+    // Download the image from the URL
+    const response = await fetch(imageUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Get image format and details
+    const imageInfo = await sharp(buffer).metadata();
+    const hash = crypto.createHash('md5').update(buffer).digest('hex');
+    // const mimeType = imageInfo.format ? `image/${imageInfo.format}` : 'image/png'; // Unused variable commented out
+    
+    // ... existing code ...
+  }
+}
+
+export async function optimizeForPrinting(
+  imageUrl: string
+): Promise<{ printOptimizedUrl: string; metrics: PrintOptimizationMetrics }> {
+  try {
+    // Download the image
+    const response = await fetch(imageUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Get image format and details
+    const imageInfo = await sharp(buffer).metadata();
+    const hash = crypto.createHash('md5').update(buffer).digest('hex');
+    // const mimeType = imageInfo.format ? `image/${imageInfo.format}` : 'image/png'; // Unused variable commented out
+    
+    // ... existing code ...
+  }
 } 

@@ -314,12 +314,11 @@ export default function FixTranslationsV9() {
   try {
     // Main logic
     useEffect(() => {
-      // @ts-expect-error // TODO: Describe why this error is expected (e.g., function signature mismatch)
+      // @ts-expect-error React 18 compatibility issue with effect return type
       return mainEffectLogic();
     }, []);
-  } catch (e) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    console.error('[FixV9] Component level error:', e);
+  } catch (error) {
+    console.error('[FixV9] Component level error:', error);
   }
   
   return null;

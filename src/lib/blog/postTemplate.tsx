@@ -218,7 +218,7 @@ export const BlogPostTemplate: React.FC<BlogPostTemplateProps> = (post) => {
             Welcome to our guide on <strong>{post.primaryKeyword}</strong>. This article will provide you with valuable insights, practical tips, and creative ideas to enhance your coloring experience.
           </p>
           <p>
-            {post.primaryKeyword} feature distinctive patterns and elements that make them perfect for both educational purposes and creative expression. They're designed with careful attention to detail and accessibility.
+            {post.primaryKeyword} feature distinctive patterns and elements that make them perfect for both educational purposes and creative expression. They&apos;re designed with careful attention to detail and accessibility.
           </p>
         </div>
         
@@ -276,7 +276,7 @@ export const BlogPostTemplate: React.FC<BlogPostTemplateProps> = (post) => {
         <section id="intro" className="mb-10">
           <h2 className="text-2xl font-bold mb-4">About {post.primaryKeyword}</h2>
           <p>
-            <strong>{post.primaryKeyword}</strong> are specialized designs that offer unique benefits for artists of all skill levels. These pages feature distinctive patterns and elements that make them perfect for both educational purposes and creative expression. They're designed with careful attention to detail and accessibility, making them suitable for beginners and experienced colorists alike.
+            <strong>{post.primaryKeyword}</strong> are specialized designs that offer unique benefits for artists of all skill levels. These pages feature distinctive patterns and elements that make them perfect for both educational purposes and creative expression. They&apos;re designed with careful attention to detail and accessibility, making them suitable for beginners and experienced colorists alike.
           </p>
         </section>
         
