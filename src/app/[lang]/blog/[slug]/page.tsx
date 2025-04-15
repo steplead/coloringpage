@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: { slug: string, lan
       description: 'The requested blog post could not be found.'
     };
   }
-
+  
   const translations = await getTranslations(lang);
   const tMeta = (key: string, fallback: string) => getTranslationSync(key, undefined, translations, fallback);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
@@ -118,7 +118,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
     getBlogPostBySlug(params.slug),
     getTranslations(lang)
   ]);
-
+  
   if (!post) {
     notFound();
   }
