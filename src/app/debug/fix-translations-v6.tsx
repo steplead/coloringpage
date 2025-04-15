@@ -223,20 +223,19 @@ export default function FixTranslationsV6() {
     // 添加MutationObserver监控DOM变化
     const setupObserver = () => {
       // 创建一个观察器实例
-      const observer = new MutationObserver((_mutations) => {
+      const observer = new MutationObserver((mutations) => {
         // 延迟执行修复，让React完成其工作
         requestAnimationFrame(fixTranslations);
       });
       
       // 开始观察document.body，监控其子树和文本变化
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
       
       console.log('[FixV6] 设置了MutationObserver监控DOM变化');
-      
-      // Optional: Handle mutations directly if needed for fine-grained control
-      const handleMutations = (mutations: MutationRecord[]) => {
-        // Process mutations here if required
-      };
       
       // 返回观察器实例以便清理
       return observer;

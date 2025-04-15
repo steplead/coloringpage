@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import TranslatedText from '@/components/TranslatedText';
 
 // Style options with visual examples
 const STYLE_OPTIONS = [
@@ -379,11 +380,12 @@ export const ImageGenerator = () => {
                     placeholder="Enter your complete prompt with all details..."
                   />
                   <p className="mt-2 text-sm text-gray-500">
-                    For best coloring pages, include &quot;black outline coloring page, clean lines&quot;
+                    <TranslatedText translationKey="advancedPromptTip1" />
+                    &quot;<TranslatedText translationKey="advancedPromptTip2" />&quot;.
                   </p>
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  Make sure to include details like style and &quot;{BASE_PROMPT}&quot; for best results.
+                <p className="text-sm text-gray-600 mt-1">
+                  <TranslatedText translationKey="advancedPromptTip3" />
                 </p>
               </>
             ) : (
@@ -459,6 +461,11 @@ export const ImageGenerator = () => {
                     </div>
                   </div>
                 )}
+
+                <p className="text-xs text-gray-500 italic mt-1">
+                  <TranslatedText translationKey="customPromptInfo" />
+                  (<TranslatedText translationKey="example" />: &quot;a cute cat&quot;, &quot;a detailed spaceship&quot;)
+                </p>
               </>
             )}
 

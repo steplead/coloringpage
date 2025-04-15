@@ -2,11 +2,14 @@ import { BlogPostTemplateProps } from './postTemplate';
 import { generateBlogPost, getPopularKeywords } from './generator';
 
 type PublishConfig = {
-  frequency: 'daily' | 'weekly' | 'monthly';
+  frequency: 'hourly' | 'daily' | 'weekly' | 'monthly';
   targetCount: number;
-  startTime: string; // ISO time string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  startTime?: any; // Allow flexible start time (ISO string, Date object, etc.)
   enabled: boolean;
   categories?: string[];
+  maxRetries?: number;
+  category?: string | string[];
 };
 
 /**

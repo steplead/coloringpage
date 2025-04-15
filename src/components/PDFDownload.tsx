@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
-import { DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import TranslatedText from './TranslatedText';
-import jsPDF from 'jspdf';
-import { useTranslation } from '@/lib/i18n/context';
 
 interface PDFDownloadProps {
   imageUrl: string;
@@ -90,7 +88,7 @@ export default function PDFDownload({ imageUrl, title }: PDFDownloadProps) {
           </>
         ) : (
           <>
-            <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
+            <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
             <TranslatedText path="download.pdfButton" fallback="Download as PDF" />
           </>
         )}

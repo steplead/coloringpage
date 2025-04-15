@@ -27,6 +27,9 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
     lineThicknessPreference: 'medium',
   });
   const [metrics, setMetrics] = useState<any>(null);
+  const [optimizedImageUrl, setOptimizedImageUrl] = useState<string | null>(null);
+  const [optimizedMetadata, setOptimizedMetadata] = useState<Record<string, any> | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [loading, setLoading] = useState(false);
 
   const handleOptionChange = (key: keyof OptimizationOptions, value: any) => {
     setOptions(prev => ({
@@ -51,13 +54,17 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
         }),
       });
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to optimize image');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errorData = await response.json().catch(() => ({} as any));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = await response.json() as any;
       setMetrics(data.metrics);
+      setOptimizedImageUrl(data.optimizedImageData);
+      setOptimizedMetadata(data.metadata);
       onOptimizationComplete(data.optimizedImageData, data.metrics);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to optimize image');

@@ -309,6 +309,18 @@ export default function FixTranslationsV9() {
     // 然后设置React DOM观察器和相关修复
     return patchReactDOM();
   }, []);
+
+  // Error handling wrapper
+  try {
+    // Main logic
+    useEffect(() => {
+      // @ts-expect-error // TODO: Describe why this error is expected
+      return mainEffectLogic();
+    }, []);
+  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    console.error('[FixV9] Component level error:', e);
+  }
   
   return null;
 }

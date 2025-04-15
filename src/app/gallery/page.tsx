@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { PageHeader } from '@/components/PageHeader';
 import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
-import Cookies from 'js-cookie';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Helper function to truncate prompt text
 const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
@@ -16,7 +16,7 @@ const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
     : prompt;
 };
 
-export default function GalleryPage({ params }: { params?: { lang?: string } }) {
+export default function GalleryPage() {
   const [images, setImages] = useState<ImageRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

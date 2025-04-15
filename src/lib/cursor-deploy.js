@@ -3,7 +3,9 @@
  * 使用方法：在Cursor中执行命令 cursor-deploy
  */
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawnSync } = require('child_process');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
 
 // 获取项目根目录路径

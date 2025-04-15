@@ -1,15 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import TranslatedText from '@/components/TranslatedText';
-import Cookies from 'js-cookie';
 import { ArrowLeftIcon, PencilSquareIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-export default function GalleryNotFound({ params }: { params?: { lang?: string } }) {
-  const { lang = 'en' } = params || {};
-
+export default function GalleryNotFound() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="flex-grow flex items-center justify-center px-4 py-12">

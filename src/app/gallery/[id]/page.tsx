@@ -1,21 +1,20 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { PageHeader } from '@/components/PageHeader';
-import { ImageRecord } from '@/lib/supabase';
+import Link from 'next/link';
+import Image from 'next/image';
+import { fetchImageById, fetchRelatedImages, ImageRecord } from '@/lib/supabase/client';
 import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
-import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, ShareIcon } from '@heroicons/react/24/outline';
 import SocialShareButtons from '@/components/SocialShareButtons';
+import { PageHeader } from '@/components/PageHeader';
 import PDFDownload from '@/components/PDFDownload';
 
 interface ColoringPageDetailProps {
   params: { 
     id: string;
-    lang?: string;
   };
 }
 
@@ -25,68 +24,29 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [currentLang, setCurrentLang] = useState('en');
-
-  // Get language from cookie on client side
-  useEffect(() => {
-    const lang = Cookies.get('NEXT_LOCALE') || 'en';
-    setCurrentLang(lang);
-  }, []);
 
   useEffect(() => {
-    const fetchImageDetails = async () => {
+    async function loadImageData() {
+      setLoading(true);
       try {
-        setLoading(true);
-        console.log(`Fetching image details for ID: ${params.id}`);
-        
-        // Fetch the main image
-        const response = await fetch(`/api/gallery/${params.id}`);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`API error ${response.status}:`, errorText);
-          
-          if (response.status === 404) {
-            console.log('Image not found, redirecting to not-found page');
-            router.push('/gallery/not-found');
-            return;
-          }
-          throw new Error(`Failed to fetch image details: ${response.status} - ${errorText || 'No error details'}`);
-        }
-        
-        const data = await response.json();
-        console.log('Received image data:', data);
-        
-        if (!data.image) {
-          throw new Error('Invalid API response: missing image data');
-        }
-        
-        setImage(data.image);
-        
-        // Fetch related images
-        console.log(`Fetching related images for ID: ${params.id}`);
-        const relatedResponse = await fetch(`/api/gallery/${params.id}/related`);
-        
-        if (relatedResponse.ok) {
-          const relatedData = await relatedResponse.json();
-          console.log(`Found ${relatedData.images?.length || 0} related images`);
-          setRelatedImages(relatedData.images || []);
+        const imageData = await fetchImageById(params.id);
+        if (imageData) {
+          setImage(imageData);
+          const related = await fetchRelatedImages(imageData.keywords || [], params.id);
+          setRelatedImages(related);
         } else {
-          console.warn(`Failed to fetch related images: ${relatedResponse.status}`);
-          // Don't throw here - we can still show the main image without related images
+          setError('Image not found.');
         }
-        
-        setError(null);
       } catch (err) {
-        console.error('Error fetching image details:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load image details');
+        console.error('Error fetching image:', err);
+        setError('Failed to load image data.');
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    fetchImageDetails();
-  }, [params.id, router]);
+    loadImageData();
+  }, [params.id]);
 
   const handleDownload = async () => {
     if (!image?.image_url) return;

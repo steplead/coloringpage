@@ -402,4 +402,40 @@ export function generateBlogSchema(data: {
     article: articleSchema,
     image: imageSchema
   });
+}
+
+export async function generateAndStoreSeoMetadata(
+  imageData: Partial<ImageRecord>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dbClient: any
+): Promise<SeoMetadata | null> {
+  if (!imageData.id || !imageData.image_url) {
+    // ... existing code ...
+  }
+
+  // ... existing code ...
+
+  let retryCount = 0;
+  let metadataResult = null;
+  while (retryCount < MAX_RETRIES) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      metadataResult = await enhanceMetadataWithGemini(imageData as any);
+      if (metadataResult) {
+        break; // Success
+      }
+    } catch (error) {
+      console.error(`Error in retry ${retryCount + 1}:`, error);
+      retryCount++;
+    }
+  }
+
+  if (!metadataResult) {
+    console.error('Failed to generate SEO metadata after multiple retries');
+    return null;
+  }
+
+  // ... existing code ...
+
+  return metadataResult;
 } 

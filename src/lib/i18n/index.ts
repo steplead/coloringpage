@@ -109,4 +109,40 @@ export function getTranslations(language: string): any {
  */
 export function isValidLanguage(language: string): boolean {
   return SUPPORTED_LANGUAGES.some(lang => lang.code === language);
-} 
+}
+
+// Helper function to get nested translations
+export const getTranslation = (key: string, data: Record<string, any>, vars?: Record<string, any>): string => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  let translation = get(data, key);
+
+  if (typeof translation !== 'string') {
+    // ... existing code ...
+  }
+
+  // ... existing code ...
+}
+
+// Load translations from API endpoint
+export const loadTranslations = async (locale: string): Promise<Record<string, any>> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (!locales.includes(locale)) {
+    locale = DEFAULT_LOCALE;
+    // ... existing code ...
+    console.log(`[i18n] Fetching translations for locale: ${locale} from ${apiUrl}`);
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      console.error(`[i18n] Failed to fetch translations for ${locale}: ${response.status}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return defaultTranslations[locale as keyof typeof defaultTranslations] || (defaultTranslations as any).en;
+    }
+    const data = await response.json();
+    // ... existing code ...
+    return data;
+  } catch (error) {
+    console.error(`[i18n] Error loading translations for ${locale}:`, error);
+    // Fallback to default English translations on error
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return defaultTranslations[locale as keyof typeof defaultTranslations] || (defaultTranslations as any).en;
+  }
+};
+
+// ... existing code ... 

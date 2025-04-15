@@ -1,16 +1,22 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { translations } from './index';
 import Cookies from 'js-cookie';
 import { LANGUAGE_COOKIE } from './index';
+import { getTranslation, loadTranslations, TranslationData, TranslationVariables, getTranslationSync } from './translations'; // Assuming any for now
+import { DEFAULT_LOCALE, locales } from './config';
 
 // Default to English translations as initial value
 const defaultTranslations = translations.en;
 
 interface TranslationContextType {
+  locale: string;
+  setLocale: (locale: string) => void;
+  t: (key: string, vars?: TranslationVariables) => string;
   translations: Record<string, any>;
-  language: string;
+  loading: boolean;
+  isInitialized: boolean;
   setLanguage: (lang: string) => Promise<void>;
   isLoading: boolean;
   getTranslation: (key: string, fallback?: string) => string;
@@ -19,8 +25,12 @@ interface TranslationContextType {
 }
 
 const TranslationContext = createContext<TranslationContextType>({
+  locale: DEFAULT_LOCALE,
+  setLocale: () => {},
+  t: () => '',
   translations: defaultTranslations,
-  language: 'en',
+  loading: false,
+  isInitialized: false,
   setLanguage: async () => {},
   isLoading: false,
   getTranslation: () => '',
@@ -94,6 +104,9 @@ export function TranslationProvider({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastError, setLastError] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [currentLocale, setCurrentLocale] = useState(DEFAULT_LOCALE);
+  const [loading, setLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Only run client-side initialization after hydration
   useEffect(() => {
@@ -407,17 +420,63 @@ export function TranslationProvider({
     return () => clearTimeout(timer);
   }, []);
 
+  // Effect to load translations when locale changes or on initial load
+  useEffect(() => {
+    const loadAndSetTranslations = async () => {
+      setLoading(true);
+      console.log(`[i18nProvider] Loading translations for locale: ${currentLocale}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const loadedTranslations = await loadTranslations(currentLocale) as any;
+      setTranslationsData(loadedTranslations);
+      setLoading(false);
+      setIsInitialized(true); // Mark as initialized after first load
+      console.log(`[i18nProvider] Translations loaded for ${currentLocale}`, loadedTranslations);
+    };
+
+    loadAndSetTranslations();
+  }, [currentLocale]);
+
+  // Memoized translation function
+  const t = useCallback((key: string, vars?: TranslationVariables): string => {
+    // If not initialized or loading, or no translations, return key or loading indicator
+    if (!isInitialized || loading || !translationsData) {
+      // console.warn(`[i18n] Translation requested before initialization or during loading for key: ${key}`);
+      // Attempt synchronous translation using defaults if available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const syncTranslation = getTranslationSync(key, vars, currentLocale, translationsData as any);
+      return syncTranslation || key; // Return sync translation or key itself
+    }
+    
+    // Use the synchronous getter now that translations are loaded
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return getTranslationSync(key, vars, currentLocale, translationsData as any) || key;
+  }, [currentLocale, translationsData, loading, isInitialized]);
+
+  // Value provided to context consumers
+  const value = useMemo(() => ({
+    locale: currentLocale,
+    setLocale: setCurrentLocale,
+    t,
+    translations: translationsData,
+    loading,
+    isInitialized,
+    setLanguage,
+    isLoading,
+    getTranslation,
+    refreshTranslations,
+    lastError,
+  }), [currentLocale, setCurrentLocale, t, translationsData, loading, isInitialized, setLanguage, isLoading, getTranslation, refreshTranslations, lastError]);
+
+  // Prevent rendering children until client-side hydration is complete
+  if (!isClient) {
+    // Return fallback or null during server render / pre-hydration
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return null as any; 
+  }
+
   return (
     <TranslationContext.Provider
-      value={{
-        translations: translationsData,
-        language,
-        setLanguage,
-        isLoading,
-        getTranslation,
-        refreshTranslations,
-        lastError,
-      }}
+      value={value}
     >
       {children}
     </TranslationContext.Provider>

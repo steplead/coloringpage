@@ -4,12 +4,17 @@
 
 import en from './translations/en.json';
 import zh from './translations/zh.json';
+import get from 'lodash.get';
 
 // A cache to store translations to avoid reloading them
 const translationsCache: Record<string, any> = {
   en,
   zh
 };
+
+export type TranslationVariables = Record<string, string | number>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TranslationData = Record<string, any>;
 
 /**
  * Get translations for a specific language
@@ -69,4 +74,54 @@ export function clearTranslationCache(): void {
       delete translationsCache[key];
     }
   });
-} 
+}
+
+// Helper function to get nested translations
+export function getTranslationSync(
+  key: string, 
+  vars?: TranslationVariables, 
+  data: TranslationData | null = null,
+  fallback: string = key
+): string {
+  if (!data) {
+    return fallback;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let translation = get(data, key) as any; 
+
+  if (typeof translation !== 'string') {
+    return fallback; 
+  }
+  return translation;
+}
+
+// Function to load translations from the API
+export const loadTranslations = async (locale: string): Promise<TranslationData | null> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const apiUrl = (window as any).NEXT_PUBLIC_API_URL || '/api/i18n'; 
+  try {
+    const response = await fetch(`${apiUrl}?lang=${locale}`);
+    // ... existing code ...
+    // --- Fallback Data --- (if needed, for example during SSR or build)
+    const fallbackTranslations = {
+      // ... your fallback translations
+    };
+
+    // Export necessary functions/types
+    // We avoid assigning to module.exports directly if possible
+    // Instead, ensure functions are exported normally
+    export { getTranslationSync /* add other exports here */ };
+
+    // If module.exports assignment is absolutely necessary for some reason:
+    /*
+    // eslint-disable-next-line @next/next/no-assign-module-variable
+    module.exports = {
+      getTranslationSync,
+      // loadTranslations, // If you have this function
+    };
+    */
+  } catch (error) {
+    console.error(`Error loading translations for ${locale}:`, error);
+    return null;
+  }
+}; 

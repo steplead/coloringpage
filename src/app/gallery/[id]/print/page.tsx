@@ -14,13 +14,6 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [currentLang, setCurrentLang] = useState('en');
-
-  // Get language from cookie on client side
-  useEffect(() => {
-    const lang = Cookies.get('NEXT_LOCALE') || 'en';
-    setCurrentLang(lang);
-  }, []);
 
   useEffect(() => {
     async function fetchImage() {

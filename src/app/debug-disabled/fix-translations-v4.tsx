@@ -203,12 +203,19 @@ export default function FixTranslationsV4() {
     window._fixTranslationsV4 = fixTranslations;
     
     // 监听DOM变化
-    const observer = new MutationObserver((mutations) => {
-      // Handle mutations directly if needed for fine-grained control
-      mutations.forEach(() => {
-        // Process mutations here if required
-      });
-      debouncedFixTranslations();
+    const observer = new MutationObserver((mutationsList) => {
+      // 强制延迟执行，确保React更新完成
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((window as any)._fixTranslationsRunning) {
+          // console.log('[FixV4] 修复已在运行中，跳过');
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any)._fixTranslationsRunning = true;
+        // console.log('[FixV4] MutationObserver 触发修复');
+        fixTranslations();
+      }, 0);
     });
     
     observer.observe(document.body, {

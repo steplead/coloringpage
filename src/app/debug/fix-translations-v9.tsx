@@ -275,7 +275,6 @@ export default function FixTranslationsV9() {
             try {
               Object.defineProperty(Node.prototype, 'textContent', {
                 set: originalSetTextContentRef.current,
-                // @ts-expect-error
                 get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.get,
                 configurable: true
               });
@@ -286,9 +285,6 @@ export default function FixTranslationsV9() {
         };
       } catch {
         console.error('[TranslationDebug] Error running debug script');
-      } catch (error) {
-        console.error('[FixV9] 在修补React DOM时出错:', error);
-        return () => {};
       }
     }
     
