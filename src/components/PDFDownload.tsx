@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import TranslatedText from './TranslatedText';
-import { FaSpinner, FaFilePdf } from 'react-icons/fa';
+import jsPDF from 'jspdf';
+import { useTranslation } from '@/lib/i18n/context';
 
 interface PDFDownloadProps {
   imageUrl: string;

@@ -17,7 +17,11 @@ export class BlogAutoPublisher {
   private config: PublishConfig;
   private db: any; // In real implementation, this would be your database client
   
-  constructor(config: PublishConfig, dbClient: any) {
+  constructor(
+    config: PublishConfig,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dbClient: any // Replace with specific Supabase client type if available
+  ) {
     this.config = config;
     this.db = dbClient;
   }
@@ -162,11 +166,18 @@ export class BlogAutoPublisher {
  * Create a default auto-publisher configuration
  */
 export function getDefaultPublisherConfig(): PublishConfig {
-  return {
+  const config: PublishConfig = {
     frequency: 'daily',
     targetCount: 1,
     startTime: new Date(new Date().setHours(1, 0, 0, 0)).toISOString(), // 1:00 AM
     enabled: true,
     categories: ['Coloring Techniques', 'Educational Content', 'Art Therapy']
   };
+  
+  if (process.env.BLOG_AUTO_PUBLISH_FREQUENCY) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    config.frequency = process.env.BLOG_AUTO_PUBLISH_FREQUENCY as any;
+  }
+  
+  return config;
 } 

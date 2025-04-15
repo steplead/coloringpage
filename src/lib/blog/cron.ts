@@ -7,6 +7,7 @@ import { BlogAutoPublisher, getDefaultPublisherConfig } from './autoPublisher';
  * In a production environment, this would be called by a cron job or
  * serverless function scheduled to run at the configured intervals
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function initializeAutoBlogPublisher(dbClient: any) {
   try {
     console.log('Initializing auto blog publisher system...');
@@ -22,6 +23,7 @@ export async function initializeAutoBlogPublisher(dbClient: any) {
     }
     
     if (process.env.BLOG_AUTO_PUBLISH_FREQUENCY) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       config.frequency = process.env.BLOG_AUTO_PUBLISH_FREQUENCY as any;
     }
     
@@ -57,6 +59,7 @@ export async function runOnDemandBlogGeneration(
     keywords?: string[];
     updateSitemap?: boolean;
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dbClient: any
 ) {
   try {

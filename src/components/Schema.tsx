@@ -10,7 +10,9 @@ interface SchemaProps {
  * This helps search engines understand the content of the page
  * and can improve SEO by enabling rich results
  */
-const Schema: React.FC<SchemaProps> = ({ type, data }) => {
+export default function Schema({
+  data,
+}: SchemaProps) {
   // Make sure this component only runs on the client side
   if (typeof window === 'undefined') {
     return null;
@@ -25,6 +27,4 @@ const Schema: React.FC<SchemaProps> = ({ type, data }) => {
       }}
     />
   );
-};
-
-export default Schema; 
+} 

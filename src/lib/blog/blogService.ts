@@ -16,7 +16,9 @@ export interface BlogPost {
     keywords?: string[];
     primaryKeyword?: string;
     canonicalUrl?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     structuredData?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     faqSchema?: any[];
   };
 }

@@ -7,14 +7,8 @@ import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
 import { ArrowLeftIcon, PencilSquareIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-export default function GalleryNotFound() {
-  const [currentLang, setCurrentLang] = useState('en');
-
-  // Get language from cookie on client side
-  useEffect(() => {
-    const lang = Cookies.get('NEXT_LOCALE') || 'en';
-    setCurrentLang(lang);
-  }, []);
+export default function GalleryNotFound({ params }: { params?: { lang?: string } }) {
+  const { lang = 'en' } = params || {};
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

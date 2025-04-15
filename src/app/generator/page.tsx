@@ -13,7 +13,7 @@ export default function GeneratorPage() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-8">Create Your Coloring Page</h1>
         <p className="text-gray-600 mb-8 text-center">
-          Describe what you'd like to color, select complexity and category, and our AI will create a custom coloring page for you.
+          Describe what you&apos;d like to color, select complexity and category, and our AI will create a custom coloring page for you.
         </p>
         <ImageGenerator />
       </div>
