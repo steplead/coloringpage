@@ -12,7 +12,7 @@ const defaultSettings = {
 };
 
 // GET handler to retrieve current settings
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   console.log('GET /api/admin/settings: Fetching settings');
   
   try {
@@ -54,13 +54,13 @@ export async function GET(request: NextRequest) {
       source: 'database'
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error getting settings:', error);
     return NextResponse.json({ 
       success: true, // Return success anyway with defaults
       settings: defaultSettings,
       source: 'error_fallback',
-      error: error.message || 'Failed to retrieve settings'
+      error: error instanceof Error ? error.message : 'Failed to retrieve settings'
     });
   }
 }
@@ -130,17 +130,17 @@ export async function POST(request: NextRequest) {
       },
       message: 'Settings updated successfully'
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating settings:', error);
     return NextResponse.json({ 
       success: false, 
-      error: error.message || 'Failed to update settings' 
+      error: error instanceof Error ? error.message : 'Failed to update settings' 
     }, { status: 500 });
   }
 }
 
 // OPTIONS handler for CORS preflight
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS(_request: NextRequest) {
   const response = new NextResponse(null, { status: 204 });
   response.headers.set('Access-Control-Allow-Origin', '*');
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

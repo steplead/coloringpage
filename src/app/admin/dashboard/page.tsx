@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 // Dashboard statistics component
 function StatCard({ title, value, icon }: { title: string; value: string | number; icon: string }) {
@@ -189,9 +188,9 @@ export default function AdminDashboard() {
       } else {
         setSettingsMessage('Settings saved locally. Server sync failed: ' + (data.error || response.statusText));
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving settings:', error);
-      setSettingsMessage('Settings saved locally. Could not connect to server: ' + error.message);
+      setSettingsMessage('Settings saved locally. Could not connect to server: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsSavingSettings(false);
       // Optionally clear the message after a few seconds

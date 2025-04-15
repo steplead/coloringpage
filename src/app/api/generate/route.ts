@@ -120,23 +120,16 @@ export async function POST(request: NextRequest) {
         savedToGallery: !!galleryResult
       });
     } catch (storageError) {
-      console.error('Error storing image in Supabase:', storageError);
-      // 如果存储失败，回退到使用原始URL
-      console.log('Falling back to original SiliconFlow URL');
-      
-      // 尝试使用原始URL保存到Gallery
-      console.log('Trying to save original URL to gallery...');
-      const prompt = isAdvancedMode ? customPrompt : description;
-      const title = prompt.substring(0, 100);
-      const galleryResult = await saveImageToGallery(prompt, imageUrl, style, title);
-      console.log('Save to gallery result (original URL):', galleryResult ? 'Success' : 'Failed');
-      
+      console.error('Error storing image in Supabase Storage:', storageError);
+      // DO NOT save to gallery if storage failed.
+      // Return an error response to the client.
       return NextResponse.json({
-        success: true,
-        imageUrl: imageUrl,
-        storageError: 'Failed to store in Supabase, using original URL',
-        savedToGallery: !!galleryResult
-      });
+        success: false,
+        error: 'Image generated but failed to save to gallery.',
+        details: storageError instanceof Error ? storageError.message : 'Unknown storage error',
+        imageUrl: imageUrl, // Still provide the original URL for potential display/debugging by the client if needed
+        savedToGallery: false
+      }, { status: 500 }); // Indicate server error during storage processing
     }
 
   } catch (error) {

@@ -69,12 +69,12 @@ export async function GET() {
       apiKeyConfigured: !!API_KEY,
       apiUrlConfigured: !!API_URL
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error testing Gemini API:', error);
     return NextResponse.json({
       success: false,
       error: 'Failed to test Gemini API',
-      details: error.message || 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 } 

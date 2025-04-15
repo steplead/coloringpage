@@ -4,9 +4,17 @@ import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 import { translations, LANGUAGE_COOKIE } from '@/lib/i18n';
 
 // Enhanced logging with debug info
-const logWithDetails = (message: string, details?: any) => {
-  const logMessage = details 
-    ? `${message}: ${typeof details === 'object' ? JSON.stringify(details) : details}`
+const logWithDetails = (message: string, details?: unknown) => {
+  let detailsString = '';
+  if (details !== undefined && details !== null) {
+    try {
+      detailsString = (typeof details === 'object') ? JSON.stringify(details) : String(details);
+    } catch (e) {
+      detailsString = '[Unserializable data]';
+    }
+  }
+  const logMessage = detailsString
+    ? `${message}: ${detailsString}`
     : message;
   
   console.log(`[i18n API] ${logMessage}`);

@@ -50,11 +50,11 @@ export async function POST(request: NextRequest) {
       message: 'Image saved to gallery',
       data: data[0]
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in save-to-gallery:', error);
     return NextResponse.json({ 
       success: false, 
-      error: error.message || 'An unknown error occurred' 
+      error: error instanceof Error ? error.message : 'An unknown error occurred' 
     }, { status: 500 });
   }
 } 

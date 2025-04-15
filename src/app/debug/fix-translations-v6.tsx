@@ -223,7 +223,7 @@ export default function FixTranslationsV6() {
     // 添加MutationObserver监控DOM变化
     const setupObserver = () => {
       // 创建一个观察器实例
-      const observer = new MutationObserver((mutations) => {
+      const observer = new MutationObserver((_mutations) => {
         // 延迟执行修复，让React完成其工作
         requestAnimationFrame(fixTranslations);
       });

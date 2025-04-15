@@ -59,7 +59,6 @@ export default function CreateBlogPost() {
       const { data, error } = await supabase
         .from('blog_posts')
         .insert([blogPost])
-        .select('id');
 
       if (error) {
         throw error;
@@ -68,9 +67,9 @@ export default function CreateBlogPost() {
       // Redirect to the blog admin page
       router.push('/admin/blog');
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error creating blog post:', err);
-      setError(`Failed to create blog post: ${err.message}`);
+      setError(`Failed to create blog post: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }

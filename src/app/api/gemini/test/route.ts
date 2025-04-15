@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * Test endpoint for the Gemini API
  * This endpoint sends a simple prompt to verify the API connection is working
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Gemini API configuration
     const API_KEY = process.env.GEMINI_API_KEY;
@@ -71,13 +71,13 @@ export async function GET(request: NextRequest) {
       response: data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No text in response',
       apiUrl: API_URL
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Exception testing Gemini API:', error);
     return NextResponse.json(
       { 
         error: 'Exception testing Gemini API',
-        message: error.message, 
-        stack: error.stack,
+        message: error instanceof Error ? error.message : 'Unknown error', 
+        stack: error instanceof Error ? error.stack : undefined,
         apiUrl: process.env.GEMINI_API_URL
       },
       { status: 500 }

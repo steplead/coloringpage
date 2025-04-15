@@ -25,89 +25,86 @@ function buildLanguageAlternates() {
   return alternates;
 }
 
-export const metadata: Metadata = {
-  title: 'AI Coloring Page - Create & Color Beautiful Drawings',
-  description: 'Create beautiful coloring pages with AI. Transform your ideas into stunning drawings ready to color. Perfect for all ages and artistic abilities.',
-  keywords: 'AI coloring, coloring pages, AI drawing, coloring book, digital coloring, custom coloring pages',
-  authors: [{ name: 'Your Name' }],
-  creator: 'Your Name',
-  publisher: 'Your Company',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  applicationName: 'AI Coloring Page Generator',
-  appleWebApp: {
-    capable: true,
-    title: 'AI Coloring Page Generator',
-    statusBarStyle: 'default',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: SITE_URL,
-    siteName: 'AI Coloring Page Generator',
-    title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-    description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'AI Coloring Page Generator Preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'AI Coloring Page Generator | Create Custom Coloring Pages',
-    description: 'Create unique coloring pages with AI. Generate custom coloring pages from text descriptions. Perfect for kids, adults, and educational use.',
-    images: ['/og-image.jpg'],
-    creator: '@yourtwitter',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+// Metadata generation function
+export async function generateMetadata({ params }: { params: { lang?: string } }): Promise<Metadata> {
+  const currentLang = params?.lang || 'en';
+  
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: 'AI Coloring Page Generator | Free Printable Pages',
+      template: '%s | AI Coloring Page Generator',
+    },
+    description: 'Generate unique, beautiful coloring pages from text prompts or images using AI. Free, printable, and perfect for all ages.',
+    keywords: ['AI coloring page', 'coloring page generator', 'free printable coloring pages', 'custom coloring pages', 'text to coloring page', 'image to coloring page', 'AI art', 'coloring for kids', 'adult coloring'],
+    manifest: '/manifest.webmanifest',
+    alternates: {
+      canonical: `/${currentLang}`,
+      languages: buildLanguageAlternates(),
+    },
+    openGraph: {
+      title: 'AI Coloring Page Generator | Free Printable Pages',
+      description: 'Create personalized coloring pages instantly with AI. Free and easy to use!',
+      url: SITE_URL,
+      siteName: 'AI Coloring Page Generator',
+      images: [
+        {
+          url: `${SITE_URL}/og-image.png`, 
+          width: 1200,
+          height: 630,
+          alt: 'AI Coloring Page Generator',
+        },
+      ],
+      locale: currentLang,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'AI Coloring Page Generator | Free Printable Pages',
+      description: 'Generate unique coloring pages with AI. Free, printable, and fun!',
+      images: [`${SITE_URL}/twitter-image.png`],
+    },
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon-16x16.png',
+      apple: '/apple-touch-icon.png',
+      other: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '32x32',
+          url: '/favicon-32x32.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '16x16',
+          url: '/favicon-16x16.png',
+        },
+        {
+          rel: 'mask-icon',
+          url: '/safari-pinned-tab.svg',
+          color: '#5bbad5',
+        },
+      ],
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    google: 'your-google-site-verification',
-  },
-  alternates: {
-    canonical: SITE_URL,
-    languages: buildLanguageAlternates(),
-  },
-  metadataBase: new URL(SITE_URL),
-  icons: [
-    {
-      rel: 'icon',
-      url: '/favicon.ico',
-    },
-  ],
-};
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: '#ffffff',
-  colorScheme: 'light',
-};
+  };
+}
 
 // Initialize Supabase Storage
-if (typeof window === 'undefined') {
-  initializeStorage().catch(error => {
-    console.error('Failed to initialize Supabase Storage:', error);
-  });
-}
+// Removed call to initializeStorage() here as it was causing console errors
+// and is unnecessary since bucket existence is verified manually.
 
 export default function RootLayout({
   children,
@@ -143,4 +140,13 @@ export default function RootLayout({
       </body>
     </html>
   );
-} 
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#ffffff',
+  colorScheme: 'light',
+}; 

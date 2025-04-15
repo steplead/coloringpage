@@ -1,9 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+// Define the expected structure of the API response
+interface ApiResponse {
+  success: boolean;
+  text?: string;
+  apiKeyConfigured?: boolean;
+  apiUrlConfigured?: boolean;
+  error?: string;
+  details?: string;
+}
 
 export default function ApiTestPage() {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,8 +24,8 @@ export default function ApiTestPage() {
       const response = await fetch('/api/test-gemini');
       const data = await response.json();
       setResult(data);
-    } catch (err: any) {
-      setError(err.message || 'An unknown error occurred');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }

@@ -10,13 +10,13 @@ import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 export default function DebugPage() {
   const { language, translations, setLanguage, isLoading, lastError, refreshTranslations } = useTranslation();
   const [storageKeys, setStorageKeys] = useState<string[]>([]);
-  const [storageData, setStorageData] = useState<Record<string, any>>({});
+  const [storageData, setStorageData] = useState<Record<string, unknown>>({});
   
   // 获取localStorage中的所有翻译相关键
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const keys: string[] = [];
-      const data: Record<string, any> = {};
+      const data: Record<string, unknown> = {};
       
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -24,7 +24,7 @@ export default function DebugPage() {
           keys.push(key);
           try {
             data[key] = JSON.parse(localStorage.getItem(key) || '{}');
-          } catch (e) {
+          } catch (_e) {
             data[key] = localStorage.getItem(key);
           }
         }

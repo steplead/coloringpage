@@ -1,9 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
-import TranslatedText from '@/components/TranslatedText';
 import { Metadata } from 'next';
 import { getBlogPostBySlug, getRelatedBlogPosts } from '@/lib/blog/blogService';
 import { getColoringPageById } from '@/lib/gallery/galleryService';
@@ -12,27 +10,6 @@ import ShareButtons from '@/components/blog/ShareButtons';
 import RelatedPosts from '@/components/blog/RelatedPosts';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-
-// Types for blog posts
-interface BlogPost {
-  id: string;
-  slug: string;
-  title: string;
-  content: string;
-  meta_description: string;
-  featured_image_url?: string;
-  related_coloring_page_id?: string;
-  tags: string[];
-  is_published: boolean;
-  created_at: string;
-  seo_data?: {
-    keywords?: string[];
-    primaryKeyword?: string;
-    canonicalUrl?: string;
-    structuredData?: any;
-    faqSchema?: any[];
-  };
-}
 
 // Dynamic metadata for SEO
 export async function generateMetadata({ params }: { params: { slug: string, lang: string } }): Promise<Metadata> {
@@ -140,15 +117,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
 
   // --- Define custom components for ReactMarkdown ---
   const components = {
-    h1: ({node, ...props}: any) => <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-8 first:mt-0" {...props} />,
-    h2: ({node, ...props}: any) => <h2 className="text-2xl font-semibold text-gray-800 mb-4 mt-6" {...props} />,
-    h3: ({node, ...props}: any) => <h3 className="text-xl font-semibold text-gray-700 mb-3 mt-5" {...props} />,
-    p: ({node, ...props}: any) => <p className="text-base text-gray-700 leading-relaxed mb-4" {...props} />,
-    ul: ({node, ...props}: any) => <ul className="list-disc list-inside mb-4 pl-4 space-y-2" {...props} />,
-    ol: ({node, ...props}: any) => <ol className="list-decimal list-inside mb-6 pl-4 space-y-3" {...props} />,
-    li: ({node, ...props}: any) => <li className="text-gray-700" {...props} />,
-    strong: ({node, ...props}: any) => <strong className="font-semibold" {...props} />,
-    a: ({node, ...props}: any) => <a className="text-blue-600 hover:text-blue-800 hover:underline" {...props} />,
+    h1: (props: React.ComponentPropsWithoutRef<'h1'>) => <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-8 first:mt-0" {...props} />,
+    h2: (props: React.ComponentPropsWithoutRef<'h2'>) => <h2 className="text-2xl font-semibold text-gray-800 mb-4 mt-6" {...props} />,
+    h3: (props: React.ComponentPropsWithoutRef<'h3'>) => <h3 className="text-xl font-semibold text-gray-700 mb-3 mt-5" {...props} />,
+    p: (props: React.ComponentPropsWithoutRef<'p'>) => <p className="text-base text-gray-700 leading-relaxed mb-4" {...props} />,
+    ul: (props: React.ComponentPropsWithoutRef<'ul'>) => <ul className="list-disc list-inside mb-4 pl-4 space-y-2" {...props} />,
+    ol: (props: React.ComponentPropsWithoutRef<'ol'>) => <ol className="list-decimal list-inside mb-6 pl-4 space-y-3" {...props} />,
+    li: (props: React.ComponentPropsWithoutRef<'li'>) => <li className="text-gray-700" {...props} />,
+    strong: (props: React.ComponentPropsWithoutRef<'strong'>) => <strong className="font-semibold" {...props} />,
+    a: (props: React.ComponentPropsWithoutRef<'a'>) => <a className="text-blue-600 hover:text-blue-800 hover:underline" {...props} />,
     // Add more custom components as needed (e.g., for blockquotes, code blocks)
   };
   // --- End of custom components ---

@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
  * Test endpoint to generate a blog post with enhanced content cleaning
  * This helps verify our improvements to the content generation process
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Get a sample image to use for the test
     const { data: images } = await supabase
@@ -70,10 +70,10 @@ export async function GET(request: NextRequest) {
       description,
       content: content.substring(0, 1000) + '...' // Show beginning only for preview
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in test blog generation:', error);
     return NextResponse.json(
-      { error: 'Failed to generate test blog post', details: error.message || 'Unknown error' },
+      { error: 'Failed to generate test blog post', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

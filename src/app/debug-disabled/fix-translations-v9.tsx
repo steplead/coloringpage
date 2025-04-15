@@ -104,7 +104,7 @@ const translations: Record<string, string> = {
 export default function FixTranslationsV9() {
   const isProcessingRef = useRef(false);
   const fixCountRef = useRef(0);
-  const originalSetTextContentRef = useRef<any>(null);
+  const originalSetTextContentRef = useRef<((this: Node, value: string | null) => void) | null>(null);
   
   useEffect(() => {
     console.log('[FixV9] 初始化React渲染拦截器');
@@ -112,10 +112,21 @@ export default function FixTranslationsV9() {
     // 直接修改页面的textContent设置方法，拦截任何文本更新
     function patchDOM() {
       try {
-        // 保存原始方法
         if (!originalSetTextContentRef.current) {
-          // @ts-ignore
-          originalSetTextContentRef.current = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set;
+          // 保存原始的setter方法以便清理，确保它是函数
+          const originalSetter = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.set;
+          if (typeof originalSetter === 'function') {
+            originalSetTextContentRef.current = originalSetter;
+          } else {
+            console.error('[FixV9] 无法获取 Node.prototype.textContent setter 函数');
+            originalSetTextContentRef.current = null;
+          }
+        }
+        
+        // 如果无法获取原始方法，则退出
+        if (!originalSetTextContentRef.current) {
+            console.error('[FixV9] 未能成功获取原始 setter，无法修补');
+            return;
         }
         
         // 创建拦截的setter
@@ -130,9 +141,10 @@ export default function FixTranslationsV9() {
               // 设置处理标志防止递归
               isProcessingRef.current = true;
               
-              // 调用原始方法但使用翻译的文本
-              // @ts-ignore
-              originalSetTextContentRef.current.call(this, translations[trimmedValue]);
+              // 调用原始方法但使用翻译的文本 (添加null检查)
+              if (originalSetTextContentRef.current) {
+                  originalSetTextContentRef.current.call(this, translations[trimmedValue]);
+              }
               
               // 重置处理标志
               isProcessingRef.current = false;
@@ -145,16 +157,17 @@ export default function FixTranslationsV9() {
           }
           
           // 对于不需要翻译的文本，使用原始方法
-          // @ts-ignore
-          originalSetTextContentRef.current.call(this, value);
+          // 使用原始setter设置值 (添加null检查)
+          if (originalSetTextContentRef.current) {
+              originalSetTextContentRef.current.call(this, value);
+          }
         };
         
         // 替换原始方法
         Object.defineProperty(Node.prototype, 'textContent', {
           set: newSetter,
           // 保持getter不变
-          // @ts-ignore
-          get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').get,
+          get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.get, // Add optional chaining
           configurable: true
         });
         

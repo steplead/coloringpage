@@ -38,9 +38,9 @@ async function createSettingsTable() {
       error: 'Table does not exist. Please use the admin dashboard to create the settings.',
       message: 'The app_settings table needs to be created. When you access the admin dashboard, it will try to create it automatically.'
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in createSettingsTable:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -66,11 +66,11 @@ export async function GET(request: NextRequest) {
       message: 'Supabase admin check complete',
       setup: setupResult
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in Supabase admin route:', error);
     return NextResponse.json({ 
       success: false, 
-      error: error.message || 'Unknown error occurred'
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
     }, { status: 500 });
   }
 } 

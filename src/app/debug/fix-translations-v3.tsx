@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 // 硬编码的中文翻译
 const translations: Record<string, string> = {
@@ -55,7 +55,7 @@ export default function FixTranslationsV3() {
         });
 
         // 修复卡片标题和描述
-        document.querySelectorAll('h3').forEach((h3, index) => {
+        document.querySelectorAll('h3').forEach((h3) => {
           const text = h3.textContent?.trim();
           if (text === 'title') {
             // 找到第几个title，根据顺序选择对应翻译
@@ -159,10 +159,10 @@ export default function FixTranslationsV3() {
       window.setTimeout = function(
         callback: TimerHandler, 
         delay?: number, 
-        ...args: any[]
+        ...args: unknown[]
       ): number {
         if (typeof callback === 'function') {
-          const wrappedCallback = function(this: any): void {
+          const wrappedCallback = function(this: unknown): void {
             // 执行原始回调
             const result = callback.apply(this, args);
             // 在任何setTimeout回调执行后尝试修复翻译

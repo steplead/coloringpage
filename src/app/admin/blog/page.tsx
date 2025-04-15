@@ -44,9 +44,9 @@ export default function BlogAdminPage() {
       }
       
       setBlogPosts(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching blog posts:', err);
-      setError('Failed to load blog posts. ' + (err.message || ''));
+      setError('Failed to load blog posts. ' + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setIsLoading(false);
     }
@@ -70,9 +70,9 @@ export default function BlogAdminPage() {
       
       setBlogPosts(blogPosts.filter(post => post.id !== id));
       setMessage('Blog post deleted successfully.');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error deleting blog post:', err);
-      setError('Failed to delete blog post. ' + (err.message || ''));
+      setError('Failed to delete blog post. ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   };
 
@@ -92,9 +92,9 @@ export default function BlogAdminPage() {
         post.id === id ? { ...post, is_published: !currentStatus } : post
       ));
       setMessage(`Blog post ${!currentStatus ? 'published' : 'unpublished'} successfully.`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating publish status:', err);
-      setError('Failed to update publish status. ' + (err.message || ''));
+      setError('Failed to update publish status. ' + (err instanceof Error ? err.message : 'Unknown error'));
     }
   };
 
@@ -121,9 +121,9 @@ export default function BlogAdminPage() {
       } else {
         setError(`Failed to generate blog posts. ${data.error || ''}`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error generating blog posts:', err);
-      setError('Error generating blog posts. Please try again.');
+      setError('Error generating blog posts. ' + (err instanceof Error ? err.message : 'Please try again.'));
     } finally {
       setIsGenerating(false);
     }

@@ -2,8 +2,70 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { generateBlogPost } from '@/lib/blog/generator';
 import { BlogPostTemplateProps } from '@/lib/blog/postTemplate';
+import { BlogPost } from '@/app/api/blog/route'; // Import BlogPost type
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || 'admin123'; // Should be stored securely in production
+
+interface ManualPostData {
+  title: string;
+  metaDescription: string;
+  slug: string;
+  sections: Array<{ heading: string; content: string; imageUrl?: string; imageAlt?: string }>;
+  featuredImageUrl?: string;
+  tags?: string[];
+  // Add other potential fields from the manual creation form
+}
+
+interface SchemaOrgImageObject {
+  '@type': 'ImageObject';
+  url: string;
+}
+
+interface SchemaOrgOrganization {
+  '@type': 'Organization';
+  name: string;
+  logo?: SchemaOrgImageObject;
+  url?: string; // Added optional url for publisher/author
+}
+
+interface SchemaOrgPerson {
+  '@type': 'Person';
+  name: string;
+}
+
+interface SchemaOrgWebPage {
+  '@type': 'WebPage';
+  '@id': string;
+}
+
+interface SchemaOrgArticle {
+  '@context': 'https://schema.org';
+  '@type': 'Article';
+  headline: string;
+  description: string;
+  image?: string | string[]; // Allow string or array of strings for image
+  author: SchemaOrgPerson | SchemaOrgOrganization;
+  publisher: SchemaOrgOrganization;
+  datePublished: string;
+  dateModified: string;
+  mainEntityOfPage: SchemaOrgWebPage;
+  keywords?: string; // Added optional keywords
+}
+
+interface SchemaOrgQuestion {
+  '@type': 'Question';
+  name: string;
+  acceptedAnswer: {
+    '@type': 'Answer';
+    text: string;
+  };
+}
+
+interface SchemaOrgFAQPage {
+  '@context': 'https://schema.org';
+  '@type': 'FAQPage';
+  mainEntity: SchemaOrgQuestion[];
+}
 
 /**
  * API route for creating blog posts
@@ -96,7 +158,7 @@ export async function POST(request: NextRequest) {
 /**
  * Validate incoming blog post data
  */
-function validateBlogPostData(postData: any): boolean {
+function validateBlogPostData(postData: ManualPostData): boolean {
   // Ensure required fields are present
   if (!postData?.title || !postData?.metaDescription || !postData?.slug || !postData?.sections) {
     return false;
@@ -219,27 +281,28 @@ function convertSectionsToHTML(postData: BlogPostTemplateProps): string {
 /**
  * Generate structured data for SEO
  */
-function generateStructuredData(postData: BlogPostTemplateProps): any {
-  const articleSchema = {
+function generateStructuredData(postData: BlogPostTemplateProps): { article: SchemaOrgArticle; faq?: SchemaOrgFAQPage } {
+  const articleSchema: SchemaOrgArticle = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": postData.title,
     "description": postData.metaDescription,
-    "image": postData.featuredImageUrl,
+    "image": postData.featuredImageUrl || undefined,
     "author": {
-      "@type": "Person",
-      "name": postData.authorName
+      "@type": "Organization", // Assuming Organization for now
+      "name": postData.authorName || "AI Coloring Page Team"
     },
     "publisher": {
       "@type": "Organization",
       "name": "AI Coloring Page",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://ai-coloringpage.com/logo.png"
+        "url": "https://ai-coloringpage.com/logo.png" // Ensure this path is correct
       }
     },
     "datePublished": postData.publishDate,
     "dateModified": postData.modifiedDate || postData.publishDate,
+    "keywords": postData.tags?.join(', '), // Add keywords
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://ai-coloringpage.com/blog/${postData.slug}`
@@ -247,8 +310,9 @@ function generateStructuredData(postData: BlogPostTemplateProps): any {
   };
   
   // Add FAQ schema if FAQs exist
+  let faqSchema: SchemaOrgFAQPage | undefined = undefined;
   if (postData.faqs && postData.faqs.length > 0) {
-    const faqSchema = {
+    faqSchema = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": postData.faqs.map(faq => ({
@@ -260,15 +324,9 @@ function generateStructuredData(postData: BlogPostTemplateProps): any {
         }
       }))
     };
-    
-    // Return both schemas
-    return {
-      article: articleSchema,
-      faq: faqSchema
-    };
   }
   
-  return articleSchema;
+  return { article: articleSchema, faq: faqSchema };
 }
 
 /**
@@ -412,43 +470,41 @@ export async function PUT(request: NextRequest) {
 /**
  * Regenerate blog post content with improved SEO structure
  */
-async function regenerateBlogPost(existingPost: any) {
+async function regenerateBlogPost(existingPost: BlogPost) {
   try {
-    // Extract primary keyword from tags or title
-    const primaryKeyword = existingPost.seo_data?.primaryKeyword || 
-      (existingPost.tags && existingPost.tags.length > 0 ? existingPost.tags[0] : null) ||
-      extractKeywordFromTitle(existingPost.title);
+    // Extract primary keyword from the title or use a default
+    const keyword = extractKeywordFromTitle(existingPost.title);
     
     // Create a template-compatible post object
-    const templatePost: BlogPostTemplateProps = {
+    const postTemplateData: BlogPostTemplateProps = {
       title: existingPost.title,
-      metaDescription: existingPost.meta_description,
-      slug: existingPost.slug,
-      primaryKeyword,
-      secondaryKeywords: existingPost.seo_data?.keywords || existingPost.tags || [],
-      featuredImageUrl: existingPost.featured_image_url,
-      featuredImageAlt: `${existingPost.title} - AI Coloring Page`,
-      authorName: 'AI Coloring Page Team',
-      publishDate: existingPost.created_at,
+      authorName: "AI Coloring Page Team",
+      publishDate: existingPost.created_at || new Date().toISOString(),
       modifiedDate: new Date().toISOString(),
-      category: (existingPost.tags && existingPost.tags.length > 0) ? existingPost.tags[0] : 'Coloring Techniques',
+      metaDescription: existingPost.meta_description ?? '',
+      slug: existingPost.slug,
+      primaryKeyword: keyword,
+      secondaryKeywords: existingPost.seo_data?.keywords || existingPost.tags || [],
+      featuredImageUrl: existingPost.featured_image_url ?? '',
+      featuredImageAlt: `${existingPost.title} - AI Coloring Page`,
       tags: existingPost.tags || [],
+      category: (existingPost.tags && existingPost.tags.length > 0) ? existingPost.tags[0] : 'Coloring Techniques',
       coloringPageExamples: [],
-      sections: extractSectionsFromContent(existingPost.content, primaryKeyword),
-      faqs: generateFAQsForKeyword(primaryKeyword),
-      conclusion: `<p>We hope you enjoyed this article about ${primaryKeyword}. Remember that coloring is not just a fun activity, but also a great way to relieve stress and express creativity. Regular practice can improve focus, patience, and artistic skills for both children and adults.</p>`,
-      callToAction: `<p>Ready to try your hand at coloring? Use our AI Coloring Page Generator to create custom ${primaryKeyword} that match your interests! With just a few clicks, you can generate unique designs perfectly suited to your preferences.</p>`,
+      sections: extractSectionsFromContent(existingPost.content, keyword),
+      faqs: generateFAQsForKeyword(keyword),
+      conclusion: `<p>We hope you enjoyed this article about ${keyword}. Remember that coloring is not just a fun activity, but also a great way to relieve stress and express creativity. Regular practice can improve focus, patience, and artistic skills for both children and adults.</p>`,
+      callToAction: `<p>Ready to try your hand at coloring? Use our AI Coloring Page Generator to create custom ${keyword} that match your interests! With just a few clicks, you can generate unique designs perfectly suited to your preferences.</p>`,
       relatedPosts: []
     };
     
     // Convert the template to database format
     return {
-      content: convertSectionsToHTML(templatePost),
-      meta_description: templatePost.metaDescription,
+      content: convertSectionsToHTML(postTemplateData),
+      meta_description: postTemplateData.metaDescription,
       seo_data: {
-        primaryKeyword: templatePost.primaryKeyword,
-        keywords: templatePost.secondaryKeywords,
-        structuredData: generateStructuredData(templatePost)
+        primaryKeyword: postTemplateData.primaryKeyword,
+        keywords: postTemplateData.secondaryKeywords,
+        structuredData: generateStructuredData(postTemplateData)
       }
     };
   } catch (error) {
@@ -481,58 +537,43 @@ function extractKeywordFromTitle(title: string): string {
 }
 
 /**
- * Extract sections from existing content
+ * Extract sections from HTML content based on H2 headings
  */
 function extractSectionsFromContent(content: string, primaryKeyword: string): Array<{heading: string, content: string}> {
-  if (!content) {
+  const sections: Array<{heading: string, content: string}> = [];
+  
+  // If content is empty or not a string, return default sections
+  if (!content || typeof content !== 'string') {
+    console.warn('No valid content found, generating default sections.');
     return generateDefaultSections(primaryKeyword);
   }
+  
+  // Split content by H2 tags
+  // The regex captures the H2 tag and the content following it until the next H2 or end of string
+  const sectionRegex = /<h2.*?>(.*?)<\/h2>([\s\S]*?)(?=<h2|$)/gi;
+  const h2Matches = [...content.matchAll(sectionRegex)]; // Use const
 
-  // Try to extract sections based on h2 tags
-  const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
-  let h2Matches = [];
-  let match;
-  
-  // Find all h2 headings
-  while ((match = h2Regex.exec(content)) !== null) {
-    h2Matches.push({
-      fullMatch: match[0],
-      headingText: match[1],
-      index: match.index
-    });
-  }
-  
-  if (h2Matches && h2Matches.length > 0) {
-    // Get content between h2 tags
-    const sections = [];
-    for (let i = 0; i < h2Matches.length; i++) {
-      const heading = h2Matches[i].headingText.replace(/<[^>]*>/g, ''); // Remove any HTML tags inside the heading
-      let sectionContent;
+  if (h2Matches.length > 0) {
+    h2Matches.forEach((match, index) => {
+      const heading = match[1].trim();
+      let sectionContent = match[2].trim();
       
-      if (i < h2Matches.length - 1) {
-        // Get content between this h2 and the next
-        const startIdx = h2Matches[i].index + h2Matches[i].fullMatch.length;
-        const endIdx = h2Matches[i+1].index;
-        sectionContent = content.substring(startIdx, endIdx);
-      } else {
-        // Get content after the last h2
-        const startIdx = h2Matches[i].index + h2Matches[i].fullMatch.length;
-        sectionContent = content.substring(startIdx);
+      // Clean up potential nested h2 tags if regex was too greedy
+      // This is a basic cleanup, might need refinement
+      const nextH2Index = sectionContent.search(/<h2/i);
+      if (nextH2Index > -1) {
+        sectionContent = sectionContent.substring(0, nextH2Index).trim();
       }
       
-      sections.push({
-        heading,
-        content: sectionContent
-      });
-    }
-    return sections;
+      sections.push({ heading, content: sectionContent });
+    });
   } else {
-    // If no h2 tags, create a single section with the content
-    return [{
-      heading: 'About ' + primaryKeyword,
-      content: content
-    }];
+    // If no H2 tags found, treat the entire content as one section or generate defaults
+    console.warn('No H2 tags found in content, generating default sections.');
+    return generateDefaultSections(primaryKeyword); // Fallback to defaults
   }
+  
+  return sections;
 }
 
 /**

@@ -46,12 +46,12 @@ export async function POST(request: NextRequest) {
       wordCount: result.content.split(/\s+/).length,
       content: result.content
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error testing blog post generation:', error);
     return NextResponse.json(
       { 
-        error: error.message || 'Unknown error',
-        stack: error.stack
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

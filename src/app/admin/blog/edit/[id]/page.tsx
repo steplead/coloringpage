@@ -4,17 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { createSlug } from '@/utils/string';
-
-interface BlogPost {
-  id: string;
-  slug: string;
-  title: string;
-  content: string;
-  meta_description: string;
-  featured_image_url?: string;
-  tags: string[];
-  is_published: boolean;
-}
+import Image from 'next/image';
 
 export default function EditBlogPost({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -58,9 +48,9 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
           tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
           is_published: data.is_published
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching blog post:', err);
-        setError(`Failed to load blog post: ${err.message}`);
+        setError(`Failed to load blog post: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setIsLoading(false);
       }
@@ -119,9 +109,9 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
 
       setMessage('Blog post updated successfully!');
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating blog post:', err);
-      setError(`Failed to update blog post: ${err.message}`);
+      setError(`Failed to update blog post: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }
@@ -231,10 +221,12 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
             />
             {formData.featured_image_url && (
               <div className="mt-2">
-                <img 
+                <Image 
                   src={formData.featured_image_url} 
                   alt="Featured image preview" 
-                  className="h-32 w-auto object-cover rounded-md"
+                  width={128}
+                  height={128}
+                  className="object-cover rounded-md"
                 />
               </div>
             )}

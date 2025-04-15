@@ -28,15 +28,17 @@ const translations: Record<string, string> = {
 /**
  * 创建防抖函数
  */
-function debounce(func: Function, wait: number, immediate: boolean = false) {
+function debounce<T extends unknown[]>(
+  func: (...args: T) => void, 
+  wait: number, 
+  immediate: boolean = false
+) {
   let timeout: NodeJS.Timeout | null = null;
   
-  return function(this: any, ...args: any[]) {
-    const context = this;
-    
-    const later = function() {
+  return function(this: any, ...args: T) {
+    const later = function(this: any) {
       timeout = null;
-      if (!immediate) func.apply(context, args);
+      if (!immediate) func.apply(this, args);
     };
     
     const callNow = immediate && !timeout;
@@ -48,7 +50,7 @@ function debounce(func: Function, wait: number, immediate: boolean = false) {
     timeout = setTimeout(later, wait);
     
     if (callNow) {
-      func.apply(context, args);
+      func.apply(this, args);
     }
   };
 }
@@ -90,7 +92,7 @@ export default function FixTranslationsV4() {
       // 处理步骤容器
       const stepContainers = howItWorksSection.querySelectorAll('div > div');
       
-      stepContainers.forEach((container, index) => {
+      stepContainers.forEach((container) => {
         const title = container.querySelector('h3');
         const description = container.querySelector('p');
         
@@ -145,7 +147,7 @@ export default function FixTranslationsV4() {
     const originalSetInterval = window.setInterval;
     
     // 重新实现setTimeout，添加翻译修复功能
-    const newSetTimeout = function(handler: TimerHandler, timeout?: number, ...args: any[]): number {
+    const newSetTimeout = function(handler: TimerHandler, timeout?: number, ...args: unknown[]): number {
       const wrappedCallback = function(this: unknown) {
         // 执行原始回调
         if (typeof handler === 'function') {
@@ -162,7 +164,7 @@ export default function FixTranslationsV4() {
     };
     
     // 重新实现setInterval，添加翻译修复功能
-    const newSetInterval = function(handler: TimerHandler, timeout?: number, ...args: any[]): number {
+    const newSetInterval = function(handler: TimerHandler, timeout?: number, ...args: unknown[]): number {
       const wrappedCallback = function(this: unknown) {
         // 执行原始回调
         if (typeof handler === 'function') {
@@ -193,15 +195,15 @@ export default function FixTranslationsV4() {
     window.setInterval = newSetInterval as typeof window.setInterval;
     
     // 建立定时检查
-    intervalRef.current = setInterval(() => {
-      fixTranslations();
-    }, 2000);
+//    intervalRef.current = setInterval(() => {
+//      fixTranslations();
+//    }, 2000);
     
     // 添加全局访问点
     window._fixTranslationsV4 = fixTranslations;
     
     // 监听DOM变化
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver((_mutations) => {
       debouncedFixTranslations();
     });
     
@@ -232,7 +234,7 @@ export default function FixTranslationsV4() {
       
       console.log(`${LOG_PREFIX} 组件已卸载，清理完成`);
     };
-  }, []);
+  }, [debouncedFixTranslations]);
   
   // 这个组件不渲染任何可见内容
   return null;

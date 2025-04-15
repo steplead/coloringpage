@@ -117,7 +117,7 @@ async function findRelatedImage(keywords: string[]) {
  * GET handler for scheduled blog post generation
  * This endpoint is designed to be called by a cron job service like Vercel Cron
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   const config = getConfig();
   const topics = getRandomTopics(config.postCount);
   let successCount = 0;
@@ -201,9 +201,9 @@ export async function GET(request: NextRequest) {
           results.push({ topic, success: true, slug });
           console.log(`Successfully created blog post: ${title} (${slug})`);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(`Error generating blog post for topic "${topic}":`, err);
-        results.push({ topic, success: false, error: err.message });
+        results.push({ topic, success: false, error: err instanceof Error ? err.message : 'Unknown error generating post' });
       }
     }
     
@@ -214,11 +214,11 @@ export async function GET(request: NextRequest) {
       results,
       config
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in cron job:', error);
     return NextResponse.json({ 
       success: false, 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown cron job error',
       generated: successCount,
       config 
     }, { status: 500 });

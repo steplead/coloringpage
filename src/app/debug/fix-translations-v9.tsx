@@ -104,7 +104,7 @@ const translations: Record<string, string> = {
 export default function FixTranslationsV9() {
   const isProcessingRef = useRef(false);
   const fixCountRef = useRef(0);
-  const originalSetTextContentRef = useRef<any>(null);
+  const originalSetTextContentRef = useRef<((this: Node, value: string | null) => void) | null>(null);
   
   useEffect(() => {
     console.log('[FixV9] 初始化React渲染拦截器');
@@ -114,7 +114,7 @@ export default function FixTranslationsV9() {
       try {
         // 保存原始方法
         if (!originalSetTextContentRef.current) {
-          // @ts-ignore
+          // @ts-expect-error // Expect error if property doesn't exist or isn't configurable
           originalSetTextContentRef.current = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').set;
         }
         
@@ -131,7 +131,7 @@ export default function FixTranslationsV9() {
               isProcessingRef.current = true;
               
               // 调用原始方法但使用翻译的文本
-              // @ts-ignore
+              // @ts-expect-error // Expect error due to potential null ref and signature mismatch
               originalSetTextContentRef.current.call(this, translations[trimmedValue]);
               
               // 重置处理标志
@@ -145,16 +145,16 @@ export default function FixTranslationsV9() {
           }
           
           // 对于不需要翻译的文本，使用原始方法
-          // @ts-ignore
-          originalSetTextContentRef.current.call(this, value);
+          if (originalSetTextContentRef.current) {
+            originalSetTextContentRef.current.call(this, value);
+          }
         };
         
         // 替换原始方法
         Object.defineProperty(Node.prototype, 'textContent', {
           set: newSetter,
           // 保持getter不变
-          // @ts-ignore
-          get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').get,
+          get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.get,
           configurable: true
         });
         
@@ -276,7 +276,7 @@ export default function FixTranslationsV9() {
               Object.defineProperty(Node.prototype, 'textContent', {
                 set: originalSetTextContentRef.current,
                 // @ts-ignore
-                get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').get,
+                get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.get,
                 configurable: true
               });
             } catch (e) {

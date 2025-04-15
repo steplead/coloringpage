@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface ImageDetailsForCleaning {
+  title?: string;
+  image_url?: string;
+  caption?: string;
+}
+
 // Add function to validate blog content and filter out generic patterns
-function validateAndCleanContent(content: string, imageDetails: any): string {
+function validateAndCleanContent(content: string, imageDetails: ImageDetailsForCleaning): string {
   // Patterns to detect and remove (with whole sentences/paragraphs)
   const bannedPatterns = [
     /<p>\s*Welcome to our guide on coloring pages[^<]*<\/p>/gi,
@@ -51,14 +57,14 @@ function validateAndCleanContent(content: string, imageDetails: any): string {
   console.log(`Content specificity score: ${contentSpecificity}/${requiredImageSpecificContent.length}`);
   
   // Add image-specific opener if missing
-  if (!cleanedContent.includes(imageDetails.title) && !cleanedContent.match(/<h1|<h2/i)) {
-    cleanedContent = `<h1>Detailed Guide to the ${imageDetails.title} Coloring Page</h1>\n${cleanedContent}`;
+  if (imageDetails.title && !cleanedContent.includes(imageDetails.title) && !cleanedContent.match(/<h1|<h2/i)) {
+    cleanedContent = `<h1>Detailed Guide to the ${imageDetails.title || 'Coloring Page'}</h1>\n${cleanedContent}`;
   }
   
   // Ensure the content starts with image-specific description
   if (!cleanedContent.match(/<figure|<img/i)) {
     cleanedContent = `<figure class="featured-image">
-      <img src="${imageDetails.image_url}" alt="${imageDetails.title || 'Coloring page'}" className="w-full h-auto rounded-lg" />
+      <img src="${imageDetails.image_url || ''}" alt="${imageDetails.title || 'Coloring page'}" class="w-full h-auto rounded-lg" />
       <figcaption>${imageDetails.caption || imageDetails.title || 'Detailed coloring page'}</figcaption>
     </figure>\n${cleanedContent}`;
   }

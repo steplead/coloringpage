@@ -129,12 +129,12 @@ export async function POST(request: NextRequest) {
       text: generatedText
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generating text with Gemini:', error);
     return NextResponse.json(
       { 
         error: 'Failed to generate text', 
-        details: error.message || 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

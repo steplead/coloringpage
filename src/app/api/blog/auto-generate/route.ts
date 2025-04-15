@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateBlogPost, cleanContent } from '@/lib/gemini';
-import { supabase } from '@/lib/supabase';
+import { generateBlogPost } from '@/lib/gemini';
+import { supabase, ImageRecord } from '@/lib/supabase';
 import { createSlug } from '@/utils/string';
 import { BlogPost } from '../route';
 import { analyzeContent, calculateSeoScore, ContentAnalysisResult } from '@/lib/blog/contentAnalyzer';
-import { ensureCompleteImageMetadata, ensureBlogImagesHaveMetadata } from '@/lib/seo';
+import { ensureCompleteImageMetadata } from '@/lib/seo';
 
 // Define settings table name
 const SETTINGS_TABLE = 'app_settings';
@@ -35,64 +35,6 @@ interface ExtendedBlogPost extends BlogPost {
   is_cornerstone?: boolean;
   schema_markup?: string; // Added schema_markup field for structured data
 }
-
-// Topics related to coloring pages for auto-generation
-const COLORING_TOPICS = [
-  'animal',
-  'dinosaur',
-  'princess',
-  'superhero',
-  'space',
-  'ocean',
-  'holiday',
-  'seasons',
-  'educational',
-  'fantasy',
-  'vehicles',
-  'nature',
-  'sports',
-  'flowers',
-  'architecture',
-  'cartoon characters',
-  'mandala',
-  'geometric patterns',
-  // Adding more diverse and specific topics
-  'science experiments',
-  'historical figures',
-  'endangered species',
-  'world landmarks',
-  'musical instruments',
-  'mythological creatures',
-  'cultural traditions',
-  'weather phenomena',
-  'insects and bugs',
-  'marine life',
-  'habitats',
-  'solar system',
-  'emotions and feelings',
-  'famous artists',
-  'transportation methods',
-  'careers and professions'
-];
-
-// Topic variants to increase uniqueness of content
-const TOPIC_MODIFIERS = [
-  'beginner',
-  'advanced',
-  'educational',
-  'fun',
-  'interactive',
-  'themed',
-  'seasonal',
-  'creative',
-  'detailed',
-  'simple',
-  'realistic',
-  'cartoon-style',
-  'printable',
-  'step-by-step',
-  'family-friendly'
-];
 
 /**
  * Get gallery images that haven't been used in blog posts yet
@@ -156,25 +98,27 @@ export async function POST(request: NextRequest) {
                 autoBlogEnabled: settingsData.auto_blog_enabled ?? true
             };
         }
-    } catch (dbError: any) {
-        console.error('Error fetching settings for auto-generate:', dbError.message);
+    } catch (dbError: unknown) {
+        console.error('Error fetching settings for auto-generate:', dbError instanceof Error ? dbError.message : dbError);
         // Proceed with default settings if DB fetch fails, but log the error
     }
-
-    if (!settings.autoBlogEnabled) {
-        console.log('Auto-posting is disabled in settings. Skipping generation.');
-        return NextResponse.json({ success: true, message: 'Auto-posting is disabled.', generated: 0, failed: 0, results: [] });
-    }
-    // --- End Check --- 
 
     // Use post count from settings
     const count = settings.postCount;
     
     // Parse request body for targetLength (optional, might be passed manually)
-    const requestData = await request.json().catch(() => ({}));
+    let requestData = {};
+    try {
+        requestData = await request.json();
+    } catch (parseError: unknown) {
+        console.warn('Could not parse request body for targetLength:', parseError instanceof Error ? parseError.message : parseError);
+        // Proceed with empty object if parsing fails
+    }
+
     const {
-      targetLength = 1500 // Default length if not passed in body
-    } = requestData;
+      targetLength = 1500, // Default length if not passed in body
+      // Add any other expected properties from requestData here with defaults
+    } = requestData as { targetLength?: number /* Add other properties */ };
 
     console.log(`Auto-generating ${count} blog posts (enabled)... Triggered by ${cronSecret ? 'Cron Job' : 'Manual Request'}`);
 
@@ -190,7 +134,7 @@ export async function POST(request: NextRequest) {
       const unusedImages = await getUnusedGalleryImages(count * 2);
       console.log(`Found ${unusedImages.length} unused gallery images.`);
       
-      let imagesToProcess: any[] = [];
+      let imagesToProcess: ImageRecord[] = [];
 
       if (unusedImages.length >= count) {
         imagesToProcess = unusedImages.slice(0, count);
@@ -242,23 +186,23 @@ export async function POST(request: NextRequest) {
       // Consider a separate cron job for this task if needed.
       // await ensureBlogImagesHaveMetadata(); 
 
-      return NextResponse.json({
-        success: true,
-        generated: results.filter(r => r.success).length,
-        failed: results.filter(r => !r.success).length,
-        results
-      });
-    } catch (error: any) {
-      console.error('Error during blog generation process:', error);
+    return NextResponse.json({
+      success: true,
+      generated: results.filter(r => r.success).length,
+      failed: results.filter(r => !r.success).length,
+      results
+    });
+    } catch (error: unknown) {
+      console.error('Error during blog generation process:', error instanceof Error ? error.message : error);
       return NextResponse.json(
-        { error: 'Failed to auto-generate blog posts', details: error.message || 'Unknown error' },
+        { error: 'Failed to auto-generate blog posts', details: error instanceof Error ? error.message : 'Unknown error' },
         { status: 500 }
       );
     }
-  } catch (error: any) {
-    console.error('Error parsing request or initial setup:', error);
+  } catch (error: unknown) {
+    console.error('Error parsing request or initial setup:', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      { error: 'Failed to process request', details: error.message || 'Unknown error' },
+      { error: 'Failed to process request', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 400 }
     );
   }
@@ -268,7 +212,7 @@ export async function POST(request: NextRequest) {
  * Process a set of gallery images to generate blog posts
  */
 async function processGalleryImages(
-  images: any[], 
+  images: ImageRecord[], 
   results: { image: { id: string, title: string } | null; success: boolean; slug?: string; error?: string }[],
   targetLength: number = 1500
 ) {
@@ -287,7 +231,17 @@ async function processGalleryImages(
     }
     processedImageIds.add(image.id);
 
-    const imageIdentifier = { id: image.id, title: image.title || 'Untitled' };
+    // Map ImageRecord to the structure expected by generateBlogPost
+    const imageDetailsForGemini = image ? { 
+      id: image.id,
+      imageUrl: image.image_url, // Use image_url from ImageRecord
+      title: image.title || 'Untitled Coloring Page',
+      description: image.seo_description || image.prompt || 'A detailed coloring page.', // Prioritize seo_description
+      keywords: image.keywords || [],
+      prompt: image.prompt || ''
+    } : undefined;
+
+    const imageIdentifier = { id: image.id, title: image.title || '(Untitled)' };
     let success = false;
     let slug = '';
     let errorMsg = '';
@@ -317,18 +271,14 @@ async function processGalleryImages(
       const topic = getTopic(enhancedImage);
       console.log(`Generating blog post for image "${enhancedImage.title}" with topic: ${topic}`);
       
-      const imageDetails = {
-        id: enhancedImage.id,
-        imageUrl: enhancedImage.image_url,
-        title: enhancedImage.title || topic,
-        description: enhancedImage.seo_description || enhancedImage.caption || `A ${topic} coloring page`,
-        keywords: enhancedImage.keywords || [topic, 'coloring page', 'printable'],
-        prompt: enhancedImage.prompt || topic,
-      };
+      const generated = await generateBlogPost(topic, targetLength, imageDetailsForGemini);
       
-      const generated = await generateBlogPost(topic, targetLength, imageDetails);
-      let cleanedContent = validateAndCleanContent(generated.content, imageDetails);
-      
+      // Only clean based on image details if they exist
+      let cleanedContent = generated.content;
+      if (imageDetailsForGemini) {
+        cleanedContent = validateAndCleanContent(cleanedContent, imageDetailsForGemini);
+      }
+
       if (!cleanedContent || cleanedContent.length < 300) {
          throw new Error('Generated content too short or invalid after cleaning.');
       }
@@ -352,7 +302,7 @@ async function processGalleryImages(
         description: generated.description,
         image: enhancedImage, // Pass the full enhanced image object
         slug: slug,
-        tags: imageDetails.keywords,
+        tags: imageDetailsForGemini?.keywords || [topic, 'coloring page', 'printable'],
         datePublished: new Date().toISOString(),
         dateModified: new Date().toISOString(),
       });
@@ -362,14 +312,14 @@ async function processGalleryImages(
         title: generated.title,
         content: cleanedContent,
         meta_description: generated.description,
-        tags: imageDetails.keywords,
-        featured_image_url: imageDetails.imageUrl,
-        related_coloring_page_id: imageDetails.id,
+        tags: imageDetailsForGemini?.keywords || [topic, 'coloring page', 'printable'],
+        featured_image_url: imageDetailsForGemini?.imageUrl,
+        related_coloring_page_id: imageDetailsForGemini?.id,
         is_published: true,
         created_at: new Date().toISOString(),
         seo_data: {
           primaryKeyword: topic,
-          keywords: imageDetails.keywords,
+          keywords: imageDetailsForGemini?.keywords || [topic, 'coloring page', 'printable'],
           focusKeyphrase: topic,
           cornerstoneContent: false,
           readabilityScore: analysis.readabilityScore,
@@ -401,10 +351,13 @@ async function processGalleryImages(
 
       console.log(`Successfully generated and inserted blog post: ${slug}`);
       success = true;
-    } catch (err: any) {
-      console.error(`Error generating blog post for image ${imageIdentifier.id} ("${imageIdentifier.title}"):`, err);
-      errorMsg = err.message || 'Unknown error during generation';
-      success = false;
+    } catch (error: unknown) {
+      console.error(`Failed to generate blog post for image ${image.id}:`, error instanceof Error ? error.message : error);
+      results.push({ 
+        image: imageIdentifier, 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown processing error' 
+      });
     }
 
     results.push({ image: imageIdentifier, success, slug: success ? slug : undefined, error: !success ? errorMsg : undefined });
@@ -414,7 +367,7 @@ async function processGalleryImages(
 /**
  * Extract a topic from image metadata
  */
-function getTopic(image: any): string {
+function getTopic(image: ImageRecord): string {
   // First check for keywords
   if (image.keywords && Array.isArray(image.keywords) && image.keywords.length > 0) {
     // Use the first keyword as the topic if it's not too generic
@@ -455,40 +408,12 @@ function getTopic(image: any): string {
 }
 
 /**
- * Insert an image at the top of the content
- */
-function insertImageAtTop(content: string, image: any): string {
-  // Create the image HTML
-  const imageHtml = `
-<figure class="featured-image mb-8">
-  <img src="${image.imageUrl}" alt="${image.description || image.title || 'Coloring page'}" class="w-full h-auto rounded-lg shadow-md" />
-  <figcaption class="text-center text-gray-600 mt-2">${image.title || 'Printable coloring page'}</figcaption>
-</figure>
-  `;
-  
-  // If content already has a figure or image tag near the top, replace it
-  if (content.substring(0, 300).includes('<figure') || content.substring(0, 300).includes('<img')) {
-    // Replace the first figure or img tag section
-    return content.replace(/<figure[\s\S]*?<\/figure>|<img[\s\S]*?\/>/, imageHtml);
-  }
-  
-  // If content starts with an h1 tag, insert after that
-  if (content.substring(0, 100).includes('<h1')) {
-    const h1EndIndex = content.indexOf('</h1>') + 5;
-    return content.substring(0, h1EndIndex) + '\n' + imageHtml + '\n' + content.substring(h1EndIndex);
-  }
-  
-  // Otherwise, just prepend the image to the content
-  return imageHtml + '\n' + content;
-}
-
-/**
  * Generate schema markup for SEO
  */
 function generateSchemaMarkup(data: {
   title: string;
   description: string;
-  image: any; // Should be the full image object with image_url etc.
+  image: ImageRecord;
   slug: string;
   tags: string[];
   datePublished: string;
@@ -552,151 +477,70 @@ function generateSchemaMarkup(data: {
 }
 
 /**
- * Count keyword matches in an image (Used for potential future relevance scoring)
+ * Define the expected structure for image details within this module
  */
-function countKeywordMatches(image: any, keywords: string[]): number {
-  let count = 0;
-  
-  // Check image keywords
-  if (image.keywords && Array.isArray(image.keywords)) {
-    for (const keyword of keywords) {
-      count += image.keywords.filter((k: string) => 
-        k && k.toLowerCase().includes(keyword.toLowerCase())
-      ).length;
-    }
-  }
-  
-  // Check image title
-  if (image.title) {
-    for (const keyword of keywords) {
-      if (image.title.toLowerCase().includes(keyword.toLowerCase())) {
-        count++;
-      }
-    }
-  }
-  
-  // Check image prompt
-  if (image.prompt) {
-    for (const keyword of keywords) {
-      if (image.prompt.toLowerCase().includes(keyword.toLowerCase())) {
-        count++;
-      }
-    }
-  }
-  
-  return count;
-}
-
-/**
- * Helper function to generate tags from topic and title
- */
-function generateTags(topic: string, title: string, relatedImages: any[] = []): string[] {
-  // Base tags for coloring pages
-  const baseTags = ['coloring pages', 'printable', 'activities'];
-  
-  // Add topic as tag
-  const topicWords = topic.toLowerCase().split(' ');
-  
-  const tags = new Set<string>([
-    ...baseTags, 
-    ...topicWords, 
-    topic.toLowerCase()
-  ]);
-  
-  // Extract potential keywords from title
-  const titleWords = title.toLowerCase()
-    .replace(/[^\w\s]/g, '') // Remove punctuation
-    .split(/\s+/) // Split by whitespace
-    .filter(word => word.length > 3) // Only include words longer than 3 chars
-    .filter(word => !baseTags.includes(word)) // Exclude words already in base tags
-    .slice(0, 5); // Limit to 5 additional keywords
-  
-  // Add filtered title words to tags
-  titleWords.forEach(word => tags.add(word));
-  
-  // Add keywords from related images
-  if (relatedImages && relatedImages.length > 0) {
-    relatedImages.forEach(image => {
-      if (image.keywords && Array.isArray(image.keywords)) {
-        image.keywords
-          .filter((k: string) => k && k.length > 3)
-          .forEach((k: string) => tags.add(k.toLowerCase()));
-      }
-    });
-  }
-  
-  return Array.from(tags);
-}
-
-// Generate a simple hash for content when our analyzer fails
-function generateSimpleHash(content: string): string {
-  let hash = 0;
-  const sample = content.substring(0, 1000);
-  for (let i = 0; i < sample.length; i++) {
-    const char = sample.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return hash.toString(16);
+interface BlogGenImageDetails {
+  imageUrl: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  prompt: string;
+  id: string;
 }
 
 /**
  * Validate and clean blog content to remove generic patterns
+ * Uses the BlogGenImageDetails structure consistent with generateBlogPost
  */
-function validateAndCleanContent(content: string, imageDetails: any): string {
-  if (!content || typeof content !== 'string') {
-    console.log('Invalid content detected, returning empty string');
-    return '';
+function validateAndCleanContent(content: string, imageDetails: BlogGenImageDetails): string {
+  let cleaned = content;
+
+  // Define patterns to remove (case-insensitive)
+  const genericPatterns = [
+    /^\s*Welcome to our guide on.*?\n/gim,
+    /^\s*In this article, we explore.*?\n/gim,
+    // Use imageDetails.title safely
+    new RegExp(`(?:About|Learn more about)\s*${escapeRegex(imageDetails.title || '')}`, 'gim'),
+    /Discover the benefits of coloring.*?\n/gim,
+    /Frequently Asked Questions.*?(\n|$)/gim,
+    /FAQ.*?(\n|$)/gim,
+    /Testimonial:.*?\n/gim,
+    /"I love these pages!" -.*?\n/gim,
+    /Visit our website.*?\n/gim,
+    /Check out our collection.*?\n/gim,
+    // Added pattern to catch variations of introduction
+    /^\s*Explore the world of.*?coloring pages.*?\n/gim,
+    /^\s*Get ready to unleash your creativity.*?\n/gim,
+    // Added pattern for generic call-to-actions
+    /Download your free printable.*?now!*?\n/gim,
+    /Start coloring today!*?\n/gim,
+    // Add more specific patterns based on observed generic content
+  ];
+
+  genericPatterns.forEach(pattern => {
+    cleaned = cleaned.replace(pattern, '');
+  });
+
+  // Remove redundant mentions of the title if they seem generic
+  // (Example: "Let's talk about Mountain Landscape Coloring Page")
+  // Use title safely
+  const redundantTitlePattern = new RegExp(`(?:Let's talk about|Learn about|Discover|Explore)\s*${escapeRegex(imageDetails.title || '')}`, 'gim');
+  cleaned = cleaned.replace(redundantTitlePattern, imageDetails.title || ''); // Replace with just the title potentially
+
+  // Trim whitespace
+  cleaned = cleaned.trim();
+
+  // Ensure content didn't become empty
+  if (!cleaned) {
+    console.warn('Content became empty after cleaning, returning original short version.');
+    // Return a snippet of original content if cleaning failed badly
+    return content.substring(0, 300) + '...';
   }
 
-  // Use the comprehensive cleaning function from gemini.ts
-  let cleanedContent = cleanContent(content); // Assume cleanContent is imported
-  
-  // Check for the presence of image-specific content
-  const requiredImageSpecificContent = [
-    `${imageDetails.title}`,
-    `specific`,
-    `unique`,
-    `this image`,
-    `this design`,
-    `this coloring page`
-  ];
-  
-  // Count how many required elements are present
-  const contentSpecificity = requiredImageSpecificContent.filter(phrase => 
-    cleanedContent.toLowerCase().includes(phrase.toLowerCase())
-  ).length;
-  
-  // Add a log about the content quality
-  console.log(`Content specificity score: ${contentSpecificity}/${requiredImageSpecificContent.length}`);
-  
-  // Ensure the image is at the top
-  cleanedContent = insertImageAtTop(cleanedContent, imageDetails);
-  
-  // Final check for extremely generic patterns (should have been caught by cleanContent)
-  const genericPatterns = [
-    'Welcome to our guide',
-    'This article will provide you with',
-    'coloring pages feature distinctive patterns',
-    'designed with careful attention to detail and accessibility',
-    'educational purposes and creative expression',
-    'About coloring pages',
-    'specialized designs',
-    'distinctive patterns'
-  ];
-  
-  // Log if any generic patterns are still found
-  const foundPatterns = genericPatterns.filter(pattern => 
-    cleanedContent.includes(pattern)
-  );
-  
-  if (foundPatterns.length > 0) {
-    console.warn('Found generic patterns after final cleaning:', foundPatterns);
-    // Apply more aggressive removal again just in case
-    foundPatterns.forEach(pattern => {
-      cleanedContent = cleanedContent.replace(new RegExp(pattern, 'gi'), '');
-    });
-  }
-  
-  return cleanedContent.trim();
+  return cleaned;
+}
+
+// Helper to escape regex special characters
+function escapeRegex(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 } 

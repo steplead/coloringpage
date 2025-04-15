@@ -21,6 +21,13 @@ export interface BlogPost {
     content: string;
     description: string;
   }>;
+  seo_data?: {
+    keywords?: string[];
+    primaryKeyword?: string;
+    canonicalUrl?: string;
+    structuredData?: any; // Keep any for structure flexibility
+    faqSchema?: any[]; // Keep any for structure flexibility
+  };
 }
 
 /**
@@ -106,8 +113,8 @@ export async function POST(request: NextRequest) {
       blog_post: blogPost
     });
 
-  } catch (error) {
-    console.error('Error in blog post generation API:', error);
+  } catch (error: unknown) {
+    console.error('Error in blog post generation API:', error instanceof Error ? error.message : error);
     return NextResponse.json(
       { error: 'Failed to generate blog post' },
       { status: 500 }

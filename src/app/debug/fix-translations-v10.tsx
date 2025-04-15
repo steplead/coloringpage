@@ -137,15 +137,11 @@ const specificFixRules = [
   }
 ];
 
-// 强制修复类型的定义
-type FixFunction = () => number;
-type TranslationSetter = (el: Element, text: string) => void;
-
 export default function FixTranslationsV10() {
   const isProcessingRef = useRef(false);
   const fixCountRef = useRef(0);
   const fixCountTotalRef = useRef(0);
-  const originalNodeTextContentSetterRef = useRef<any>(null);
+  const originalNodeTextContentSetterRef = useRef<((this: Node, value: string | null) => void) | null>(null);
   const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
@@ -183,24 +179,30 @@ export default function FixTranslationsV10() {
     // 直接修改DOM API的setter方法
     const patchDOMTextContentSetter = () => {
       try {
-        // 保存原始的setter方法以便清理
+        // 保存原始的setter方法以便清理，确保它是函数
         if (!originalNodeTextContentSetterRef.current) {
-          originalNodeTextContentSetterRef.current = Object.getOwnPropertyDescriptor(
-            Node.prototype, 'textContent'
-          )?.set;
+          const originalSetter = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')?.set;
+          if (typeof originalSetter === 'function') {
+            originalNodeTextContentSetterRef.current = originalSetter;
+          } else {
+            console.error('[FixV10] 无法获取 Node.prototype.textContent setter 函数');
+            originalNodeTextContentSetterRef.current = null; // 明确设置为null
+          }
         }
         
         // 如果无法获取原始方法，则退出
         if (!originalNodeTextContentSetterRef.current) {
-          console.error('[FixV10] 无法获取Node.prototype.textContent setter');
+          console.error('[FixV10] 未能成功获取原始 setter，无法修补');
           return;
         }
         
         // 创建自定义setter来拦截文本内容设置
         const customTextContentSetter = function(this: Node, value: string) {
           if (isProcessingRef.current || !value || typeof value !== 'string') {
-            // 使用原始setter设置值
-            originalNodeTextContentSetterRef.current.call(this, value);
+            // 使用原始setter设置值 (添加null检查)
+            if (originalNodeTextContentSetterRef.current) {
+              originalNodeTextContentSetterRef.current.call(this, value);
+            }
             return;
           }
           
@@ -209,12 +211,18 @@ export default function FixTranslationsV10() {
           if (translations[trimmed]) {
             // 记录找到翻译的情况
             console.log(`[FixV10] 拦截设置文本: "${trimmed}" => "${translations[trimmed]}"`);
-            originalNodeTextContentSetterRef.current.call(this, translations[trimmed]);
+            // 使用原始setter设置值 (添加null检查)
+            if (originalNodeTextContentSetterRef.current) {
+              originalNodeTextContentSetterRef.current.call(this, translations[trimmed]);
+            }
             fixCountRef.current++;
             fixCountTotalRef.current++;
           } else {
             // 常规文本不需要翻译
-            originalNodeTextContentSetterRef.current.call(this, value);
+            // 使用原始setter设置值 (添加null检查)
+            if (originalNodeTextContentSetterRef.current) {
+              originalNodeTextContentSetterRef.current.call(this, value);
+            }
           }
         };
         
