@@ -117,7 +117,7 @@ async function findRelatedImage(keywords: string[]) {
  * GET handler for scheduled blog post generation
  * This endpoint is designed to be called by a cron job service like Vercel Cron
  */
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const config = getConfig();
   const topics = getRandomTopics(config.postCount);
   let successCount = 0;

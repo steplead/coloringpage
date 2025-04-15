@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
  * Test endpoint to generate a blog post with enhanced content cleaning
  * This helps verify our improvements to the content generation process
  */
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     // Get a sample image to use for the test
     const { data: images } = await supabase

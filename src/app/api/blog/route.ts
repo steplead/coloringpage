@@ -25,7 +25,9 @@ export interface BlogPost {
     keywords?: string[];
     primaryKeyword?: string;
     canonicalUrl?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     structuredData?: any; // Keep any for structure flexibility
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     faqSchema?: any[]; // Keep any for structure flexibility
   };
 }

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * Direct test endpoint for Gemini API
  * Bypasses all other code to test the API directly
  */
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const API_KEY = process.env.GEMINI_API_KEY;
     

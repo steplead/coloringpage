@@ -12,7 +12,7 @@ const defaultSettings = {
 };
 
 // GET handler to retrieve current settings
-export async function GET(_request: NextRequest) {
+export async function GET() {
   console.log('GET /api/admin/settings: Fetching settings');
   
   try {
@@ -70,14 +70,14 @@ export async function POST(request: NextRequest) {
   console.log('POST /api/admin/settings: Saving settings');
   
   try {
-    const data = await request.json();
-    console.log('POST /api/admin/settings: Received data', data);
+    const body = await request.json();
+    console.log('POST /api/admin/settings: Received data', body);
     
     // Validate settings
-    const postCount = parseInt(data.postCount);
-    const postLength = parseInt(data.postLength);
+    const postCount = parseInt(body.postCount);
+    const postLength = parseInt(body.postLength);
     // Get the boolean value for autoBlogEnabled, default to true if missing/invalid
-    const autoBlogEnabled = typeof data.autoBlogEnabled === 'boolean' ? data.autoBlogEnabled : true;
+    const autoBlogEnabled = typeof body.autoBlogEnabled === 'boolean' ? body.autoBlogEnabled : true;
     
     // Basic validation (adjust ranges as needed)
     if (isNaN(postCount) || postCount < 1 || postCount > 10) {
