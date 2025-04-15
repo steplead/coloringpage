@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Translation } from '@/lib/i18n/locales';
+// Remove unused Translation import
+// import { Translation } from '@/lib/i18n/locales';
 import { BlogPost } from '@/lib/blog/blogService';
 
 // Removed unused slug
@@ -17,9 +18,12 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
     return <p>Post data not found.</p>;
   }
 
-  const [translatedTitle, setTranslatedTitle] = useState<string>(post.title);
-  const [translatedContent, setTranslatedContent] = useState<string>(post.content);
+  // State is no longer needed as we directly use post.title and post.content
+  // const [translatedTitle, setTranslatedTitle] = useState<string>(post.title);
+  // const [translatedContent, setTranslatedContent] = useState<string>(post.content);
 
+  // useEffect is no longer needed as translation logic is removed
+  /*
   useEffect(() => {
     // Get language from cookie
     const langCookie = document.cookie
@@ -29,21 +33,25 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
     const lang = langCookie ? langCookie.split('=')[1] : 'en';
 
     // If we have translations for this language, use them
-    if (post.translations && post.translations[lang]) {
-      setTranslatedTitle(post.translations[lang].title);
-      setTranslatedContent(post.translations[lang].content);
-    } else {
+    // This logic is removed as post.translations no longer exists
+    // if (post.translations && post.translations[lang]) {
+    //   setTranslatedTitle(post.translations[lang].title);
+    //   setTranslatedContent(post.translations[lang].content);
+    // } else {
       // Otherwise fall back to original content
       setTranslatedTitle(post.title);
       setTranslatedContent(post.content);
-    }
-  }, [post.title, post.content, post.translations]);
+    // }
+  }, [post.title, post.content]); // Removed post.translations from dependencies
+  */
 
   return (
     <div className="prose prose-lg max-w-none">
-      <h1 className="text-3xl font-bold mb-4">{translatedTitle}</h1>
+      {/* Use post.title directly */}
+      <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+      {/* Use post.content directly */}
       <div 
-        dangerouslySetInnerHTML={{ __html: translatedContent }}
+        dangerouslySetInnerHTML={{ __html: post.content }}
       />
     </div>
   );
