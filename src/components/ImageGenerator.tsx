@@ -52,10 +52,10 @@ const BASE_PROMPT = 'black outline coloring page, clean lines';
 const MAX_RETRIES = 3;
 
 interface ImageGeneratorProps {
-  currentLang?: string;
+  // Removed unused currentLang
 }
 
-export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'en' }) => {
+export const ImageGenerator: React.FC<ImageGeneratorProps> = () => {
   const [prompt, setPrompt] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -76,7 +76,7 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
     if (savedHistory) {
       try {
         setGenerationHistory(JSON.parse(savedHistory));
-      } catch (e) {
+      } catch /* removed unused e */ {
         console.error('Failed to parse generation history');
       }
     }
@@ -228,11 +228,6 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
     }
   };
 
-  const handleClearHistory = () => {
-    setGenerationHistory([]);
-    localStorage.removeItem('generationHistory');
-  };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
       {/* Left column - Form */}
@@ -344,6 +339,9 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
                 <span className="mx-1">👧</span> Medium: Ages 6-12 | 
                 <span className="mx-1">👨</span> Complex/Realistic: Ages 12+
               </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Style affects image complexity and appearance. &quot;Medium&quot; is recommended for general use.
+              </p>
             </div>
 
             {/* Advanced Toggle */}
@@ -388,6 +386,9 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
                     For best coloring pages, include &quot;black outline coloring page, clean lines&quot;
                   </p>
                 </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Make sure to include details like style and &quot;{BASE_PROMPT}&quot; for best results.
+                </p>
               </>
             ) : (
               <>
@@ -516,16 +517,19 @@ export const ImageGenerator: React.FC<ImageGeneratorProps> = ({ currentLang = 'e
                 <p className="mt-4 text-blue-800">Creating your masterpiece...</p>
               </div>
             ) : image ? (
-              <div className="relative w-full aspect-square bg-white rounded-lg overflow-hidden border border-gray-200 shadow-md">
-                <Image
-                  src={image}
-                  alt={prompt || 'Generated coloring page'}
-                  fill
-                  className="object-contain"
-                  priority={true}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  quality={90}
-                />
+              <div className="w-full flex flex-col items-center">
+                <p className="text-sm text-gray-600 mb-2">Generated for: &quot;{lastGeneratedPrompt}&quot;</p>
+                <div className="w-full aspect-square bg-gray-100 rounded overflow-hidden border border-gray-200 mb-4">
+                  <Image
+                    src={image}
+                    alt={prompt || 'Generated coloring page'}
+                    fill
+                    className="object-contain"
+                    priority={true}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    quality={90}
+                  />
+                </div>
               </div>
             ) : (
               <div className="text-center text-gray-500">

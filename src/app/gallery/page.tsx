@@ -24,16 +24,7 @@ export default function GalleryPage({ params }: { params?: { lang?: string } }) 
   const [limit] = useState(12);
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [style, setStyle] = useState<string | undefined>(undefined);
-  const [currentLang, setCurrentLang] = useState(params?.lang || 'en');
   
-  // Get language from cookie on client side if not provided via params
-  useEffect(() => {
-    if (!params?.lang) {
-      const lang = Cookies.get('NEXT_LOCALE') || 'en';
-      setCurrentLang(lang);
-    }
-  }, [params?.lang]);
-
   useEffect(() => {
     const fetchImages = async () => {
       try {

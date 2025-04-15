@@ -46,7 +46,7 @@ export async function analyzeContent(
   primaryKeyword: string
 ): Promise<ContentAnalysisResult> {
   // Default values
-  let result: ContentAnalysisResult = {
+  const result: ContentAnalysisResult = {
     uniquenessScore: 100,
     similarPosts: [],
     isDuplicate: false,

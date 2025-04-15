@@ -28,16 +28,16 @@ export default function GuidePage() {
                   <span className="flex items-center justify-center bg-blue-100 text-blue-800 w-8 h-8 rounded-full font-bold mr-3 flex-shrink-0">1</span>
                   <div>
                     <p className="mb-3">
-                      Start by describing what you'd like to see in your coloring page. 
+                      Start by describing what you&apos;d like to see in your coloring page. 
                       The more details you provide, the better the result will be!
                     </p>
                     <div className="bg-blue-50 p-4 rounded-md border-l-4 border-blue-400">
                       <p className="font-medium text-gray-900 mb-1">Examples of good descriptions:</p>
                       <ul className="list-disc pl-5 text-gray-700 mb-2 space-y-1">
-                        <li>"A friendly cartoon dinosaur playing in a park with trees and a playground"</li>
-                        <li>"A detailed underwater scene with a dolphin, colorful fish, and coral reef"</li>
-                        <li>"A cute space rocket flying through stars and planets"</li>
-                        <li>"A princess castle on a hill with a rainbow in the sky"</li>
+                        <li>&quot;A friendly cartoon dinosaur playing in a park with trees and a playground&quot;</li>
+                        <li>&quot;A detailed underwater scene with a dolphin, colorful fish, and coral reef&quot;</li>
+                        <li>&quot;A cute space rocket flying through stars and planets&quot;</li>
+                        <li>&quot;A princess castle on a hill with a rainbow in the sky&quot;</li>
                       </ul>
                       <p className="text-sm text-gray-600 italic">The more specific you are, the better!</p>
                     </div>
@@ -64,7 +64,7 @@ export default function GuidePage() {
                     </ul>
                     <div className="bg-amber-50 p-4 rounded-md border-l-4 border-amber-400">
                       <p className="text-sm font-medium text-gray-900">Age-Appropriate Tip:</p>
-                      <p className="text-sm text-gray-700">For toddlers and preschoolers, always choose "Simple" to create pages with larger areas to color and fewer details. This makes coloring easier and more enjoyable for small hands.</p>
+                      <p className="text-sm text-gray-700">For toddlers and preschoolers, always choose &quot;Simple&quot; to create pages with larger areas to color and fewer details. This makes coloring easier and more enjoyable for small hands.</p>
                     </div>
                   </div>
                 </div>
@@ -76,17 +76,17 @@ export default function GuidePage() {
                   <span className="flex items-center justify-center bg-blue-100 text-blue-800 w-8 h-8 rounded-full font-bold mr-3 flex-shrink-0">3</span>
                   <div>
                     <p className="mb-2">
-                      Click the "Create My Coloring Page" button and wait a few seconds for the AI to create your image. 
+                      Click the &quot;Create My Coloring Page&quot; button and wait a few seconds for the AI to create your image. 
                       This usually takes 5-10 seconds depending on the complexity.
                     </p>
                     <p className="mb-3">
-                      If you're not happy with the result, you can:
+                      If you&apos;re not happy with the result, you can:
                     </p>
                     <ul className="list-disc pl-5 text-gray-700 mb-3">
                       <li>Try adding more details to your description</li>
                       <li>Change the complexity level</li>
                       <li>Try a different category</li>
-                      <li>Click "Try Again" to generate a new version</li>
+                      <li>Click &quot;Try Again&quot; to generate a new version</li>
                     </ul>
                   </div>
                 </div>
@@ -109,11 +109,11 @@ export default function GuidePage() {
                     <div className="bg-blue-50 p-4 rounded-md border border-blue-200">
                       <p className="font-medium text-blue-800 mb-2">Printing Tips:</p>
                       <ul className="list-disc pl-5 text-gray-700 mt-2 space-y-1">
-                        <li>Use standard letter size paper (8.5 × 11 inches) or A4 paper</li>
-                        <li>Select "Fit to page" in your printer settings</li>
-                        <li>Choose "High Quality" print setting for clearer lines</li>
-                        <li>For best results, use plain white paper that's suitable for your coloring medium (markers, colored pencils, crayons, etc.)</li>
-                        <li>To save ink, look for a "Draft" or "Eco" mode in your printer settings</li>
+                        <li>Use standard letter size paper (8.5 &times; 11 inches) or A4 paper</li>
+                        <li>Select &quot;Fit to page&quot; in your printer settings</li>
+                        <li>Choose &quot;High Quality&quot; print setting for clearer lines</li>
+                        <li>For best results, use plain white paper that&apos;s suitable for your coloring medium (markers, colored pencils, crayons, etc.)</li>
+                        <li>To save ink, look for a &quot;Draft&quot; or &quot;Eco&quot; mode in your printer settings</li>
                       </ul>
                     </div>
                   </div>
@@ -130,7 +130,7 @@ export default function GuidePage() {
                   Create themed coloring pages for birthday parties with these ideas:
                 </p>
                 <ul className="list-disc pl-5 text-gray-700">
-                  <li>The birthday child's name incorporated into the design</li>
+                  <li>The birthday child&apos;s name incorporated into the design</li>
                   <li>Their age number as a decorative element</li>
                   <li>Their favorite characters or animals</li>
                   <li>Birthday cake, presents, and party decorations</li>
@@ -148,7 +148,7 @@ export default function GuidePage() {
                   <li>Number scenes with countable items</li>
                   <li>Simple labeled diagrams of plants, animals, or objects</li>
                   <li>Historical scenes or famous landmarks</li>
-                  <li>Scenes from books you're reading in class</li>
+                  <li>Scenes from books you&apos;re reading in class</li>
                 </ul>
               </div>
               
@@ -158,10 +158,10 @@ export default function GuidePage() {
                   Create toddler-friendly pages with these tips:
                 </p>
                 <ul className="list-disc pl-5 text-gray-700">
-                  <li>Always select "Simple" complexity level</li>
-                  <li>Request "very thick lines" in your description</li>
+                  <li>Always select &quot;Simple&quot; complexity level</li>
+                  <li>Request &quot;very thick lines&quot; in your description</li>
                   <li>Choose familiar objects and animals</li>
-                  <li>Add "with large simple shapes" to your description</li>
+                  <li>Add &quot;with large simple shapes&quot; to your description</li>
                   <li>Focus on single subjects rather than complex scenes</li>
                 </ul>
               </div>
@@ -172,9 +172,9 @@ export default function GuidePage() {
                   Create sophisticated coloring pages for adults:
                 </p>
                 <ul className="list-disc pl-5 text-gray-700">
-                  <li>Select "Complex" or "Realistic" complexity level</li>
+                  <li>Select &quot;Complex&quot; or &quot;Realistic&quot; complexity level</li>
                   <li>Try intricate patterns, mandalas, and geometric designs</li>
-                  <li>Request "detailed" or "intricate" in your description</li>
+                  <li>Request &quot;detailed&quot; or &quot;intricate&quot; in your description</li>
                   <li>Create themed sets around specific interests</li>
                   <li>Try abstract designs and patterns for stress relief</li>
                 </ul>
@@ -187,13 +187,13 @@ export default function GuidePage() {
                 For users who want complete control, our Expert Mode allows you to write custom instructions directly to the AI:
               </p>
               <ul className="list-disc pl-5 text-gray-700 mb-4">
-                <li>Toggle "Expert Mode" on the generator page</li>
+                <li>Toggle &quot;Expert Mode&quot; on the generator page</li>
                 <li>Write detailed instructions including style, elements, composition, and more</li>
-                <li>Always include "black outline coloring page" in your instructions</li>
+                <li>Always include &quot;black outline coloring page&quot; in your instructions</li>
                 <li>Specify line thickness, detail level, and style explicitly</li>
               </ul>
               <p className="text-sm text-gray-600">
-                Example: "A black outline coloring page of a fairy garden with mushroom houses, fairies, and woodland creatures. Bold, clean lines suitable for children. Whimsical cartoon style with moderate detail level."
+                Example: &quot;A black outline coloring page of a fairy garden with mushroom houses, fairies, and woodland creatures. Bold, clean lines suitable for children. Whimsical cartoon style with moderate detail level.&quot;
               </p>
             </div>
           </div>

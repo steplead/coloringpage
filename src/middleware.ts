@@ -27,7 +27,7 @@ function getLocaleFromRequest(request: NextRequest): string {
   }
 
   // If no cookie, detect from browser preferences
-  let negotiatorHeaders: Record<string, string> = {};
+  const negotiatorHeaders: Record<string, string> = {};
   request.headers.forEach((value, key) => {
     negotiatorHeaders[key] = value;
   });

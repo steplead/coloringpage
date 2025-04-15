@@ -205,7 +205,7 @@ export default function FixTranslationsV4() {
     // 监听DOM变化
     const observer = new MutationObserver((mutations) => {
       // Handle mutations directly if needed for fine-grained control
-      mutations.forEach((mutation) => {
+      mutations.forEach(() => {
         // Process mutations here if required
       });
       debouncedFixTranslations();
