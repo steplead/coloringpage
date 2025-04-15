@@ -7,8 +7,7 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { getImageById, getRelatedImages, ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
-import Cookies from 'js-cookie';
-import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, ShareIcon } from '@heroicons/react/24/outline';
 import SocialShareButtons from '@/components/SocialShareButtons';
 import PDFDownload from '@/components/PDFDownload';
 
@@ -25,13 +24,6 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [currentLang, setCurrentLang] = useState('en');
-
-  // Get language from cookie on client side
-  useEffect(() => {
-    const lang = Cookies.get('NEXT_LOCALE') || 'en';
-    setCurrentLang(lang);
-  }, []);
 
   useEffect(() => {
     async function loadImageData() {
@@ -40,7 +32,7 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
         const imageData = await getImageById(params.id);
         if (imageData) {
           setImage(imageData);
-          const related = await getRelatedImages(imageData.keywords || [], params.id);
+          const related = await getRelatedImages(params.id);
           setRelatedImages(related);
         } else {
           console.log('Image not found, redirecting to not-found page');
