@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { getImageById, getRelatedImages, ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
-import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon } from '@heroicons/react/24/outline';
 import SocialShareButtons from '@/components/SocialShareButtons';
 import PDFDownload from '@/components/PDFDownload';
 

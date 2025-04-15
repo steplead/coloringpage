@@ -6,14 +6,14 @@ import { BlogPost } from '@/lib/blog/blogService';
 type BlogPostContentProps = {
   title: string;
   content: string;
-  translations?: Record<string, BlogPost>;
+  // translations?: Record<string, BlogPost>; // Removed unused prop
   className?: string;
 };
 
 export default function BlogPostContent({
   title,
   content,
-  translations,
+  // translations, // Removed unused prop
   className = '',
 }: BlogPostContentProps) {
   // Removed unused currentLang state

@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import TranslatedText from '@/components/TranslatedText';
+import React, { useState } from 'react';
 
 type OptimizationOptions = {
   targetAge?: 'toddler' | 'child' | 'teen' | 'adult';
@@ -12,16 +10,15 @@ type OptimizationOptions = {
 };
 
 interface ImageOptimizerProps {
-  imageUrl: string;
-  onOptimizationComplete: (optimizedImageUrl: string, metrics: any) => void;
+  initialImageUrl: string;
+  onOptimizationComplete: (optimizedUrl: string, metadata: Record<string, any>) => void;
 }
 
-export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
-  imageUrl,
+export default function ImageOptimizer({
+  initialImageUrl,
   onOptimizationComplete
-}) => {
+}: ImageOptimizerProps) {
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [options, setOptions] = useState<OptimizationOptions>({
     targetAge: 'child',
     targetPrinter: 'standard',
@@ -29,10 +26,7 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
     lineThicknessPreference: 'medium',
   });
   const [metrics, setMetrics] = useState<any>(null);
-  const [optimizedImageUrl, setOptimizedImageUrl] = useState<string | null>(null);
-  const [optimizedMetadata, setOptimizedMetadata] = useState<Record<string, any> | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
-  const [loading, setLoading] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleOptionChange = (key: keyof OptimizationOptions, value: any) => {
     setOptions(prev => ({
@@ -52,7 +46,7 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          imageUrl,
+          imageUrl: initialImageUrl,
           options,
         }),
       });
@@ -247,4 +241,4 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
       )}
     </div>
   );
-}; 
+} 

@@ -314,7 +314,7 @@ export default function FixTranslationsV9() {
   try {
     // Main logic
     useEffect(() => {
-      // @ts-expect-error // TODO: Describe why this error is expected
+      // @ts-expect-error // TODO: Describe why this error is expected (e.g., function signature mismatch)
       return mainEffectLogic();
     }, []);
   } catch (e) {

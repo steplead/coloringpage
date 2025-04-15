@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getGalleryImages, ImageRecord } from '@/lib/supabase';
+import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
 import { PageHeader } from '@/components/PageHeader';
 

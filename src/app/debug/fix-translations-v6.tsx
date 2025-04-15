@@ -223,7 +223,8 @@ export default function FixTranslationsV6() {
     // 添加MutationObserver监控DOM变化
     const setupObserver = () => {
       // 创建一个观察器实例
-      const observer = new MutationObserver((mutations) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const observer = new MutationObserver((_mutations) => {
         // 延迟执行修复，让React完成其工作
         requestAnimationFrame(fixTranslations);
       });
