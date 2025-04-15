@@ -5,7 +5,7 @@ import { translations } from './index';
 import Cookies from 'js-cookie';
 import { LANGUAGE_COOKIE } from './index';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-import { getTranslation, loadTranslations, TranslationData, TranslationVariables, getTranslationSync } from './translations'; // Assuming any for now
+import { getTranslation, TranslationVariables, getTranslationSync, getTranslations } from './translations'; // Assuming any for now
 import { SUPPORTED_LANGUAGES } from './locales';
 
 // Define DEFAULT_LOCALE here
@@ -18,7 +18,8 @@ interface TranslationContextType {
   locale: string;
   setLocale: (locale: string) => void;
   t: (key: string, vars?: TranslationVariables) => string;
-  translations: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  translations: any; // Store loaded translations
   loading: boolean;
   isInitialized: boolean;
   setLanguage: (lang: string) => Promise<void>;
@@ -429,9 +430,10 @@ export function TranslationProvider({
     const loadAndSetTranslations = async () => {
       setLoading(true);
       console.log(`[i18nProvider] Loading translations for locale: ${currentLocale}`);
+      // Use getTranslations (from translations.ts) instead of the removed loadTranslations
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const loadedTranslations = await loadTranslations(currentLocale) as any;
-      setTranslationsData(loadedTranslations);
+      const loadedTranslations = await getTranslations(currentLocale) as any; 
+      setTranslationsData(loadedTranslations); // Assuming setTranslations is the state setter
       setLoading(false);
       setIsInitialized(true); // Mark as initialized after first load
       console.log(`[i18nProvider] Translations loaded for ${currentLocale}`, loadedTranslations);
@@ -472,7 +474,7 @@ export function TranslationProvider({
     getTranslation,
     refreshTranslations,
     lastError,
-  }), [currentLocale, setCurrentLocale, t, translationsData, loading, isInitialized, setLanguage, isLoading, getTranslation, refreshTranslations, lastError]);
+  }), [currentLocale, setCurrentLocale, t, translationsData, loading, isInitialized, setLanguage, isLoading, getTranslation, refreshTranslations, lastError]) as any;
 
   // Prevent rendering children until client-side hydration is complete
   if (!isClient) {

@@ -8,10 +8,10 @@
  * - Print adaptability testing
  */
 
-import { promises as fs } from 'fs';
-import { Readable } from 'stream';
+// import { promises as fs } from 'fs';
+// import { Readable } from 'stream';
 import sharp from 'sharp';
-import path from 'path';
+// import path from 'path';
 
 interface OptimizationResult {
   imageData: string;

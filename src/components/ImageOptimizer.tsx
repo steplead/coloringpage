@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import TranslatedText from '@/components/TranslatedText';
 
 type OptimizationOptions = {
   targetAge?: 'toddler' | 'child' | 'teen' | 'adult';
@@ -30,6 +32,7 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
   const [optimizedImageUrl, setOptimizedImageUrl] = useState<string | null>(null);
   const [optimizedMetadata, setOptimizedMetadata] = useState<Record<string, any> | null>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const [loading, setLoading] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleOptionChange = (key: keyof OptimizationOptions, value: any) => {
     setOptions(prev => ({
@@ -63,9 +66,7 @@ export const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = await response.json() as any;
       setMetrics(data.metrics);
-      setOptimizedImageUrl(data.optimizedImageData);
-      setOptimizedMetadata(data.metadata);
-      onOptimizationComplete(data.optimizedImageData, data.metrics);
+      onOptimizationComplete(data.optimizedUrl, data.metadata);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to optimize image');
     } finally {

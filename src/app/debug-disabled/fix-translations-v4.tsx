@@ -203,6 +203,7 @@ export default function FixTranslationsV4() {
     window._fixTranslationsV4 = fixTranslations;
     
     // 监听DOM变化
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const observer = new MutationObserver((mutationsList) => {
       // 强制延迟执行，确保React更新完成
       setTimeout(() => {

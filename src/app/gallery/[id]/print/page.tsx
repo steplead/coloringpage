@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
-import Cookies from 'js-cookie';
 import { ArrowLeftIcon, PrinterIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 export default function PrintColoringPage({ params }: { params: { id: string } }) {

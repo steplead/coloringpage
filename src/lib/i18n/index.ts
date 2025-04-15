@@ -49,6 +49,10 @@ export function detectClientLanguage(): string {
   return 'en';
 }
 
+// Type for translation variables
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TranslationVariables = Record<string, any>;
+
 /**
  * Get translation for a specific key in the current language
  * @param language - The language code

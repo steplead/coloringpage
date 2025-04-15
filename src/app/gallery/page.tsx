@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { PageHeader } from '@/components/PageHeader';
-import { ImageRecord } from '@/lib/supabase';
+import Image from 'next/image';
+import { getGalleryImages, ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { PageHeader } from '@/components/PageHeader';
 
 // Helper function to truncate prompt text
 const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
