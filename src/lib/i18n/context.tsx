@@ -4,7 +4,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useMe
 import { translations } from './index';
 import Cookies from 'js-cookie';
 import { LANGUAGE_COOKIE } from './index';
-import { TranslationVariables } from './translations'; // Import necessary type
+import { TranslationVariables, getTranslations } from './translations'; // Import necessary functions and types
+import { SUPPORTED_LANGUAGES } from './locales';
 import { useRouter } from 'next/router'; // Keep this import - might be used later or implicitly
 
 // Define DEFAULT_LOCALE here
