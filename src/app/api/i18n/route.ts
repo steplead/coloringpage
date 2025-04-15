@@ -9,7 +9,7 @@ const logWithDetails = (message: string, details?: unknown) => {
   if (details !== undefined && details !== null) {
     try {
       detailsString = (typeof details === 'object') ? JSON.stringify(details) : String(details);
-    } catch (e) {
+    } catch {
       detailsString = '[Unserializable data]';
     }
   }

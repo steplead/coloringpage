@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { generateBlogPost } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 import { createSlug } from '@/utils/string';

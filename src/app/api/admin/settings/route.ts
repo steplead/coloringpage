@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
 }
 
 // OPTIONS handler for CORS preflight
-export async function OPTIONS(_request: NextRequest) {
+export async function OPTIONS() {
   const response = new NextResponse(null, { status: 204 });
   response.headers.set('Access-Control-Allow-Origin', '*');
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
