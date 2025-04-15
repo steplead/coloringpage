@@ -244,7 +244,6 @@ async function processGalleryImages(
     const imageIdentifier = { id: image.id, title: image.title || '(Untitled)' };
     let success = false;
     let slug = '';
-    let errorMsg = '';
 
     try {
       const enhancedImage = await ensureCompleteImageMetadata(image);
@@ -360,7 +359,7 @@ async function processGalleryImages(
       });
     }
 
-    results.push({ image: imageIdentifier, success, slug: success ? slug : undefined, error: !success ? errorMsg : undefined });
+    results.push({ image: imageIdentifier, success, slug: success ? slug : undefined, error: !success ? undefined : undefined });
   }
 }
 

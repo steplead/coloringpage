@@ -554,7 +554,7 @@ function extractSectionsFromContent(content: string, primaryKeyword: string): Ar
   const h2Matches = [...content.matchAll(sectionRegex)]; // Use const
 
   if (h2Matches.length > 0) {
-    h2Matches.forEach((match, index) => {
+    h2Matches.forEach((match) => {
       const heading = match[1].trim();
       let sectionContent = match[2].trim();
       

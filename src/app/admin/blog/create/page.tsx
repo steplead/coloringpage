@@ -56,7 +56,7 @@ export default function CreateBlogPost() {
       };
 
       // Save to Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('blog_posts')
         .insert([blogPost])
 

@@ -177,7 +177,7 @@ export default function PrintColoringPage({ params }: { params: { id: string } }
         {/* Print footer - only shows in print */}
         <div className="hidden print:block text-center mt-6 text-sm text-gray-500">
           <p>{new Date(image.created_at).toLocaleDateString()} | {image.category ? `Category: ${image.category}` : ''} | {image.style ? `Style: ${image.style}` : 'Standard'}</p>
-          <p className="mt-1">"{image.prompt}"</p>
+          <p className="mt-1">&quot;{image.prompt}&quot;</p>
           <p className="mt-4">Find more coloring pages at AI-ColoringPage.com</p>
         </div>
         

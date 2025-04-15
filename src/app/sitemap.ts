@@ -17,18 +17,16 @@ const routes = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date().toISOString();
   
-  let sitemapEntries: MetadataRoute.Sitemap = [];
-  
-  // Add language-specific routes
-  SUPPORTED_LANGUAGES.forEach(language => {
-    routes.forEach(route => {
+  // Generate language-specific routes first
+  const languageRoutes = SUPPORTED_LANGUAGES.flatMap(language => 
+    routes.map(route => {
       const localizedPath = route === '/' ? `/${language.code}` : `/${language.code}${route}`;
       const mainUrl = new URL(localizedPath, BASE_URL).toString();
 
-      sitemapEntries.push({
+      return {
         url: mainUrl,
         lastModified: currentDate,
-        changeFrequency: 'daily',
+        changeFrequency: 'daily' as const,
         priority: route === '/' ? 1 : 0.8,
         alternates: {
           languages: Object.fromEntries(
@@ -40,17 +38,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
               })
           )
         }
-      });
-    });
-  });
+      };
+    })
+  );
   
-  // Add default routes as well (without language prefix)
-  routes.forEach(route => {
+  // Generate default routes (without language prefix)
+  const defaultRoutes = routes.map(route => {
     const defaultUrl = new URL(route, BASE_URL).toString();
-    sitemapEntries.push({
+    return {
       url: defaultUrl,
       lastModified: currentDate,
-      changeFrequency: 'daily',
+      changeFrequency: 'daily' as const,
       priority: route === '/' ? 1 : 0.8,
       alternates: {
         languages: Object.fromEntries(
@@ -60,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           })
         )
       }
-    });
+    };
   });
   
   // Fetch blog posts for sitemap
@@ -122,5 +120,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     : [];
 
   // Combine all routes
-  return [...sitemapEntries, ...blogRoutes, ...galleryRoutes];
+  return [...languageRoutes, ...defaultRoutes, ...blogRoutes, ...galleryRoutes];
 } 

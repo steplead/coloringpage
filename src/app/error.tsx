@@ -19,7 +19,7 @@ export default function Error({
       <div className="max-w-xl mx-auto text-center">
         <h1 className="text-4xl font-bold text-red-600 mb-4">Something went wrong</h1>
         <p className="text-lg text-gray-600 mb-8">
-          We're sorry, but something went wrong. Please try again or return home.
+          We&apos;re sorry, but something went wrong. Please try again or return home.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button

@@ -32,7 +32,7 @@ export default function AboutPage() {
                   Our team of developers and artists combined their expertise to create an innovative AI tool that transforms text descriptions into beautiful black outline drawings perfect for coloring.
                 </p>
                 <p>
-                  Whether you're a parent looking for educational activities, a teacher preparing classroom materials, or an adult enjoying the therapeutic benefits of coloring, our tool makes it easy to generate exactly what you need.
+                  Whether you&apos;re a parent looking for educational activities, a teacher preparing classroom materials, or an adult enjoying the therapeutic benefits of coloring, our tool makes it easy to generate exactly what you need.
                 </p>
               </div>
             </div>

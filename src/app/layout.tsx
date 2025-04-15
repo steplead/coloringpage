@@ -6,7 +6,6 @@ import React from 'react';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
 
 import { Footer } from '@/components/Footer';
-import { initializeStorage } from '@/lib/storage';
 import LanguageDetectionBanner from '@/components/LanguageDetectionBanner';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -108,10 +107,8 @@ export async function generateMetadata({ params }: { params: { lang?: string } }
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: any;
 }) {
   // Extract the lang parameter from the URL path segments
   // This requires looking at the request path since we're in the root layout
