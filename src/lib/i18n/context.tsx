@@ -4,8 +4,12 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useMe
 import { translations } from './index';
 import Cookies from 'js-cookie';
 import { LANGUAGE_COOKIE } from './index';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { getTranslation, loadTranslations, TranslationData, TranslationVariables, getTranslationSync } from './translations'; // Assuming any for now
-import { DEFAULT_LOCALE, locales } from './config';
+import { SUPPORTED_LANGUAGES } from './locales';
+
+// Define DEFAULT_LOCALE here
+const DEFAULT_LOCALE = 'en';
 
 // Default to English translations as initial value
 const defaultTranslations = translations.en;
@@ -438,19 +442,22 @@ export function TranslationProvider({
 
   // Memoized translation function
   const t = useCallback((key: string, vars?: TranslationVariables): string => {
+    // Derive locales array from SUPPORTED_LANGUAGES
+    const locales = SUPPORTED_LANGUAGES.map(lang => lang.code);
+    
     // If not initialized or loading, or no translations, return key or loading indicator
-    if (!isInitialized || loading || !translationsData) {
+    if (!isInitialized || loading || !translations) {
       // console.warn(`[i18n] Translation requested before initialization or during loading for key: ${key}`);
       // Attempt synchronous translation using defaults if available
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const syncTranslation = getTranslationSync(key, vars, currentLocale, translationsData as any);
+      const syncTranslation = getTranslationSync(key, vars, translations as any, key);
       return syncTranslation || key; // Return sync translation or key itself
     }
     
     // Use the synchronous getter now that translations are loaded
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return getTranslationSync(key, vars, currentLocale, translationsData as any) || key;
-  }, [currentLocale, translationsData, loading, isInitialized]);
+    return getTranslationSync(key, vars, translations as any, key) || key;
+  }, [currentLocale, translations, loading, isInitialized]);
 
   // Value provided to context consumers
   const value = useMemo(() => ({

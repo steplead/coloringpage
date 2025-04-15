@@ -1,20 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { fetchImageById, fetchRelatedImages, ImageRecord } from '@/lib/supabase/client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { PageHeader } from '@/components/PageHeader';
+import { getImageById, getRelatedImages, ImageRecord } from '@/lib/supabase';
 import TranslatedText from '@/components/TranslatedText';
 import Cookies from 'js-cookie';
-import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import SocialShareButtons from '@/components/SocialShareButtons';
-import { PageHeader } from '@/components/PageHeader';
 import PDFDownload from '@/components/PDFDownload';
 
 interface ColoringPageDetailProps {
   params: { 
     id: string;
+    lang?: string;
   };
 }
 
@@ -24,29 +25,39 @@ export default function ColoringPageDetail({ params }: ColoringPageDetailProps) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [currentLang, setCurrentLang] = useState('en');
+
+  // Get language from cookie on client side
+  useEffect(() => {
+    const lang = Cookies.get('NEXT_LOCALE') || 'en';
+    setCurrentLang(lang);
+  }, []);
 
   useEffect(() => {
     async function loadImageData() {
       setLoading(true);
       try {
-        const imageData = await fetchImageById(params.id);
+        const imageData = await getImageById(params.id);
         if (imageData) {
           setImage(imageData);
-          const related = await fetchRelatedImages(imageData.keywords || [], params.id);
+          const related = await getRelatedImages(imageData.keywords || [], params.id);
           setRelatedImages(related);
         } else {
-          setError('Image not found.');
+          console.log('Image not found, redirecting to not-found page');
+          router.push('/gallery/not-found');
+          return;
         }
+        setError(null);
       } catch (err) {
-        console.error('Error fetching image:', err);
-        setError('Failed to load image data.');
+        console.error('Error fetching image details:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load image details');
       } finally {
         setLoading(false);
       }
     }
 
     loadImageData();
-  }, [params.id]);
+  }, [params.id, router]);
 
   const handleDownload = async () => {
     if (!image?.image_url) return;
