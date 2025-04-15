@@ -206,9 +206,11 @@ export default function GuidePage() {
           >
             Create Your Coloring Page Now
           </Link>
-          <p className="mt-4 text-gray-600">
-            Have more questions? <a href="/faq" className="text-blue-600 hover:underline">Visit our FAQ</a> or <a href="/contact" className="text-blue-600 hover:underline">contact us</a>.
-          </p>
+          <div className="mt-12 text-center text-sm text-gray-500">
+            <p>
+              Have more questions? Check out our <Link href="/faq/">FAQ</Link> or <Link href="/contact/">Contact Us</Link>.
+            </p>
+          </div>
         </div>
       </div>
     </main>

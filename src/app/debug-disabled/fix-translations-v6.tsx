@@ -229,13 +229,14 @@ export default function FixTranslationsV6() {
       });
       
       // 开始观察document.body，监控其子树和文本变化
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
+      observer.observe(document.body, { childList: true, subtree: true });
       
       console.log('[FixV6] 设置了MutationObserver监控DOM变化');
+      
+      // Optional: Handle mutations directly if needed for fine-grained control
+      const handleMutations = (mutations: MutationRecord[]) => {
+        // Process mutations here if required
+      };
       
       // 返回观察器实例以便清理
       return observer;

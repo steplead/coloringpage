@@ -203,7 +203,11 @@ export default function FixTranslationsV4() {
     window._fixTranslationsV4 = fixTranslations;
     
     // 监听DOM变化
-    const observer = new MutationObserver((_mutations) => {
+    const observer = new MutationObserver((mutations) => {
+      // Handle mutations directly if needed for fine-grained control
+      mutations.forEach((mutation) => {
+        // Process mutations here if required
+      });
       debouncedFixTranslations();
     });
     

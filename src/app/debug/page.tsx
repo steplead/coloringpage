@@ -24,7 +24,7 @@ export default function DebugPage() {
           keys.push(key);
           try {
             data[key] = JSON.parse(localStorage.getItem(key) || '{}');
-          } catch (_e) {
+          } catch {
             data[key] = localStorage.getItem(key);
           }
         }

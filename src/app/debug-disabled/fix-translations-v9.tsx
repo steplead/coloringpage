@@ -288,7 +288,7 @@ export default function FixTranslationsV9() {
             try {
               Object.defineProperty(Node.prototype, 'textContent', {
                 set: originalSetTextContentRef.current,
-                // @ts-ignore
+                // @ts-expect-error
                 get: Object.getOwnPropertyDescriptor(Node.prototype, 'textContent').get,
                 configurable: true
               });

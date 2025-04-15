@@ -1,6 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import { getImageById } from '@/lib/supabase';
+import Link from 'next/link';
 
 export default async function GalleryDebugPage({ params }: { params: { id: string } }) {
   const image = await getImageById(params.id);
@@ -104,12 +105,9 @@ export default async function GalleryDebugPage({ params }: { params: { id: strin
           >
             Back to Gallery Item
           </a>
-          <a 
-            href="/gallery"
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Back to Gallery
-          </a>
+          <div className="mt-4">
+            <Link href="/gallery/">Back to Gallery</Link>
+          </div>
         </div>
       </div>
     </div>
