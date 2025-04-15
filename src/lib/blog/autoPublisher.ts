@@ -1,27 +1,27 @@
 import { BlogPostTemplateProps } from './postTemplate';
 import { generateBlogPost, getPopularKeywords } from './generator';
 
-type PublishConfig = {
-  frequency: 'hourly' | 'daily' | 'weekly' | 'monthly';
+export interface AutoBlogPublisherConfig {
+  enabled: boolean;
+  frequency: 'daily' | 'weekly' | 'monthly';
   targetCount: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  startTime?: any; // Allow flexible start time (ISO string, Date object, etc.)
-  enabled: boolean;
-  categories?: string[];
+  startTime?: any; // Allow ISO string, Date object, etc.
   maxRetries?: number;
-  category?: string | string[];
-};
+  category?: string; // Optional category filter
+  categories?: string[];
+}
 
 /**
  * Manages automatic blog post publishing based on a schedule
  * This ensures consistent content creation for SEO purposes
  */
 export class BlogAutoPublisher {
-  private config: PublishConfig;
+  private config: AutoBlogPublisherConfig;
   private db: any; // In real implementation, this would be your database client
   
   constructor(
-    config: PublishConfig,
+    config: AutoBlogPublisherConfig,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dbClient: any // Replace with specific Supabase client type if available
   ) {
@@ -168,8 +168,8 @@ export class BlogAutoPublisher {
 /**
  * Create a default auto-publisher configuration
  */
-export function getDefaultPublisherConfig(): PublishConfig {
-  const config: PublishConfig = {
+export function getDefaultPublisherConfig(): AutoBlogPublisherConfig {
+  const config: AutoBlogPublisherConfig = {
     frequency: 'daily',
     targetCount: 1,
     startTime: new Date(new Date().setHours(1, 0, 0, 0)).toISOString(), // 1:00 AM

@@ -1,0 +1,1 @@
+import { LanguageInfo, SUPPORTED_LANGUAGES } from '@/lib/i18n/locales'; 

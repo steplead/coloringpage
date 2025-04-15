@@ -549,7 +549,23 @@ export const BlogPostTemplate: React.FC<BlogPostTemplateProps> = (post) => {
             }
           },
           datePublished: post.publishDate,
-          dateModified: post.modifiedDate
+          dateModified: post.modifiedDate,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://ai-coloringpage.com/blog/${post.slug}`
+          },
+          step: [
+            {
+              '@type': 'HowToStep',
+              'name': 'Prepare Your Colors',
+              'text': 'Gather your coloring tools - crayons, markers, or colored pencils. Choose colors that match the image or inspire your creativity. For example, if it\'s a sunset, you might need oranges, reds, and yellows.'
+            },
+            {
+              '@type': 'HowToStep',
+              'name': 'Add Finishing Touches',
+              'text': 'Review your work. Add any final details, like highlights, shadows, or patterns. Sometimes a little extra touch makes all the difference. Don\'t forget to sign your masterpiece!'
+            }
+          ]
         })
       }} />
     </article>

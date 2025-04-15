@@ -10,6 +10,7 @@ import ruTranslations from './translations/ru.json';
 import { SUPPORTED_LANGUAGES } from './locales';
 
 // Map of all translations
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const translations: Record<string, any> = {
   en: enTranslations,
   zh: zhTranslations,
@@ -65,6 +66,7 @@ export function getTranslation(language: string, key: string, fallback?: string)
   const keys = key.split('.');
   
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let value: any = translations[lang];
     
     for (const k of keys) {
@@ -78,6 +80,7 @@ export function getTranslation(language: string, key: string, fallback?: string)
     
     // If not found in the target language, try fallback to English
     if (lang !== 'en') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let enValue: any = translations['en'];
       for (const k of keys) {
         if (enValue === undefined) break;
@@ -102,6 +105,7 @@ export function getTranslation(language: string, key: string, fallback?: string)
  * @param language - The language code
  * @returns The complete translation object
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getTranslations(language: string): any {
   return isValidLanguage(language) ? translations[language] : translations['en'];
 }

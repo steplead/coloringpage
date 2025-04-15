@@ -4,9 +4,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useMe
 import { translations } from './index';
 import Cookies from 'js-cookie';
 import { LANGUAGE_COOKIE } from './index';
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-import { getTranslation, TranslationVariables, getTranslationSync, getTranslations } from './translations'; // Assuming any for now
-import { SUPPORTED_LANGUAGES } from './locales';
+import { TranslationVariables } from './translations'; // Import necessary type
+import { useRouter } from 'next/router'; // Keep this import - might be used later or implicitly
 
 // Define DEFAULT_LOCALE here
 const DEFAULT_LOCALE = 'en';
@@ -29,22 +28,15 @@ interface TranslationContextType {
   lastError: string | null;
 }
 
-const TranslationContext = createContext<TranslationContextType>({
-  locale: DEFAULT_LOCALE,
-  setLocale: () => {},
-  t: () => '',
-  translations: defaultTranslations,
-  loading: false,
-  isInitialized: false,
-  setLanguage: async () => {},
-  isLoading: false,
-  getTranslation: () => '',
-  refreshTranslations: async () => {},
-  lastError: null,
-});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TranslationContext = createContext<any>(undefined);
 
 export function useTranslation() {
-  return useContext(TranslationContext);
+  const context = useContext(TranslationContext);
+  if (context === undefined) {
+    throw new Error('useTranslation must be used within an TranslationProvider');
+  }
+  return context;
 }
 
 interface TranslationProviderProps {
