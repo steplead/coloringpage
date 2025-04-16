@@ -41,8 +41,8 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
   // Example coloring pages data
   const examplePages = [
     { id: 'example-dragon', titleKey: 'home.examples.dragon.title', altTextKey: 'home.examples.dragon.alt', image: '/examples/dragon.png' },
-    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/dragon.png' }, // Using dragon.png for testing 
-    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/dragon.png' } // Using dragon.png for testing
+    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/elephant.png' }, // Using elephant.png instead of SVG
+    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/rocket.png' } // Using rocket.png instead of SVG
   ];
 
   // Popular Categories Data
@@ -156,23 +156,14 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
             {examplePages.map((example) => (
               <div key={example.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
                 <div className="aspect-square relative group bg-gray-50 flex items-center justify-center">
-                  {example.image.endsWith('.svg') ? (
-                    <img 
-                      src={example.image}
-                      alt={t(example.altTextKey, 'Example AI Coloring Page')}
-                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <Image
-                      src={example.image}
-                      alt={t(example.altTextKey, 'Example AI Coloring Page')}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain transition-transform duration-300 group-hover:scale-105"
-                      priority={example.id === 'example-dragon'}
-                    />
-                  )}
+                  <Image
+                    src={example.image}
+                    alt={t(example.altTextKey, 'Example AI Coloring Page')}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain transition-transform duration-300 group-hover:scale-105"
+                    priority={example.id === 'example-dragon'}
+                  />
                 </div>
                 <div className="p-5 text-center bg-gray-50 border-t border-gray-100">
                   <h3 className="font-semibold text-gray-800">
