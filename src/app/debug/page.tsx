@@ -139,6 +139,45 @@ export default function DebugPage() {
           英文首页
         </Link>
       </div>
+      
+      {/* New test section for SVG images */}
+      <div className="mt-6 bg-white shadow rounded-lg p-4">
+        <h2 className="text-lg font-bold mb-3">图片测试 / Image Testing</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="border p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Dragon PNG (Next Image)</h3>
+            <div className="aspect-square relative bg-gray-50">
+              <img 
+                src="/examples/dragon.png" 
+                alt="Dragon PNG" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+          
+          <div className="border p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Cat SVG (Direct)</h3>
+            <div className="aspect-square relative bg-gray-50">
+              <img 
+                src="/examples/cat-simple.svg" 
+                alt="Cat SVG" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+          
+          <div className="border p-4 rounded-lg">
+            <h3 className="font-semibold mb-2">Mandala SVG (Direct)</h3>
+            <div className="aspect-square relative bg-gray-50">
+              <img 
+                src="/examples/mandala-complex.svg" 
+                alt="Mandala SVG"
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 } 
