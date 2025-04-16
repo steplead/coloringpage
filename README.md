@@ -87,6 +87,8 @@ Manage your blog content through a secure admin panel:
 
 ## Latest Updates
 
+- **Homepage Image Display Fix (2024-06-24)**: Resolved image display issues on the homepage by replacing SVG files with optimized PNG alternatives. The fix ensures all example images are consistently displayed across different browsers and devices, improving the overall user experience and first impression of the site.
+
 - **ESLint Fixes & SEO Audit (2024-06-23)**: Resolved numerous ESLint errors across the codebase for improved quality and build stability. Confirmed that all major pages adhere to the project's SEO optimization guidelines (see `docs/keyword-optimization-guide.md`).
 
 - **Improved Blog Post Layout (2024-06-22)**: Refactored blog post rendering using `react-markdown` to enhance readability and user experience:
