@@ -36,3 +36,6 @@ next-env.d.ts
 # IDE
 .vscode/
 .idea/
+
+# Ignore example files directory
+/public/examples/

@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <!-- Sky Background -->
+  <rect width="800" height="300" fill="#87ceeb" />
+  
+  <!-- Ground -->
+  <rect x="0" y="300" width="800" height="200" fill="#228b22" />
+  
+  <!-- Sun -->
+  <circle cx="700" cy="100" r="60" fill="#ffff00" />
+  <circle cx="700" cy="100" r="70" fill="#ffff00" fill-opacity="0.3" />
+  <circle cx="700" cy="100" r="80" fill="#ffff00" fill-opacity="0.1" />
+  
+  <!-- Mountains -->
+  <path d="M0,300 L150,150 L300,300 Z" fill="#a9a9a9" />
+  <path d="M250,300 L400,100 L550,300 Z" fill="#808080" />
+  <path d="M500,300 L650,200 L800,300 Z" fill="#a9a9a9" />
+  
+  <!-- Snow caps -->
+  <path d="M400,100 L380,130 L420,130 Z" fill="white" />
+  <path d="M150,150 L140,170 L160,170 Z" fill="white" />
+  <path d="M650,200 L640,210 L660,210 Z" fill="white" />
+  
+  <!-- Large Tree 1 -->
+  <rect x="100" y="300" width="20" height="80" fill="#8b4513" />
+  <ellipse cx="110" cy="250" rx="50" ry="60" fill="#006400" />
+  
+  <!-- Large Tree 2 -->
+  <rect x="700" y="300" width="20" height="100" fill="#8b4513" />
+  <ellipse cx="710" cy="240" rx="60" ry="70" fill="#228b22" />
+  
+  <!-- Small Trees -->
+  <rect x="200" y="300" width="10" height="40" fill="#8b4513" />
+  <ellipse cx="205" cy="270" rx="20" ry="30" fill="#006400" />
+  
+  <rect x="300" y="300" width="10" height="30" fill="#8b4513" />
+  <ellipse cx="305" cy="280" rx="15" ry="20" fill="#228b22" />
+  
+  <rect x="500" y="300" width="10" height="40" fill="#8b4513" />
+  <ellipse cx="505" cy="270" rx="20" ry="30" fill="#006400" />
+  
+  <rect x="600" y="300" width="10" height="35" fill="#8b4513" />
+  <ellipse cx="605" cy="275" rx="18" ry="25" fill="#228b22" />
+  
+  <!-- Flowers -->
+  <g transform="translate(220, 350)">
+    <line x1="0" y1="0" x2="0" y2="20" stroke="#006400" stroke-width="2" />
+    <circle cx="0" cy="0" r="5" fill="#ff1493" />
+    <circle cx="5" cy="5" r="5" fill="#ff69b4" />
+    <circle cx="-5" cy="5" r="5" fill="#ff69b4" />
+    <circle cx="5" cy="-5" r="5" fill="#ff69b4" />
+    <circle cx="-5" cy="-5" r="5" fill="#ff69b4" />
+  </g>
+  
+  <g transform="translate(350, 370)">
+    <line x1="0" y1="0" x2="0" y2="15" stroke="#006400" stroke-width="2" />
+    <circle cx="0" cy="0" r="4" fill="#ffff00" />
+    <circle cx="4" cy="4" r="4" fill="#ffd700" />
+    <circle cx="-4" cy="4" r="4" fill="#ffd700" />
+    <circle cx="4" cy="-4" r="4" fill="#ffd700" />
+    <circle cx="-4" cy="-4" r="4" fill="#ffd700" />
+  </g>
+  
+  <g transform="translate(420, 360)">
+    <line x1="0" y1="0" x2="0" y2="18" stroke="#006400" stroke-width="2" />
+    <circle cx="0" cy="0" r="4" fill="#9370db" />
+    <circle cx="4" cy="4" r="4" fill="#8a2be2" />
+    <circle cx="-4" cy="4" r="4" fill="#8a2be2" />
+    <circle cx="4" cy="-4" r="4" fill="#8a2be2" />
+    <circle cx="-4" cy="-4" r="4" fill="#8a2be2" />
+  </g>
+  
+  <g transform="translate(520, 380)">
+    <line x1="0" y1="0" x2="0" y2="15" stroke="#006400" stroke-width="2" />
+    <circle cx="0" cy="0" r="5" fill="#ff1493" />
+    <circle cx="5" cy="5" r="5" fill="#ff69b4" />
+    <circle cx="-5" cy="5" r="5" fill="#ff69b4" />
+    <circle cx="5" cy="-5" r="5" fill="#ff69b4" />
+    <circle cx="-5" cy="-5" r="5" fill="#ff69b4" />
+  </g>
+  
+  <!-- River -->
+  <path d="M0,450 C100,430 200,470 300,440 C400,410 500,450 600,420 C700,390 800,440 800,440 L800,500 L0,500 Z" fill="#4169e1" />
+  
+  <!-- River Highlights -->
+  <path d="M100,445 C120,442 140,450 160,445" stroke="white" stroke-width="1" fill="none" />
+  <path d="M300,430 C320,425 340,435 360,430" stroke="white" stroke-width="1" fill="none" />
+  <path d="M500,430 C520,425 540,435 560,430" stroke="white" stroke-width="1" fill="none" />
+  <path d="M700,430 C720,425 740,435 760,430" stroke="white" stroke-width="1" fill="none" />
+  
+  <!-- Clouds -->
+  <g fill="white">
+    <ellipse cx="150" cy="80" rx="40" ry="20" />
+    <ellipse cx="190" cy="80" rx="30" ry="25" />
+    <ellipse cx="130" cy="90" rx="30" ry="15" />
+    
+    <ellipse cx="450" cy="60" rx="50" ry="25" />
+    <ellipse cx="500" cy="60" rx="40" ry="30" />
+    <ellipse cx="410" cy="70" rx="35" ry="20" />
+  </g>
+  
+  <!-- Birds -->
+  <path d="M240,120 C250,110 260,120 270,110" stroke="black" stroke-width="2" fill="none" />
+  <path d="M370,90 C380,80 390,90 400,80" stroke="black" stroke-width="2" fill="none" />
+  <path d="M290,80 C300,70 310,80 320,70" stroke="black" stroke-width="2" fill="none" />
+  
+  <!-- Overlay Gradient for visual appeal -->
+  <rect width="800" height="500" fill="url(#overlay)" />
+  <defs>
+    <linearGradient id="overlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.3" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Text Label at bottom -->
+  <rect x="0" y="440" width="800" height="60" fill="rgba(0,0,0,0.7)" />
+  <text x="400" y="480" font-family="Arial, sans-serif" font-size="30" fill="white" text-anchor="middle" font-weight="bold">Nature</text>
+</svg> 

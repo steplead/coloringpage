@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#004080" />
+  
+  <!-- Starry Background -->
+  <g id="stars">
+    <circle cx="50" cy="50" r="1.5" fill="white" />
+    <circle cx="120" cy="80" r="1" fill="white" />
+    <circle cx="200" cy="30" r="1.5" fill="white" />
+    <circle cx="280" cy="90" r="1" fill="white" />
+    <circle cx="350" cy="40" r="2" fill="white" />
+    <circle cx="420" cy="70" r="1" fill="white" />
+    <circle cx="490" cy="30" r="1.5" fill="white" />
+    <circle cx="560" cy="60" r="1" fill="white" />
+    <circle cx="630" cy="20" r="2" fill="white" />
+    <circle cx="700" cy="80" r="1.5" fill="white" />
+    <circle cx="770" cy="40" r="1" fill="white" />
+    <circle cx="80" cy="120" r="1.5" fill="white" />
+    <circle cx="150" cy="150" r="1" fill="white" />
+    <circle cx="230" cy="100" r="2" fill="white" />
+    <circle cx="310" cy="140" r="1" fill="white" />
+    <circle cx="380" cy="110" r="1.5" fill="white" />
+    <circle cx="450" cy="130" r="1" fill="white" />
+    <circle cx="520" cy="90" r="2" fill="white" />
+    <circle cx="590" cy="120" r="1.5" fill="white" />
+    <circle cx="660" cy="140" r="1" fill="white" />
+    <circle cx="730" cy="100" r="1.5" fill="white" />
+  </g>
+  
+  <!-- Snow Ground -->
+  <rect x="0" y="300" width="800" height="200" fill="white" />
+  
+  <!-- Main Elements -->
+  <g>
+    <!-- Christmas Tree -->
+    <polygon points="300,300 200,300 250,170" fill="#006400" />
+    <polygon points="320,260 180,260 250,130" fill="#008000" />
+    <polygon points="310,220 190,220 250,100" fill="#228b22" />
+    <rect x="240" y="300" width="20" height="30" fill="#8b4513" />
+    
+    <!-- Tree Decorations -->
+    <circle cx="260" cy="280" r="5" fill="red" />
+    <circle cx="220" cy="260" r="5" fill="gold" />
+    <circle cx="280" cy="260" r="5" fill="blue" />
+    <circle cx="240" cy="240" r="5" fill="purple" />
+    <circle cx="260" cy="220" r="5" fill="red" />
+    <circle cx="230" cy="200" r="5" fill="gold" />
+    <circle cx="270" cy="200" r="5" fill="blue" />
+    <circle cx="250" cy="180" r="5" fill="purple" />
+    <circle cx="235" cy="160" r="5" fill="red" />
+    <circle cx="265" cy="160" r="5" fill="gold" />
+    <circle cx="250" cy="130" r="7" fill="yellow" />
+    
+    <!-- Presents -->
+    <rect x="190" y="290" width="20" height="15" fill="red" />
+    <rect x="190" y="290" width="20" height="3" fill="gold" />
+    <rect x="199" y="290" width="2" height="15" fill="gold" />
+    
+    <rect x="215" y="290" width="25" height="15" fill="blue" />
+    <rect x="215" y="290" width="25" height="3" fill="silver" />
+    <rect x="226" y="290" width="3" height="15" fill="silver" />
+    
+    <rect x="290" y="290" width="20" height="15" fill="green" />
+    <rect x="290" y="290" width="20" height="3" fill="red" />
+    <rect x="299" y="290" width="2" height="15" fill="red" />
+    
+    <!-- Menorah -->
+    <rect x="450" y="280" width="100" height="10" fill="#daa520" />
+    <rect x="490" y="240" width="20" height="40" fill="#daa520" />
+    
+    <!-- Candles -->
+    <rect x="460" y="230" width="5" height="50" fill="#b8860b" />
+    <ellipse cx="462.5" cy="225" rx="3" ry="5" fill="orange" />
+    
+    <rect x="475" y="220" width="5" height="60" fill="#b8860b" />
+    <ellipse cx="477.5" cy="215" rx="3" ry="5" fill="orange" />
+    
+    <rect x="490" y="210" width="5" height="30" fill="#b8860b" />
+    <ellipse cx="492.5" cy="205" rx="3" ry="5" fill="orange" />
+    
+    <rect x="505" y="220" width="5" height="60" fill="#b8860b" />
+    <ellipse cx="507.5" cy="215" rx="3" ry="5" fill="orange" />
+    
+    <rect x="520" y="230" width="5" height="50" fill="#b8860b" />
+    <ellipse cx="522.5" cy="225" rx="3" ry="5" fill="orange" />
+    
+    <rect x="535" y="230" width="5" height="50" fill="#b8860b" />
+    <ellipse cx="537.5" cy="225" rx="3" ry="5" fill="orange" />
+    
+    <!-- Dreidel -->
+    <polygon points="580,280 590,240 600,280" fill="#4169e1" />
+    <polygon points="580,280 600,280 590,290" fill="#4169e1" />
+    <rect x="588" y="230" width="4" height="10" fill="#8b4513" />
+    <text x="590" y="270" font-family="Arial" font-size="10" fill="white" text-anchor="middle">נ</text>
+    
+    <!-- Snowman -->
+    <circle cx="150" cy="300" r="35" fill="white" stroke="#e0e0e0" stroke-width="2" />
+    <circle cx="150" cy="240" r="25" fill="white" stroke="#e0e0e0" stroke-width="2" />
+    <circle cx="150" cy="195" r="20" fill="white" stroke="#e0e0e0" stroke-width="2" />
+    
+    <!-- Snowman Features -->
+    <circle cx="143" cy="188" r="3" fill="black" />
+    <circle cx="157" cy="188" r="3" fill="black" />
+    <polygon points="150,195 150,200 160,198" fill="orange" />
+    <circle cx="150" cy="215" r="2" fill="black" />
+    <circle cx="150" cy="230" r="2" fill="black" />
+    <circle cx="150" cy="245" r="2" fill="black" />
+    <path d="M130,180 Q150,170 170,180" stroke="black" stroke-width="2" fill="none" />
+    
+    <!-- Hat -->
+    <rect x="130" y="170" width="40" height="5" fill="black" />
+    <rect x="135" y="150" width="30" height="20" fill="black" />
+    <rect x="135" y="165" width="30" height="2" fill="red" />
+    
+    <!-- Scarf -->
+    <rect x="135" y="203" width="30" height="7" fill="red" />
+    <rect x="135" y="203" width="5" height="20" fill="red" />
+    
+    <!-- Candy Cane -->
+    <path d="M700,200 C720,220 680,240 700,260 L690,265 C670,245 710,225 690,205 Z" fill="white" />
+    <path d="M700,200 C710,210 690,220 700,230 L693,235 C683,225 703,215 693,205 Z" fill="red" />
+    <path d="M700,230 C710,240 690,250 700,260 L693,265 C683,255 703,245 693,235 Z" fill="red" />
+    
+    <!-- Snow Flakes -->
+    <g id="snowflakes" fill="white">
+      <path d="M50,350 L70,350 M60,340 L60,360 M53,343 L67,357 M53,357 L67,343" stroke="white" stroke-width="2" />
+      <path d="M120,380 L140,380 M130,370 L130,390 M123,373 L137,387 M123,387 L137,373" stroke="white" stroke-width="2" />
+      <path d="M200,340 L220,340 M210,330 L210,350 M203,333 L217,347 M203,347 L217,333" stroke="white" stroke-width="2" />
+      <path d="M660,370 L680,370 M670,360 L670,380 M663,363 L677,377 M663,377 L677,363" stroke="white" stroke-width="2" />
+      <path d="M740,330 L760,330 M750,320 L750,340 M743,323 L757,337 M743,337 L757,323" stroke="white" stroke-width="2" />
+    </g>
+    
+    <!-- Festive Light String -->
+    <path d="M0,200 Q100,170 200,200 Q300,230 400,200 Q500,170 600,200 Q700,230 800,200" stroke="#333" stroke-width="3" fill="none" />
+    
+    <!-- Lights on String -->
+    <circle cx="50" cy="186" r="5" fill="red" />
+    <circle cx="100" cy="177" r="5" fill="green" />
+    <circle cx="150" cy="186" r="5" fill="blue" />
+    <circle cx="200" cy="200" r="5" fill="yellow" />
+    <circle cx="250" cy="214" r="5" fill="purple" />
+    <circle cx="300" cy="217" r="5" fill="red" />
+    <circle cx="350" cy="210" r="5" fill="green" />
+    <circle cx="400" cy="200" r="5" fill="blue" />
+    <circle cx="450" cy="190" r="5" fill="yellow" />
+    <circle cx="500" cy="177" r="5" fill="purple" />
+    <circle cx="550" cy="186" r="5" fill="red" />
+    <circle cx="600" cy="200" r="5" fill="green" />
+    <circle cx="650" cy="214" r="5" fill="blue" />
+    <circle cx="700" cy="217" r="5" fill="yellow" />
+    <circle cx="750" cy="210" r="5" fill="purple" />
+  </g>
+  
+  <!-- Text Label at bottom -->
+  <rect x="0" y="440" width="800" height="60" fill="rgba(0,0,0,0.7)" />
+  <text x="400" y="480" font-family="Arial, sans-serif" font-size="30" fill="white" text-anchor="middle" font-weight="bold">Holidays</text>
+</svg> 

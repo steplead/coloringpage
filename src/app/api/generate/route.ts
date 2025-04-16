@@ -112,6 +112,18 @@ export async function POST(request: NextRequest) {
       const galleryResult = await saveImageToGallery(prompt, storedImageUrl, style, title);
       console.log('Save to gallery result:', galleryResult ? 'Success' : 'Failed');
       
+      // Check if saving to gallery failed
+      if (!galleryResult) {
+        console.error('Failed to save image metadata to gallery database after successful storage.');
+        // Return an error even though the image was stored, as the gallery save failed.
+        return NextResponse.json({
+          success: false,
+          error: 'Image generated and stored, but failed to save to gallery database.',
+          imageUrl: storedImageUrl, // Provide URL for potential client-side fallback/display
+          savedToGallery: false
+        }, { status: 500 }); // Internal Server Error
+      }
+      
       // 返回Supabase存储的URL，而不是原始的阿里云URL
       return NextResponse.json({
         success: true,

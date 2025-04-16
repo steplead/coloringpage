@@ -8,12 +8,25 @@
  * @returns A URL-friendly slug
  */
 export function createSlug(text: string): string {
-  return text
+  // Handle null/undefined input defensively
+  if (!text) {
+    return `generated-post-${Date.now()}`;
+  }
+
+  const slug = text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '') // Remove special characters
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
     .trim(); // Trim whitespace from both ends
+
+  // If the slug is empty after processing (e.g., title was only special chars)
+  // return a unique placeholder
+  if (!slug) {
+    return `generated-post-${Date.now()}`;
+  }
+
+  return slug;
 }
 
 /**

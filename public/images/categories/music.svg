@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <!-- Background with musical themed gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Main background -->
+  <rect width="800" height="500" fill="url(#bg-gradient)" />
+  
+  <!-- Music note decorative patterns -->
+  <g opacity="0.1" fill="white">
+    <path d="M100,100 L100,50 L120,50 L120,100 L150,85 L150,135 L120,120 L120,400 L100,400 L100,100 Z" />
+    <path d="M700,250 L700,200 L720,200 L720,250 L750,235 L750,285 L720,270 L720,400 L700,400 L700,250 Z" />
+    <path d="M300,150 L300,100 L320,100 L320,150 L350,135 L350,185 L320,170 L320,250 L300,250 L300,150 Z" />
+    <path d="M500,200 L500,150 L520,150 L520,200 L550,185 L550,235 L520,220 L520,300 L500,300 L500,200 Z" />
+    <circle cx="100" cy="400" r="25" />
+    <circle cx="700" cy="400" r="25" />
+    <circle cx="300" cy="250" r="25" />
+    <circle cx="500" cy="300" r="25" />
+  </g>
+  
+  <!-- Grand Piano -->
+  <g transform="translate(150, 150)">
+    <!-- Piano body -->
+    <path d="M0,0 L150,0 L200,100 L200,150 L0,150 Z" fill="#0f172a" stroke="#e5e7eb" stroke-width="2" />
+    
+    <!-- Piano lid -->
+    <path d="M0,0 L150,0 L200,100 L50,100 Z" fill="#1e293b" stroke="#e5e7eb" stroke-width="1" />
+    
+    <!-- Piano keys -->
+    <g>
+      <!-- White keys -->
+      <rect x="20" y="120" width="160" height="30" fill="white" stroke="#0f172a" stroke-width="1" />
+      <line x1="40" y1="120" x2="40" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="60" y1="120" x2="60" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="80" y1="120" x2="80" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="100" y1="120" x2="100" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="120" y1="120" x2="120" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="140" y1="120" x2="140" y2="150" stroke="#0f172a" stroke-width="1" />
+      <line x1="160" y1="120" x2="160" y2="150" stroke="#0f172a" stroke-width="1" />
+      
+      <!-- Black keys -->
+      <rect x="30" y="120" width="10" height="20" fill="#0f172a" />
+      <rect x="50" y="120" width="10" height="20" fill="#0f172a" />
+      <rect x="90" y="120" width="10" height="20" fill="#0f172a" />
+      <rect x="110" y="120" width="10" height="20" fill="#0f172a" />
+      <rect x="130" y="120" width="10" height="20" fill="#0f172a" />
+    </g>
+  </g>
+  
+  <!-- Violin -->
+  <g transform="translate(450, 180) rotate(15)">
+    <!-- Violin body -->
+    <path d="M-20,-80 C-40,-60 -50,-20 -40,0 C-50,20 -40,60 -20,80 C-10,90 10,90 20,80 C40,60 50,20 40,0 C50,-20 40,-60 20,-80 C10,-90 -10,-90 -20,-80 Z" fill="#b45309" stroke="#7c2d12" stroke-width="1" />
+    
+    <!-- Violin neck and scroll -->
+    <rect x="-5" y="-140" width="10" height="60" fill="#92400e" />
+    <path d="M-5,-140 C-15,-150 -15,-160 -5,-170 C5,-160 5,-150 -5,-140" fill="#92400e" />
+    
+    <!-- Violin strings -->
+    <line x1="-15" y1="-80" x2="-15" y2="80" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-5" y1="-140" x2="-5" y2="80" stroke="#f8fafc" stroke-width="1" />
+    <line x1="5" y1="-140" x2="5" y2="80" stroke="#f8fafc" stroke-width="1" />
+    <line x1="15" y1="-80" x2="15" y2="80" stroke="#f8fafc" stroke-width="1" />
+    
+    <!-- Violin bridge -->
+    <path d="M-20,0 C-10,10 10,10 20,0" fill="none" stroke="#92400e" stroke-width="2" />
+    
+    <!-- Violin f-holes -->
+    <path d="M-15,-30 C-20,-25 -20,-15 -15,-10 C-10,-15 -10,-25 -15,-30" fill="#0f172a" />
+    <path d="M15,-30 C10,-25 10,-15 15,-10 C20,-15 20,-25 15,-30" fill="#0f172a" />
+    <path d="M-15,30 C-20,25 -20,15 -15,10 C-10,15 -10,25 -15,30" fill="#0f172a" />
+    <path d="M15,30 C10,25 10,15 15,10 C20,15 20,25 15,30" fill="#0f172a" />
+    
+    <!-- Bow -->
+    <path d="M60,30 L-30,-60" fill="none" stroke="#92400e" stroke-width="2" />
+    <path d="M60,30 L-30,-60" fill="none" stroke="#f8fafc" stroke-width="1" />
+  </g>
+  
+  <!-- Guitar -->
+  <g transform="translate(650, 300) rotate(-20)">
+    <!-- Guitar body -->
+    <path d="M-40,-60 C-60,-40 -70,0 -60,40 C-40,80 0,100 40,80 C70,40 70,-20 40,-50 C0,-80 -20,-80 -40,-60 Z" fill="#f59e0b" stroke="#92400e" stroke-width="2" />
+    
+    <!-- Guitar sound hole -->
+    <circle cx="-10" cy="0" r="20" fill="#0f172a" />
+    <circle cx="-10" cy="0" r="15" fill="#f59e0b" />
+    <circle cx="-10" cy="0" r="10" fill="#0f172a" />
+    
+    <!-- Guitar neck -->
+    <rect x="40" y="-50" width="120" height="20" fill="#92400e" />
+    
+    <!-- Guitar head -->
+    <path d="M160,-50 L180,-60 L180,-30 L160,-30 Z" fill="#92400e" />
+    
+    <!-- Guitar strings -->
+    <line x1="-40" y1="-15" x2="180" y2="-55" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-40" y1="-9" x2="180" y1="-51" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-40" y1="-3" x2="180" y1="-47" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-40" y1="3" x2="180" y1="-43" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-40" y1="9" x2="180" y1="-39" stroke="#f8fafc" stroke-width="1" />
+    <line x1="-40" y1="15" x2="180" y1="-35" stroke="#f8fafc" stroke-width="1" />
+    
+    <!-- Guitar frets -->
+    <line x1="45" y1="-40" x2="45" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="60" y1="-40" x2="60" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="75" y1="-40" x2="75" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="90" y1="-40" x2="90" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="105" y1="-40" x2="105" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="120" y1="-40" x2="120" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="135" y1="-40" x2="135" y2="-40" stroke="#f8fafc" stroke-width="1" />
+    <line x1="150" y1="-40" x2="150" y2="-40" stroke="#f8fafc" stroke-width="1" />
+  </g>
+  
+  <!-- Drum Set -->
+  <g transform="translate(200, 350)">
+    <!-- Bass drum -->
+    <ellipse cx="0" cy="0" rx="40" ry="30" fill="#ef4444" stroke="#0f172a" stroke-width="2" />
+    <ellipse cx="0" cy="0" rx="35" ry="25" fill="#fecaca" stroke="#0f172a" stroke-width="1" />
+    <line x1="-35" y1="-10" x2="35" y2="-10" stroke="#0f172a" stroke-width="1" />
+    <line x1="-35" y1="10" x2="35" y2="10" stroke="#0f172a" stroke-width="1" />
+    
+    <!-- Snare drum -->
+    <ellipse cx="-50" cy="-30" rx="15" ry="10" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+    <line x1="-65" y1="-30" x2="-35" y2="-30" stroke="#0f172a" stroke-width="1" />
+    
+    <!-- Tom toms -->
+    <ellipse cx="20" cy="-40" rx="15" ry="10" fill="#3b82f6" stroke="#0f172a" stroke-width="2" />
+    <ellipse cx="50" cy="-30" rx="15" ry="10" fill="#3b82f6" stroke="#0f172a" stroke-width="2" />
+    
+    <!-- Cymbal -->
+    <ellipse cx="-40" cy="-70" rx="25" ry="5" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    <line x1="-40" y1="-70" x2="-40" y2="-40" stroke="#0f172a" stroke-width="1" />
+    
+    <!-- Hi-hat -->
+    <ellipse cx="40" cy="-70" rx="20" ry="3" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    <ellipse cx="40" cy="-67" rx="20" ry="3" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    <line x1="40" y1="-67" x2="40" y2="-40" stroke="#0f172a" stroke-width="1" />
+    
+    <!-- Drum sticks -->
+    <line x1="-10" y1="-90" x2="20" y2="-50" stroke="#fde68a" stroke-width="3" stroke-linecap="round" />
+    <line x1="10" y1="-90" x2="-20" y2="-50" stroke="#fde68a" stroke-width="3" stroke-linecap="round" />
+  </g>
+  
+  <!-- Musical Notes with glow effect -->
+  <g filter="url(#glow)" fill="white">
+    <!-- Eighth note 1 -->
+    <path d="M350,100 L350,180 L330,190 C330,198 340,205 350,200 C360,195 370,198 370,190 L370,180 L350,180" />
+    <line x1="350" y1="100" x2="370" y2="90" stroke="white" stroke-width="2" />
+    
+    <!-- Eighth note 2 -->
+    <path d="M400,150 L400,230 L380,240 C380,248 390,255 400,250 C410,245 420,248 420,240 L420,230 L400,230" />
+    <line x1="400" y1="150" x2="420" y2="140" stroke="white" stroke-width="2" />
+    
+    <!-- Quarter note -->
+    <path d="M450,120 L450,200 L430,210 C430,218 440,225 450,220 C460,215 470,218 470,210 L470,200 L450,200" />
+    
+    <!-- Half note -->
+    <ellipse cx="510" cy="200" rx="20" ry="15" fill="none" stroke="white" stroke-width="2" />
+    <line x1="530" y1="200" x2="530" y2="120" stroke="white" stroke-width="2" />
+    
+    <!-- Treble clef -->
+    <path d="M300,260 C290,240 290,220 300,200 C310,180 320,190 320,210 C320,230 300,250 280,260 
+             C270,280 280,300 300,300 C320,300 330,280 320,260 C310,240 300,250 290,270
+             C280,290 290,320 310,320 C330,320 340,300 330,280" fill="none" stroke="white" stroke-width="3" />
+  </g>
+  
+  <!-- Trumpet -->
+  <g transform="translate(550, 380) rotate(-30)">
+    <!-- Main tube -->
+    <path d="M0,0 C10,0 20,5 30,0 C40,-5 50,0 60,10 C70,20 80,10 90,0" fill="none" stroke="#facc15" stroke-width="10" stroke-linecap="round" />
+    
+    <!-- Bell -->
+    <path d="M90,0 L110,0 C130,-20 130,20 110,0" fill="#facc15" stroke="#facc15" stroke-width="2" />
+    
+    <!-- Valves -->
+    <rect x="30" y="-15" width="10" height="10" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    <rect x="45" y="-15" width="10" height="10" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    <rect x="60" y="-15" width="10" height="10" fill="#facc15" stroke="#92400e" stroke-width="1" />
+    
+    <!-- Mouthpiece -->
+    <circle cx="0" cy="0" r="5" fill="#facc15" stroke="#92400e" stroke-width="1" />
+  </g>
+  
+  <!-- Microphone -->
+  <g transform="translate(350, 350)">
+    <!-- Mic head -->
+    <path d="M0,-50 L15,-40 L15,20 L-15,20 L-15,-40 Z" fill="#0f172a" stroke="#e5e7eb" stroke-width="1" />
+    <ellipse cx="0" cy="-50" rx="15" ry="10" fill="#0f172a" stroke="#e5e7eb" stroke-width="1" />
+    <rect x="-10" y="-45" width="20" height="10" fill="#e5e7eb" stroke="#0f172a" stroke-width="1" />
+    
+    <!-- Mic stand -->
+    <rect x="-2" y="20" width="4" height="80" fill="#0f172a" />
+    <path d="M-20,100 L20,100 L15,110 L-15,110 Z" fill="#0f172a" />
+  </g>
+  
+  <!-- Headphones -->
+  <g transform="translate(450, 70)">
+    <!-- Headband -->
+    <path d="M-30,-5 C-20,-20 20,-20 30,-5" fill="none" stroke="#0f172a" stroke-width="4" />
+    
+    <!-- Ear cups -->
+    <path d="M-30,-5 C-40,0 -40,20 -30,25 C-20,30 -10,20 -10,10 C-10,0 -20,-10 -30,-5 Z" fill="#0f172a" />
+    <path d="M30,-5 C40,0 40,20 30,25 C20,30 10,20 10,10 C10,0 20,-10 30,-5 Z" fill="#0f172a" />
+    
+    <!-- Ear pads -->
+    <path d="M-30,-5 C-25,-7 -15,-7 -10,10 C-15,20 -25,20 -30,25" fill="none" stroke="#e5e7eb" stroke-width="2" />
+    <path d="M30,-5 C25,-7 15,-7 10,10 C15,20 25,20 30,25" fill="none" stroke="#e5e7eb" stroke-width="2" />
+    
+    <!-- Cable -->
+    <path d="M-15,15 C-30,30 -40,20 -50,30" fill="none" stroke="#0f172a" stroke-width="2" />
+  </g>
+  
+  <!-- Text Label -->
+  <rect x="0" y="440" width="800" height="60" fill="rgba(0,0,0,0.7)" />
+  <text x="400" y="480" font-family="Arial, sans-serif" font-size="30" fill="white" text-anchor="middle" font-weight="bold">Music</text>
+</svg> 

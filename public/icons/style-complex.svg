@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#f5f5f5" rx="8" />
+  
+  <!-- Base mandala shape -->
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#333" stroke-width="1.5" />
+  
+  <!-- Detailed patterns -->
+  <path d="M32 12 L32 52" stroke="#333" stroke-width="1" />
+  <path d="M12 32 L52 32" stroke="#333" stroke-width="1" />
+  <path d="M18 18 L46 46" stroke="#333" stroke-width="1" />
+  <path d="M46 18 L18 46" stroke="#333" stroke-width="1" />
+  
+  <!-- Inner patterns -->
+  <circle cx="32" cy="32" r="12" fill="none" stroke="#333" stroke-width="1" />
+  <circle cx="32" cy="32" r="6" fill="none" stroke="#333" stroke-width="1" />
+  
+  <!-- Detail elements -->
+  <path d="M32 20 Q36 26 32 32 Q28 26 32 20" fill="none" stroke="#333" stroke-width="0.75" />
+  <path d="M32 32 Q36 38 32 44 Q28 38 32 32" fill="none" stroke="#333" stroke-width="0.75" />
+  <path d="M20 32 Q26 36 32 32 Q26 28 20 32" fill="none" stroke="#333" stroke-width="0.75" />
+  <path d="M32 32 Q38 36 44 32 Q38 28 32 32" fill="none" stroke="#333" stroke-width="0.75" />
+  
+  <text x="32" y="56" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Complex</text>
+</svg> 

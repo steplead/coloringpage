@@ -38,11 +38,23 @@ export async function GET() {
     console.log('Generating test blog post for:', topic);
     
     // Generate blog content with our improved function
-    const { title, content, description } = await generateBlogPost(
+    const blogContent = await generateBlogPost(
       topic,
       1500, // target length
       imageDetails
     );
+    
+    // Check if generation was skipped or failed
+    if (!blogContent) {
+      console.error('Test blog generation skipped or failed because generateBlogPost returned null.');
+      return NextResponse.json(
+        { error: 'Blog post generation was skipped (likely during build) or failed.' },
+        { status: 503 } // Service Unavailable might be appropriate here
+      );
+    }
+    
+    // Now we know blogContent is not null, proceed with destructuring
+    const { title, content, description } = blogContent;
     
     // Check for unwanted patterns in the content
     const unwantedPhrases = [

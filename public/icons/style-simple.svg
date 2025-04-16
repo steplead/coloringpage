@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#f5f5f5" rx="8" />
+  
+  <!-- Simple flower shape -->
+  <circle cx="32" cy="26" r="10" fill="none" stroke="#333" stroke-width="1.5" />
+  
+  <!-- Stem -->
+  <path d="M32 36 L32 48" stroke="#333" stroke-width="1.5" />
+  
+  <!-- Leaves -->
+  <path d="M32 42 Q38 40 38 36" fill="none" stroke="#333" stroke-width="1.5" />
+  <path d="M32 38 Q26 36 26 32" fill="none" stroke="#333" stroke-width="1.5" />
+  
+  <text x="32" y="56" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Simple</text>
+</svg> 

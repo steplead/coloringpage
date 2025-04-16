@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#2c0845" />
+  
+  <!-- Stars -->
+  <g fill="#ffffff">
+    <circle cx="100" cy="50" r="2" />
+    <circle cx="150" cy="80" r="1" />
+    <circle cx="200" cy="30" r="1.5" />
+    <circle cx="250" cy="70" r="1" />
+    <circle cx="300" cy="40" r="2" />
+    <circle cx="350" cy="90" r="1.5" />
+    <circle cx="400" cy="20" r="1" />
+    <circle cx="450" cy="60" r="2" />
+    <circle cx="500" cy="30" r="1" />
+    <circle cx="550" cy="80" r="1.5" />
+    <circle cx="600" cy="50" r="1" />
+    <circle cx="650" cy="70" r="2" />
+    <circle cx="700" cy="40" r="1.5" />
+    <circle cx="750" cy="90" r="1" />
+    
+    <circle cx="125" cy="120" r="1" />
+    <circle cx="175" cy="140" r="1.5" />
+    <circle cx="225" cy="110" r="1" />
+    <circle cx="275" cy="150" r="2" />
+    <circle cx="325" cy="130" r="1" />
+    <circle cx="375" cy="160" r="1.5" />
+    <circle cx="425" cy="120" r="1" />
+    <circle cx="475" cy="150" r="2" />
+    <circle cx="525" cy="130" r="1.5" />
+    <circle cx="575" cy="160" r="1" />
+    <circle cx="625" cy="140" r="2" />
+    <circle cx="675" cy="120" r="1" />
+    <circle cx="725" cy="150" r="1.5" />
+  </g>
+  
+  <!-- Fantasy Castle -->
+  <g>
+    <!-- Main Castle Structure -->
+    <rect x="300" y="200" width="200" height="200" fill="#6a0dad" />
+    
+    <!-- Castle Towers -->
+    <rect x="280" y="180" width="40" height="220" fill="#8e24aa" />
+    <path d="M280,180 L300,160 L320,180" fill="#8e24aa" />
+    <circle cx="300" cy="190" r="10" fill="#651fff" />
+    
+    <rect x="480" y="180" width="40" height="220" fill="#8e24aa" />
+    <path d="M480,180 L500,160 L520,180" fill="#8e24aa" />
+    <circle cx="500" cy="190" r="10" fill="#651fff" />
+    
+    <!-- Castle Door -->
+    <rect x="375" y="340" width="50" height="60" fill="#4a148c" />
+    <circle cx="385" cy="370" r="3" fill="#ffd700" />
+    
+    <!-- Castle Windows -->
+    <rect x="330" y="240" width="20" height="30" fill="#651fff" />
+    <rect x="380" y="240" width="20" height="30" fill="#651fff" />
+    <rect x="430" y="240" width="20" height="30" fill="#651fff" />
+    
+    <rect x="330" y="290" width="20" height="30" fill="#651fff" />
+    <rect x="430" y="290" width="20" height="30" fill="#651fff" />
+  </g>
+  
+  <!-- Dragon -->
+  <g>
+    <!-- Dragon Body -->
+    <path d="M600,300 C620,280 650,270 670,280 C690,290 700,310 690,330 C680,350 660,360 640,350 C620,340 580,320 600,300 Z" fill="#f44336" />
+    
+    <!-- Dragon Head -->
+    <path d="M670,280 C690,270 710,270 720,280 C730,290 730,310 720,320 C710,330 690,330 670,320" fill="#f44336" />
+    
+    <!-- Dragon Eye -->
+    <circle cx="700" cy="290" r="5" fill="#ffeb3b" />
+    
+    <!-- Dragon Fire -->
+    <path d="M720,300 C740,290 760,300 770,310 C780,320 790,330 800,320" fill="#ff9800" />
+    <path d="M720,300 C750,305 770,295 780,285 C790,275 800,270 810,280" fill="#ffeb3b" />
+  </g>
+  
+  <!-- Unicorn -->
+  <g>
+    <!-- Unicorn Body -->
+    <ellipse cx="150" cy="350" rx="70" ry="40" fill="#f3e5f5" />
+    
+    <!-- Unicorn Legs -->
+    <rect x="100" y="390" width="10" height="50" fill="#f3e5f5" />
+    <rect x="130" y="390" width="10" height="50" fill="#f3e5f5" />
+    <rect x="160" y="390" width="10" height="50" fill="#f3e5f5" />
+    <rect x="190" y="390" width="10" height="50" fill="#f3e5f5" />
+    
+    <!-- Unicorn Head -->
+    <ellipse cx="220" cy="330" rx="30" ry="20" fill="#f3e5f5" />
+    
+    <!-- Unicorn Horn -->
+    <path d="M220,310 L240,270" stroke="#ffd700" stroke-width="5" />
+    
+    <!-- Unicorn Mane -->
+    <path d="M190,330 C180,320 170,310 170,300 C170,290 180,280 190,290 C200,300 210,310 200,320" fill="#ce93d8" />
+  </g>
+  
+  <!-- Wizard -->
+  <g>
+    <!-- Wizard Robe -->
+    <path d="M70,350 L100,250 L130,350 Z" fill="#3f51b5" />
+    
+    <!-- Wizard Hat -->
+    <path d="M90,250 L120,180 L110,250 Z" fill="#3f51b5" />
+    
+    <!-- Wizard Staff -->
+    <line x1="140" y1="300" x2="160" y2="240" stroke="#795548" stroke-width="3" />
+    <circle cx="160" cy="240" r="8" fill="#29b6f6" />
+    
+    <!-- Magic Sparkles -->
+    <circle cx="170" cy="230" r="2" fill="#ffd700" />
+    <circle cx="180" cy="235" r="1" fill="#ffd700" />
+    <circle cx="175" cy="225" r="1.5" fill="#ffd700" />
+  </g>
+  
+  <!-- Overlay Gradient for visual appeal -->
+  <rect width="800" height="500" fill="url(#overlay)" />
+  <defs>
+    <linearGradient id="overlay" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7b1fa2" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Text Label at bottom -->
+  <rect x="0" y="440" width="800" height="60" fill="rgba(0,0,0,0.7)" />
+  <text x="400" y="480" font-family="Arial, sans-serif" font-size="30" fill="white" text-anchor="middle" font-weight="bold">Fantasy</text>
+</svg> 

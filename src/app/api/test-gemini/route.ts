@@ -32,13 +32,19 @@ export async function GET() {
     };
     
     // Call Gemini API
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
     const response = await fetch(`${API_URL}?key=${API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestData)
+      body: JSON.stringify(requestData),
+      signal: controller.signal // Add AbortController signal
     });
+    
+    clearTimeout(timeoutId); // Clear timeout if fetch completes
     
     if (!response.ok) {
       const errorText = await response.text();

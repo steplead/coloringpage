@@ -39,14 +39,20 @@ export async function GET() {
     };
     
     // Fetch from the Gemini API
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-goog-api-key': API_KEY,
+        'x-goog-api-key': API_KEY, // Note: Using x-goog-api-key header here
       },
       body: JSON.stringify(requestData),
+      signal: controller.signal // Add AbortController signal
     });
+    
+    clearTimeout(timeoutId); // Clear timeout if fetch completes
     
     // Parse the response
     if (!response.ok) {

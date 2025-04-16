@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#f5f5f5" rx="8" />
+  
+  <!-- Medium complexity butterfly shape -->
+  <!-- Body -->
+  <path d="M32 18 L32 46" stroke="#333" stroke-width="1.5" />
+  
+  <!-- Wing outlines -->
+  <path d="M32 26 Q42 16 48 28 Q42 38 32 32" fill="none" stroke="#333" stroke-width="1.5" />
+  <path d="M32 26 Q22 16 16 28 Q22 38 32 32" fill="none" stroke="#333" stroke-width="1.5" />
+  
+  <!-- Wing patterns -->
+  <circle cx="40" cy="24" r="3" fill="none" stroke="#333" stroke-width="0.75" />
+  <circle cx="24" cy="24" r="3" fill="none" stroke="#333" stroke-width="0.75" />
+  
+  <!-- Antennae -->
+  <path d="M32 18 Q28 12 26 15" fill="none" stroke="#333" stroke-width="0.75" />
+  <path d="M32 18 Q36 12 38 15" fill="none" stroke="#333" stroke-width="0.75" />
+  
+  <text x="32" y="56" text-anchor="middle" font-family="Arial" font-size="8" fill="#333">Medium</text>
+</svg> 

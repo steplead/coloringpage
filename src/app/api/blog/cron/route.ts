@@ -131,9 +131,11 @@ export async function GET() {
         // Generate blog post content using Gemini
         const blogContent = await generateBlogPost(topic, config.postLength);
         
-        if (!blogContent) {
-          results.push({ topic, success: false, error: 'Failed to generate content' });
-          continue;
+        // Check if content generation was successful and title exists
+        if (!blogContent || !blogContent.title || blogContent.title.trim() === '') {
+          console.error(`Failed to generate valid title for topic: ${topic}`);
+          results.push({ topic, success: false, error: 'Failed to generate valid title' });
+          continue; // Skip this topic
         }
         
         // Extract content components

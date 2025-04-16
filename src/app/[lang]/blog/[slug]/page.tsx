@@ -252,47 +252,37 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
   };
   
   return (
-    <div className="bg-gray-50 min-h-screen" itemScope itemType="https://schema.org/Article">
-      {/* Schema.org metadata */}
+    <div className="bg-gray-50 py-12 md:py-16">
+      {/* Structured Data Scripts */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       {imageSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(imageSchema) }} />}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      
-      <article className="max-w-4xl mx-auto pt-8 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white p-6 md:p-10 rounded-lg shadow-lg">
-          {/* Post Metadata */}
-          <header className="mb-8 pb-6 border-b border-gray-200">
-            {/* Breadcrumbs with translations */}
-            <nav className="text-sm mb-4" aria-label={t('breadcrumb.ariaLabel', "Breadcrumb")}>
-              <ol className="flex flex-wrap items-center text-gray-500">
-                <li className="flex items-center">
-                  <Link href={`/${lang}`} className="hover:text-blue-600">
-                    {t('breadcrumb.home', "Home")}
-                  </Link>
-                  <svg className="mx-2 h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </li>
-                <li className="flex items-center">
-                  <Link href={`/${lang}/blog`} className="hover:text-blue-600">
-                    {t('breadcrumb.blog', "Blog")}
-                  </Link>
-                  <svg className="mx-2 h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </li>
-                <li className="text-gray-700 font-medium" aria-current="page">
-                  {post.title}
-                </li>
-              </ol>
-            </nav>
-            
-            {/* SEO-optimized H1 tag */}
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight" itemProp="headline">{post.title}</h1>
-            
-            {/* Post meta: Date, Reading Time */}
-            <div className="flex flex-wrap items-center text-sm text-gray-500 space-x-4 mb-4">
+      {breadcrumbSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />}
+
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="mb-8 md:mb-12 border-b border-gray-200 pb-8">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
+            {post.title}
+          </h1>
+          
+          {/* === Add Featured Image Here === */}
+          {post.featured_image_url && (
+            <div className="mb-8 aspect-video relative overflow-hidden rounded-xl shadow-lg">
+              <Image
+                src={post.featured_image_url}
+                alt={t('blogPost.featuredImageAlt', '%s - Featured Image').replace('%s', post.title)}
+                fill
+                style={{ objectFit: 'cover' }} // Use fill and objectFit for responsiveness
+                sizes="(max-width: 1024px) 100vw, 896px" // 896px is max-w-4xl
+                priority // Prioritize loading the main image
+                onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder-image.svg'; }} // Fallback on error
+              />
+            </div>
+          )}
+          {/* === End Featured Image === */}
+
+          <div className="flex flex-wrap items-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center space-x-1">
               <span itemProp="datePublished" content={isoDate}>{formattedPublishDate}</span>
               <span>·</span>
               <span>{t('blogPost.readingTime', '%d min read', { d: readingTime })}</span>
@@ -310,72 +300,54 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
                 </Link>
               ))}
             </div>
-          </header>
-
-          {/* Featured Image */}
-          {post.featured_image_url && (
-            <div className="mb-8 -mx-6 md:-mx-10 relative overflow-hidden rounded-t-lg" itemProp="image" itemScope itemType="https://schema.org/ImageObject">
-              <Image
-                src={post.featured_image_url}
-                alt={t('blogPost.featuredImageAlt', '%s - Featured Image').replace('%s', post.title)}
-                width={1200}
-                height={630}
-                className="w-full h-auto object-cover"
-                priority
-                sizes="(max-width: 768px) 100vw, 1200px"
-              />
-              <meta itemProp="url" content={post.featured_image_url} />
-              <meta itemProp="width" content="1200" />
-              <meta itemProp="height" content="630" />
-            </div>
-          )}
-
-          {/* Post Content - Rendered with ReactMarkdown */}
-          <div className="prose prose-lg max-w-none prose-blue prose-img:rounded-xl prose-a:text-blue-600 hover:prose-a:text-blue-800" itemProp="articleBody">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-              {post.content}
-            </ReactMarkdown>
           </div>
+        </header>
 
-          {/* Share Buttons */}
-          <div className="mt-8">
-            <ShareButtons url={currentPageUrl} title={post.title} />
+        {/* Post Content - Rendered with ReactMarkdown */}
+        <div className="prose prose-lg max-w-none prose-blue prose-img:rounded-xl prose-a:text-blue-600 hover:prose-a:text-blue-800" itemProp="articleBody">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+            {post.content}
+          </ReactMarkdown>
+        </div>
+
+        {/* Share Buttons */}
+        <div className="mt-8">
+          <ShareButtons url={currentPageUrl} title={post.title} />
+        </div>
+
+        {/* Related Coloring Page */}
+        {relatedColoringPage && (
+          <div className="mt-12 p-6 bg-gray-50 rounded-lg text-center">
+            <h2 className="text-2xl font-semibold mb-4">{t('blog.relatedColoringPage')}</h2>
+            <Link href={`/${params.lang}/gallery/${relatedColoringPage.id}`} className="block w-full max-w-sm mx-auto group">
+              <div className="relative aspect-square w-full rounded-lg overflow-hidden shadow-md mb-3 group-hover:opacity-90 transition-opacity">
+                <Image 
+                  // Ensure only image_url is used
+                  src={relatedColoringPage.image_url} 
+                  alt={relatedColoringPage.prompt || t('blog.relatedColoringPageAlt')}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 500px"
+                />
+              </div>
+              <p className="text-lg font-medium text-blue-600 group-hover:underline">{t('blog.viewColoringPage')}</p>
+            </Link>
           </div>
+        )}
 
-          {/* Related Coloring Page */}
-          {relatedColoringPage && (
-            <div className="mt-12 p-6 bg-gray-50 rounded-lg text-center">
-              <h2 className="text-2xl font-semibold mb-4">{t('blog.relatedColoringPage')}</h2>
-              <Link href={`/${params.lang}/gallery/${relatedColoringPage.id}`} className="block w-full max-w-sm mx-auto group">
-                <div className="relative aspect-square w-full rounded-lg overflow-hidden shadow-md mb-3 group-hover:opacity-90 transition-opacity">
-                  <Image 
-                    // Ensure only image_url is used
-                    src={relatedColoringPage.image_url} 
-                    alt={relatedColoringPage.prompt || t('blog.relatedColoringPageAlt')}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, 500px"
-                  />
-                </div>
-                <p className="text-lg font-medium text-blue-600 group-hover:underline">{t('blog.viewColoringPage')}</p>
-              </Link>
-            </div>
-          )}
-
-          {/* FAQ Section */}
-          {post.seo_data?.faqSchema && post.seo_data.faqSchema.length > 0 && (
-            <div className="mt-12">
-              <FAQSection faqs={post.seo_data.faqSchema} />
-            </div>
-          )}
-
-          {/* Related Blog Posts */}
-          <div className="mt-16">
-            <RelatedPosts 
-              posts={relatedPosts} 
-              locale={lang}
-            />
+        {/* FAQ Section */}
+        {post.seo_data?.faqSchema && post.seo_data.faqSchema.length > 0 && (
+          <div className="mt-12">
+            <FAQSection faqs={post.seo_data.faqSchema} />
           </div>
+        )}
+
+        {/* Related Blog Posts */}
+        <div className="mt-16">
+          <RelatedPosts 
+            posts={relatedPosts} 
+            locale={lang}
+          />
         </div>
       </article>
     </div>

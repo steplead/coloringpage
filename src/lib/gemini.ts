@@ -163,16 +163,12 @@ export async function generateBlogPost(
   title: string;
   content: string;
   description: string;
-}> {
+} | null> {
   try {
-    // During build, return a placeholder
+    // During build, return null to prevent insertion
     if (process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
-      console.log('Skipping blog post generation during build');
-      return {
-        title: 'Placeholder Title',
-        content: 'Placeholder content',
-        description: 'Placeholder description'
-      };
+      console.log('Skipping blog post generation during build, returning null.');
+      return null;
     }
 
     const API_KEY = process.env.GEMINI_API_KEY;
@@ -221,7 +217,7 @@ CRUCIAL: The entire blog post must be about THIS SPECIFIC image. Do not include 
     try {
       // Attempt to make the API request with a reasonable timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout (increased from 15s)
       
       const response = await fetch(`${API_URL}?key=${API_KEY}`, {
       method: 'POST',
