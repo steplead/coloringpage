@@ -7,13 +7,13 @@ This document provides information about the API used in the AI Coloring Page ap
 ### Core Information
 - **Purpose**: AI-based image generation for coloring pages
 - **Endpoint**: `https://api.siliconflow.cn/v1/images/generations`
-- **Model**: `black-forest-labs/FLUX.1-schnell`
+- **Model**: `Kwai-Kolors/Kolors`
 - **API Key**: `sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah`
 
 ### Request Parameters
 ```json
 {
-  "model": "black-forest-labs/FLUX.1-schnell",
+  "model": "Kwai-Kolors/Kolors",
   "prompt": "Description of the image to generate",
   "num_inference_steps": 30,
   "guidance_scale": 7.5

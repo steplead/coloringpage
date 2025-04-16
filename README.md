@@ -196,7 +196,7 @@ npm install
 # SiliconFlow API Configuration
 SILICONFLOW_API_KEY=your_api_key_here
 SILICONFLOW_API_URL=https://api.siliconflow.cn/v1/images/generations
-SILICONFLOW_MODEL=black-forest-labs/FLUX.1-schnell
+SILICONFLOW_MODEL=Kwai-Kolors/Kolors
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here

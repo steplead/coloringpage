@@ -9,7 +9,8 @@ npx vercel env rm SILICONFLOW_MODEL production -y || true
 echo "Adding SiliconFlow API configuration..."
 npx vercel env add SILICONFLOW_API_KEY production <<< "sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah"
 npx vercel env add SILICONFLOW_API_URL production <<< "https://api.siliconflow.cn/v1/images/generations"
-npx vercel env add SILICONFLOW_MODEL production <<< "black-forest-labs/FLUX.1-schnell"
+echo "Adding SILICONFLOW_MODEL..."
+npx vercel env add SILICONFLOW_MODEL production <<< "Kwai-Kolors/Kolors"
 
 # Add Image Generation Configuration
 echo "Adding Image Generation configuration..."

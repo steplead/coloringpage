@@ -1,1 +1,10 @@
- 
+<!-- This is a placeholder SVG representing og-default.jpg -->
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#E5E7EB" />
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="60" fill="#4B5563">
+    AI Coloring Page Generator
+  </text>
+  <text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#6B7280">
+    (Replace with og-default.jpg 1200x630)
+  </text>
+</svg> 

@@ -5,7 +5,7 @@ import { saveImageToGallery } from '@/lib/supabase';
 // SiliconFlow API configuration from environment variables
 const API_KEY = process.env.SILICONFLOW_API_KEY;
 const API_URL = process.env.SILICONFLOW_API_URL || 'https://api.siliconflow.cn/v1/images/generations';
-const MODEL = process.env.SILICONFLOW_MODEL || 'black-forest-labs/FLUX.1-schnell';
+const MODEL = process.env.SILICONFLOW_MODEL || 'Kwai-Kolors/Kolors';
 
 // Basic coloring page style prompt
 const BASE_PROMPT = 'black outline coloring page, clean lines';
