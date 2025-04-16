@@ -155,15 +155,26 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {examplePages.map((example) => (
               <div key={example.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                <div className="aspect-square relative group bg-gray-50">
-                  <Image
-                    src={example.image}
-                    alt={t(example.altTextKey, 'Example AI Coloring Page')}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-contain transition-transform duration-300 group-hover:scale-105"
-                    priority={example.id === 'example-dragon'}
-                  />
+                <div className="aspect-square relative group bg-gray-50 flex items-center justify-center">
+                  {example.image.endsWith('.svg') ? (
+                    <Image
+                      src={example.image}
+                      alt={t(example.altTextKey, 'Example AI Coloring Page')}
+                      width={300}
+                      height={300}
+                      className="object-contain transition-transform duration-300 group-hover:scale-105"
+                      priority={example.id === 'example-dragon'}
+                    />
+                  ) : (
+                    <Image
+                      src={example.image}
+                      alt={t(example.altTextKey, 'Example AI Coloring Page')}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-contain transition-transform duration-300 group-hover:scale-105"
+                      priority={example.id === 'example-dragon'}
+                    />
+                  )}
                 </div>
                 <div className="p-5 text-center bg-gray-50 border-t border-gray-100">
                   <h3 className="font-semibold text-gray-800">
