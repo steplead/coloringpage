@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Metadata, ResolvingMetadata } from 'next';
+import { Metadata } from 'next';
 import { getBlogPostBySlug, getRelatedBlogPosts } from '@/lib/blog/blogService';
 import { getColoringPageById } from '@/lib/gallery/galleryService';
 import FAQSection from '@/components/blog/FAQSection';
@@ -12,10 +12,11 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getTranslations, getTranslationSync } from '@/lib/i18n/translations';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import { CalendarDaysIcon, ClockIcon, TagIcon, ShareIcon } from '@heroicons/react/24/outline';
 
 // Dynamic metadata for SEO
 export async function generateMetadata({ params }: { params: { slug: string, lang: string } }): Promise<Metadata> {
-  const lang = SUPPORTED_LANGUAGES.some(l => l.code === params.lang) ? params.lang : 'en';
+  const lang = SUPPORTED_LANGUAGES.find(l => l.code === params.lang)?.code || 'en';
   const post = await getBlogPostBySlug(params.slug);
   
   if (!post) {
@@ -111,7 +112,7 @@ function generateDefaultFAQs(title: string, keyword: string, t: (key: string, fa
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string, lang: string } }) {
-  const lang = SUPPORTED_LANGUAGES.some(l => l.code === params.lang) ? params.lang : 'en';
+  const lang = SUPPORTED_LANGUAGES.find(l => l.code === params.lang)?.code || 'en';
   
   // Fetch post, related data, and translations concurrently
   const [post, translations] = await Promise.all([
@@ -371,14 +372,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string,
           {/* Related Blog Posts */}
           <div className="mt-16">
             <RelatedPosts 
-              posts={relatedPosts.map(post => ({
-                title: post.title,
-                slug: post.slug,
-                imageUrl: post.featured_image_url,
-                description: post.meta_description
-              }))}
-              locale={params.lang}
-              title={t('blog.relatedPosts', 'Related Posts')}
+              posts={relatedPosts} 
+              locale={lang}
             />
           </div>
         </div>
