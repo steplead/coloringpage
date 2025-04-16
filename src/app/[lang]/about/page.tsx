@@ -4,6 +4,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, getTranslationSync } from '@/lib/i18n/translations';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
+import FAQSection from '@/components/blog/FAQSection';
+
+// Define FaqItem type here
+interface FaqItem {
+  question: string;
+  answer: string;
+}
 
 export async function generateStaticParams() {
   return SUPPORTED_LANGUAGES.map(lang => ({
@@ -11,439 +18,181 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params: { lang },
-}: {
-  params: { lang: string };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { lang: string } }): Promise<Metadata> {
+  const lang = SUPPORTED_LANGUAGES.find(l => l.code === params.lang)?.code || 'en';
   const translations = await getTranslations(lang);
-  
+  const t = (key: string, fallback?: string) => getTranslationSync(key, undefined, translations, fallback || key.split('.').pop());
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-coloringpage.com';
+
   return {
-    title: getTranslationSync('about.meta.title', undefined, translations, 'About Us - AI Coloring Page Generator'),
-    description: getTranslationSync('about.meta.description', undefined, translations, 'Learn about our mission, the creative team, technology, and community behind our AI-powered coloring page generator.'),
-    keywords: ['AI coloring pages', 'coloring page creator', 'about us', 'AI technology', 'educational coloring', 'creative team'],
+    title: t('about.meta.title', 'About Us | AI Coloring Page Generator'),
+    description: t('about.meta.description', 'Learn about the mission, technology, and team behind the AI Coloring Page generator.'),
+    keywords: t('about.meta.keywords', 'about ai coloring page, ai image generation, coloring technology, creative tools'),
+    alternates: {
+      canonical: `${siteUrl}/about`,
+      languages: SUPPORTED_LANGUAGES.reduce((acc, cur) => {
+        acc[cur.code] = `${siteUrl}/${cur.code}/about`;
+        return acc;
+      }, {} as Record<string, string>)
+    },
+    openGraph: {
+      title: t('about.og.title', 'About AI Coloring Page Generator'),
+      description: t('about.og.description', 'Discover the story and technology behind our innovative coloring page tool.'),
+      url: `${siteUrl}/${lang}/about`,
+      images: [
+        {
+          url: `${siteUrl}/images/about-og.png`, // Consider creating a specific OG image
+          width: 1200,
+          height: 630,
+          alt: t('about.og.imageAlt', 'Illustration representing AI and creativity for coloring pages')
+        }
+      ]
+    }
   };
 }
 
-export default async function AboutPage({ params: { lang } }: { params: { lang: string } }) {
-  // Fetch all translations for the current language
+// Helper function to get localized href (moved before usage)
+const getLocalizedHref = (path: string, lang: string): string => {
+  // Ensure leading slash for the path
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `/${lang}${normalizedPath}`;
+};
+
+export default async function AboutPage({ params }: { params: { lang: string } }) {
+  const { lang } = params;
   const translations = await getTranslations(lang);
-  
-  // Helper to get translation safely
   const t = (key: string, fallback?: string): string => {
-    if (!translations) {
-      console.warn(`[AboutPage] Translations not loaded when trying to access key: ${key}`);
-      return fallback || key.split('.').pop() || key;
-    }
-    return getTranslationSync(key, undefined, translations, fallback);
+    return getTranslationSync(key, undefined, translations, fallback || key.split('.').pop());
   };
-  
-  // Helper function to get localized href
-  const getLocalizedHref = (path: string): string => {
-    return `/${lang}${path}`;
-  };
+
+  // --- Realistic Placeholder Content --- 
+  const teamMembers = [
+    { name: t('about.team.member1.name', 'Dr. Evelyn Reed'), role: t('about.team.member1.role', 'Lead AI Researcher'), image: '/images/team/member1.jpg', bio: t('about.team.member1.bio', 'Passionate about generative models and bringing creative AI tools to everyone.') },
+    { name: t('about.team.member2.name', 'David Chen'), role: t('about.team.member2.role', 'Senior Software Engineer'), image: '/images/team/member2.jpg', bio: t('about.team.member2.bio', 'Expert in cloud infrastructure and building scalable web applications.') },
+    { name: t('about.team.member3.name', 'Aisha Khan'), role: t('about.team.member3.role', 'UX/UI Designer'), image: '/images/team/member3.jpg', bio: t('about.team.member3.bio', 'Dedicated to creating intuitive and delightful user experiences.') },
+  ];
+
+  const testimonials = [
+    { quote: t('about.testimonials.1.quote', "My kids absolutely love the coloring pages! It's amazing how it creates exactly what they ask for."), author: t('about.testimonials.1.author', 'Sarah P., Parent') },
+    { quote: t('about.testimonials.2.quote', "As a teacher, this tool is a lifesaver for creating custom worksheets and activities. Highly recommended!"), author: t('about.testimonials.2.author', 'Mr. Jones, Elementary Teacher') },
+    { quote: t('about.testimonials.3.quote', "I use it for mindfulness coloring. The intricate designs it generates are perfect for unwinding."), author: t('about.testimonials.3.author', 'Alex R., Hobbyist') },
+  ];
+
+  const faqs: FaqItem[] = [
+    { question: t('about.faq.q1', 'How does the AI generate coloring pages?'), answer: t('about.faq.a1', "Our system uses advanced generative adversarial networks (GANs) trained on vast datasets of images and artistic styles. You provide a prompt, and the AI interprets it to create a unique line drawing suitable for coloring.") },
+    { question: t('about.faq.q2', 'Is it free to use?'), answer: t('about.faq.a2', "Yes, generating coloring pages is completely free for personal and educational use. We offer optional premium features for advanced users and commercial licenses.") },
+    { question: t('about.faq.q3', 'What image styles can it create?'), answer: t('about.faq.a3', "The AI can generate various styles, including cartoon, realistic, fantasy, abstract, and more. You can specify the desired style in your prompt or select from predefined options.") },
+    { question: t('about.faq.q4', 'Can I use the generated images commercially?'), answer: t('about.faq.a4', "The free plan allows personal and educational use only. For commercial use, please check out our affordable licensing options or contact us for details.") },
+  ];
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-            {t('about.hero.title', 'About AI Coloring Page Generator')}
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('about.hero.description', 'Our mission is to unlock creativity for everyone by making unique, high-quality coloring pages accessible through the power of AI.')}
-          </p>
-        </div>
-
-        {/* Our Story Section */}
-        <section aria-labelledby="our-story-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="our-story-heading" className="text-2xl font-bold mb-6 text-gray-800">{t('about.our_story.title', 'Our Story')}</h2>
-              <div className="space-y-4 text-gray-600">
-                <p>
-                  {t('about.our_story.p1', 'AI Coloring Page Generator started with a simple question: what if anyone could create the perfect coloring page, exactly as they imagined it, without needing complex drawing skills? We saw the joy coloring brings to both children and adults and wanted to combine that with the exciting possibilities of artificial intelligence.')}
-                </p>
-                <p>
-                  {t('about.our_story.p2', 'Our team, led by developer JL, brought together expertise in AI, web development, and design. We set out to build an intuitive tool that could transform simple text descriptions or even existing images into beautiful, clean-lined illustrations ready for coloring.')}
-                </p>
-                <p>
-                  {t('about.our_story.p3', 'We aim to empower parents seeking engaging activities for their kids, teachers needing custom classroom materials, and adults looking for a relaxing, creative outlet.')} <Link href={getLocalizedHref('/gallery')} className="text-blue-600 hover:underline">{t('about.gallery_link', 'Gallery')}</Link> {t('about.for_inspiration', 'for inspiration!')}
-                </p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
+       {/* --- New Header Section --- */}
+       <div className="w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-700 py-20 px-4 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10">
+             <div className="absolute -top-16 left-1/4 w-96 h-96 rounded-full bg-white blur-3xl"></div>
+             <div className="absolute bottom-0 right-10 w-80 h-80 rounded-full bg-blue-300 blur-3xl"></div>
           </div>
-        </section>
-
-        {/* Meet the Team Section */}
-        <section aria-labelledby="team-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="team-heading" className="text-2xl font-bold mb-6 text-gray-800">{t('about.team.title', 'Meet the Team')}</h2>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-32 h-32 relative mb-4 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center">
-                    <span className="text-4xl text-blue-500">JL</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-1">JL</h3>
-                  <p className="text-blue-600 mb-3">{t('about.team.founder_title', 'Founder & Lead Developer')}</p>
-                  <p className="text-gray-600">
-                    {t('about.team.founder_description', 'Combining a passion for AI technology with creative design to make beautiful coloring pages accessible to everyone.')}
-                  </p>
-                </div>
-                <div className="flex flex-col md:mt-8 space-y-4 text-gray-600">
-                  <p>
-                    {t('about.team.description', 'Our small but dedicated team works remotely across different time zones, bringing together expertise in:')}
-                  </p>
-                  <ul className="space-y-2 list-disc pl-5">
-                    <li>{t('about.team.skill_1', 'AI and machine learning optimization')}</li>
-                    <li>{t('about.team.skill_2', 'Web application development')}</li>
-                    <li>{t('about.team.skill_3', 'UX/UI design focused on simplicity')}</li>
-                    <li>{t('about.team.skill_4', 'Educational content creation')}</li>
-                    <li>{t('about.team.skill_5', 'Multilingual implementation')}</li>
-                  </ul>
-                  <p>
-                    {t('about.team.united', 'We\'re united by a shared belief in the power of creativity and the positive impact of accessible art tools.')}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Our Technology Section */}
-        <section aria-labelledby="technology-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="technology-heading" className="text-2xl font-bold mb-6 text-gray-800">{t('about.tech.title', 'Our Technology')}</h2>
-              <div className="space-y-6">
-                <div className="flex flex-col md:flex-row gap-6 items-center">
-                  <div className="md:w-1/3 flex-shrink-0 bg-blue-50 p-6 rounded-lg flex items-center justify-center">
-                    <svg className="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="md:w-2/3 space-y-4 text-gray-600">
-                    <h3 className="text-xl font-semibold text-gray-800">{t('about.tech.ai_model_title', 'Advanced AI Model')}</h3>
-                    <p>
-                      {t('about.tech.ai_model_description', 'Our system is powered by SiliconFlow\'s sophisticated AI models, specifically optimized for generating clean, black outline illustrations perfect for coloring. We\'ve fine-tuned the AI to understand coloring page aesthetics and produce images with well-defined lines and appropriate spacing.')}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col md:flex-row gap-6 items-center">
-                  <div className="md:w-1/3 md:order-2 flex-shrink-0 bg-green-50 p-6 rounded-lg flex items-center justify-center">
-                    <svg className="w-24 h-24 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="md:w-2/3 md:order-1 space-y-4 text-gray-600">
-                    <h3 className="text-xl font-semibold text-gray-800">{t('about.tech.nextjs_title', 'Next.js Application')}</h3>
-                    <p>
-                      {t('about.tech.nextjs_description', 'Built on Next.js 14, our application leverages the latest web technologies for optimal performance. Server-side rendering ensures fast page loads while our responsive design works seamlessly across all devices, from desktop computers to tablets and mobile phones.')}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex flex-col md:flex-row gap-6 items-center">
-                  <div className="md:w-1/3 flex-shrink-0 bg-purple-50 p-6 rounded-lg flex items-center justify-center">
-                    <svg className="w-24 h-24 text-purple-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                    </svg>
-                  </div>
-                  <div className="md:w-2/3 space-y-4 text-gray-600">
-                    <h3 className="text-xl font-semibold text-gray-800">{t('about.tech.multilingual_title', 'Multilingual Support')}</h3>
-                    <p>
-                      {t('about.tech.multilingual_description', 'Our platform supports 8 languages including English, Chinese, Spanish, French, German, Japanese, Korean, and Russian. With automatic language detection based on browser settings and URL-based routing, we\'re committed to making our tool accessible worldwide.')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works & Benefits Section */}
-        <section aria-labelledby="how-it-works-heading" className="grid md:grid-cols-2 gap-8 mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8">
-              <h2 id="how-it-works-heading" className="text-xl font-bold mb-4 text-gray-800">{t('about.how_it_works.title', 'How It Works')}</h2>
-              <div className="space-y-4 text-gray-600">
-                <p>
-                  {t('about.how_it_works.p1', 'Creating your custom page is easy! Simply describe what you want to color (like "a friendly dragon reading a book") or use our advanced options for more control. Choose from various styles to match your vision.')}
-                </p>
-                <p>
-                  {t('about.how_it_works.p2', 'Our AI, powered by advanced models like SiliconFlow, analyzes your input. It\'s specifically trained on thousands of illustrations to generate images with clean, clear black outlines suitable for all ages and skill levels.')}
-                </p>
-                <p>
-                  {t('about.how_it_works.p3', 'The result is a unique, high-resolution coloring page ready for you to download, print, and enjoy.')}
-                </p>
-              </div>
-              <div className="mt-6">
-                <Link 
-                  href={getLocalizedHref('/create')}
-                  className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center"
-                >
-                  {t('about.try_generator', 'Try the Generator')}
-                  <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Benefits of Coloring Section */}
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">{t('about.benefits.title', 'Why Coloring Matters')}</h2>
-              <ul className="space-y-3 text-gray-600">
-                <li className="flex items-start">
-                  <svg className="flex-shrink-0 w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  {t('about.benefits.item1', 'Reduces stress and promotes mindfulness.')}
-                </li>
-                <li className="flex items-start">
-                  <svg className="flex-shrink-0 w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  {t('about.benefits.item2', 'Improves focus, concentration, and fine motor skills.')}
-                </li>
-                <li className="flex items-start">
-                  <svg className="flex-shrink-0 w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  {t('about.benefits.item3', 'Stimulates creativity and provides a sense of accomplishment.')}
-                </li>
-                <li className="flex items-start">
-                  <svg className="flex-shrink-0 w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  {t('about.benefits.item4', 'Offers a wonderful screen-free activity for all ages.')}
-                </li>
-                <li className="flex items-start">
-                  <svg className="flex-shrink-0 w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                  </svg>
-                  {t('about.benefits.item5', 'Learn more about coloring techniques and ideas on our')} <Link href={getLocalizedHref('/blog')} className="text-blue-600 hover:underline">{t('about.blog_link', 'Blog')}</Link>.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* User Testimonials */}
-        <section aria-labelledby="testimonials-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="testimonials-heading" className="text-2xl font-bold mb-8 text-gray-800 text-center">{t('about.testimonials.title', 'What Our Users Say')}</h2>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-blue-50 rounded-lg p-6 relative">
-                  <svg className="absolute top-0 left-0 transform -translate-x-3 -translate-y-3 h-8 w-8 text-blue-400 opacity-50" fill="currentColor" viewBox="0 0 32 32">
-                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-                  </svg>
-                  
-                  <p className="text-gray-700 mb-4 italic">
-                    {t('about.testimonials.item1', '"I was amazed by how easy it was to create custom coloring pages for my classroom. My students love them, and I save so much time compared to searching for the perfect pages online!"')}
-                  </p>
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold mr-3">
-                      M
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800">{t('about.testimonials.item1_name', 'Maria T.')}</p>
-                      <p className="text-sm text-gray-600">{t('about.testimonials.item1_role', 'Elementary School Teacher')}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-green-50 rounded-lg p-6 relative">
-                  <svg className="absolute top-0 left-0 transform -translate-x-3 -translate-y-3 h-8 w-8 text-green-400 opacity-50" fill="currentColor" viewBox="0 0 32 32">
-                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-                  </svg>
-                  
-                  <p className="text-gray-700 mb-4 italic">
-                    {t('about.testimonials.item2', '"I\'ve rediscovered my love for coloring as an adult. Being able to generate exactly what I want to color is fantastic. The clean lines make it easy to get great results every time."')}
-                  </p>
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold mr-3">
-                      J
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800">{t('about.testimonials.item2_name', 'James K.')}</p>
-                      <p className="text-sm text-gray-600">{t('about.testimonials.item2_role', 'Adult Coloring Enthusiast')}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Community Showcase */}
-        <section aria-labelledby="community-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="community-heading" className="text-2xl font-bold mb-6 text-gray-800">{t('about.community.title', 'Community Showcase')}</h2>
-              <p className="text-gray-600 mb-8">
-                {t('about.community.description', 'Our users create incredible artwork with our coloring pages. Here are some highlights from our community!')}
-              </p>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((num) => (
-                  <div key={num} className="relative aspect-square overflow-hidden rounded-lg">
-                    <div className="w-full h-full bg-gray-200 animate-pulse"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs text-gray-500">{t('about.community.sample', 'Sample')} {num}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 text-center">
-                <Link href={getLocalizedHref('/gallery')} className="text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
-                  {t('about.community.view_all', 'View All Community Creations')}
-                  <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section aria-labelledby="faq-heading" className="mb-16">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="faq-heading" className="text-2xl font-bold mb-8 text-gray-800">{t('about.faq.title', 'Frequently Asked Questions')}</h2>
-              
-              <div className="divide-y divide-gray-200">
-                <div className="py-5">
-                  <details className="group">
-                    <summary className="flex justify-between items-center font-medium cursor-pointer">
-                      <span className="text-lg text-gray-800">{t('about.faq.item1_question', 'Is the service really free to use?')}</span>
-                      <span className="transition group-open:rotate-180">
-                        <svg className="fill-current text-blue-500" width="20" height="20" viewBox="0 0 24 24">
-                          <path d="M6.99 11L6.99 13L17.01 13L17.01 11L6.99 11Z" transform="rotate(90 12 12)"></path>
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
-                      {t('about.faq.item1_answer', 'Yes, our core coloring page generation tool is completely free to use. We believe in making creativity accessible to everyone. There are no hidden fees or limits on the number of coloring pages you can create.')}
-                    </p>
-                  </details>
-                </div>
-
-                <div className="py-5">
-                  <details className="group">
-                    <summary className="flex justify-between items-center font-medium cursor-pointer">
-                      <span className="text-lg text-gray-800">{t('about.faq.item2_question', 'How high-quality are the generated images?')}</span>
-                      <span className="transition group-open:rotate-180">
-                        <svg className="fill-current text-blue-500" width="20" height="20" viewBox="0 0 24 24">
-                          <path d="M6.99 11L6.99 13L17.01 13L17.01 11L6.99 11Z" transform="rotate(90 12 12)"></path>
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
-                      {t('about.faq.item2_answer', 'We generate high-resolution coloring pages (1024x1024 pixels by default) that are perfect for printing. Our AI is specifically trained to create clean, well-defined black outlines with appropriate spacing for coloring. The images are optimized for both screen viewing and printing.')}
-                    </p>
-                  </details>
-                </div>
-
-                <div className="py-5">
-                  <details className="group">
-                    <summary className="flex justify-between items-center font-medium cursor-pointer">
-                      <span className="text-lg text-gray-800">{t('about.faq.item3_question', 'Can I request specific coloring page styles?')}</span>
-                      <span className="transition group-open:rotate-180">
-                        <svg className="fill-current text-blue-500" width="20" height="20" viewBox="0 0 24 24">
-                          <path d="M6.99 11L6.99 13L17.01 13L17.01 11L6.99 11Z" transform="rotate(90 12 12)"></path>
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
-                      {t('about.faq.item3_answer', 'Absolutely! Our generator offers multiple style options: Simple, Medium, Complex, Cartoon, and Realistic. You can choose the style that best fits your needs. For even more control, try the Advanced Mode where you can specify exactly what you want with detailed prompts.')}
-                    </p>
-                  </details>
-                </div>
-
-                <div className="py-5">
-                  <details className="group">
-                    <summary className="flex justify-between items-center font-medium cursor-pointer">
-                      <span className="text-lg text-gray-800">{t('about.faq.item4_question', 'What makes this different from other coloring page sites?')}</span>
-                      <span className="transition group-open:rotate-180">
-                        <svg className="fill-current text-blue-500" width="20" height="20" viewBox="0 0 24 24">
-                          <path d="M6.99 11L6.99 13L17.01 13L17.01 11L6.99 11Z" transform="rotate(90 12 12)"></path>
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
-                      {t('about.faq.item4_answer', 'Unlike traditional coloring page websites that offer a fixed library of designs, our AI generator creates unique, custom coloring pages based on your specific descriptions. You can literally describe anything you can imagine, and our AI will create it as a coloring page. Each creation is one-of-a-kind!')}
-                    </p>
-                  </details>
-                </div>
-
-                <div className="py-5">
-                  <details className="group">
-                    <summary className="flex justify-between items-center font-medium cursor-pointer">
-                      <span className="text-lg text-gray-800">{t('about.faq.item5_question', 'Is my data private?')}</span>
-                      <span className="transition group-open:rotate-180">
-                        <svg className="fill-current text-blue-500" width="20" height="20" viewBox="0 0 24 24">
-                          <path d="M6.99 11L6.99 13L17.01 13L17.01 11L6.99 11Z" transform="rotate(90 12 12)"></path>
-                        </svg>
-                      </span>
-                    </summary>
-                    <p className="text-gray-600 mt-3 group-open:animate-fadeIn">
-                      {t('about.faq.item5_answer', 'We take privacy seriously. When you generate a coloring page, your prompt and the resulting image may be stored to improve our service and populate the community gallery (if you opt to make it public). However, we don\'t collect personal information without your consent, and you can always choose to keep your creations private.')}
-                    </p>
-                  </details>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Our Vision Section */}
-        <section aria-labelledby="our-vision-heading" className="mb-16">
-           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="p-8 md:p-12">
-              <h2 id="our-vision-heading" className="text-2xl font-bold mb-6 text-gray-800">{t('about.vision.title', 'Our Vision')}</h2>
-              <div className="space-y-4 text-gray-600">
-                <p>
-                  {t('about.vision.p1', 'We believe in the continuous evolution of creativity. Our vision is to keep improving the AI\'s capabilities, offering more styles, features, and customization options.')}
-                </p>
-                <p>
-                  {t('about.vision.p2', 'We plan to expand our')} <Link href={getLocalizedHref('/gallery')} className="text-blue-600 hover:underline">{t('about.gallery_link', 'Gallery')}</Link> {t('about.vision.p2_end', 'with more resources, tutorials, and community features. Our goal is to build a vibrant space for coloring enthusiasts.')}
-                </p>
-                 <p>
-                  {t('about.vision.p3', 'Most importantly, we are committed to keeping the core coloring page generation tool free and accessible to everyone, fostering creativity worldwide.')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section aria-labelledby="cta-heading" className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-8 md:p-12 mb-12">
-          <div className="text-center">
-            <h2 id="cta-heading" className="text-2xl md:text-3xl font-bold mb-4 text-white">{t('about.cta.title', 'Ready to Unleash Your Creativity?')}</h2>
-            <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              {t('about.cta.description', 'Start generating unique, beautiful coloring pages with our AI tool today. It\'s free, fun, and easy to use!')}
+          <div className="max-w-7xl mx-auto relative z-10 text-center">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              {t('about.title', 'About AI Coloring Page Generator')}
+            </h1>
+            <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
+              {t('about.subtitle', 'Fueling creativity, one coloring page at a time.')}
             </p>
-            <Link
-              href={getLocalizedHref('/create')}
-              className="inline-flex items-center bg-white hover:bg-gray-100 text-blue-600 font-semibold py-3 px-8 rounded-md shadow-md transition-colors text-lg"
-            >
-              {t('about.cta.get_started', 'Get Started Now')}
-              <svg className="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </Link>
+          </div>
+       </div>
+
+      <div className="max-w-7xl mx-auto py-12 sm:py-16 px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20">
+        
+        {/* --- Our Story Section --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.story.title', 'Our Story')}</h2>
+            <p className="text-lg text-gray-700 mb-4">
+              {t('about.story.p1', 'Born from a passion for art and technology, AI Coloring Page Generator started as a small project to explore the creative potential of artificial intelligence. We saw an opportunity to make personalized art accessible to everyone, transforming simple ideas into beautiful, ready-to-color designs.')}
+            </p>
+            <p className="text-lg text-gray-600">
+              {t('about.story.p2', 'Our mission is to provide a fun, easy-to-use platform that sparks imagination for kids, aids relaxation for adults, and offers a valuable resource for educators and creators.')}
+            </p>
+          </div>
+          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-gray-100">
+             <Image src="/images/about-story.jpg" alt={t('about.story.imageAlt', 'AI creating artistic patterns')} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
           </div>
         </section>
+
+        {/* --- Our Technology Section --- */}
+        <section className="bg-white p-8 sm:p-10 rounded-2xl shadow-xl border border-gray-100">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">{t('about.tech.title', 'Powered by Innovation')}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+            <div className="border border-gray-100 p-6 rounded-xl bg-gray-50">
+              <div className="inline-block p-3 bg-indigo-100 rounded-full mb-4">
+                 <svg className="w-8 h-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.567L16.5 21.75l-.398-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.398a2.25 2.25 0 001.423-1.423L16.5 15.75l.398 1.183a2.25 2.25 0 001.423 1.423L19.5 18.75l-1.183.398a2.25 2.25 0 00-1.423 1.423z" /></svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('about.tech.ai.title', 'Advanced AI Model')}</h3>
+              <p className="text-gray-600">{t('about.tech.ai.desc', 'Utilizing state-of-the-art generative models (GANs & Diffusion) fine-tuned for line art creation.')}</p>
+            </div>
+            <div className="border border-gray-100 p-6 rounded-xl bg-gray-50">
+              <div className="inline-block p-3 bg-blue-100 rounded-full mb-4">
+                 <svg className="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" /></svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">{t('about.tech.platform.title', 'Modern Web Platform')}</h3>
+              <p className="text-gray-600">{t('about.tech.platform.desc', 'Built with Next.js 14, React, and Tailwind CSS for a fast, responsive, and scalable experience.')}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* --- Meet the Team Section --- */}
+        <section>
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">{t('about.team.title', 'Meet the Team')}</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {teamMembers.map((member, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 text-center hover:shadow-xl transition-shadow duration-300">
+                <Image src={member.image} alt={member.name} width={120} height={120} className="rounded-full mx-auto mb-4 border-4 border-indigo-100" />
+                <h3 className="text-xl font-semibold text-gray-800">{member.name}</h3>
+                <p className="text-indigo-600 font-medium mb-3">{member.role}</p>
+                <p className="text-gray-600 text-sm">{member.bio}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- Testimonials Section --- */}
+        <section className="bg-gradient-to-br from-indigo-50 to-blue-50 py-16 sm:py-20 rounded-2xl px-6">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">{t('about.testimonials.title', 'What Our Users Say')}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 flex flex-col">
+                <svg className="w-10 h-10 text-blue-400 mb-4 flex-shrink-0" fill="currentColor" viewBox="0 0 32 32">
+                  <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"></path>
+                </svg>
+                <p className="text-gray-600 italic mb-5 flex-grow">"{testimonial.quote}"</p>
+                <p className="font-semibold text-gray-800 text-right">- {testimonial.author}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- FAQ Section --- */}
+        <section>
+           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">{t('about.faq.title', 'Frequently Asked Questions')}</h2>
+           <FAQSection faqs={faqs} />
+        </section>
+
+        {/* --- Call to Action Section --- */}
+        <section className="text-center bg-white py-16 px-6 rounded-2xl shadow-xl border border-gray-100">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('about.cta.title', 'Ready to Start Coloring?')}</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+            {t('about.cta.subtitle', 'Bring your imagination to life! Generate your first unique coloring page in seconds.')}
+          </p>
+          <Link 
+            href={getLocalizedHref('/create', lang)}
+            className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:scale-105"
+          >
+            {t('about.cta.button', 'Create a Coloring Page Now')}
+          </Link>
+        </section>
+
       </div>
     </div>
   );

@@ -40,16 +40,16 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
 
   // Example coloring pages data
   const examplePages = [
-    { id: 1, titleKey: 'home.examples.elephant.title', altTextKey: 'home.examples.elephant.alt', image: '/examples/elephant.png' },
-    { id: 2, titleKey: 'home.examples.rocket.title', altTextKey: 'home.examples.rocket.alt', image: '/examples/rocket.png' },
-    { id: 3, titleKey: 'home.examples.dragon.title', altTextKey: 'home.examples.dragon.alt', image: '/examples/dragon.png' }
+    { id: 'example-dragon', titleKey: 'home.examples.dragon.title', altTextKey: 'home.examples.dragon.alt', image: '/examples/dragon.png' },
+    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/cat-simple.png' },
+    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/mandala-complex.png' }
   ];
 
   // Popular Categories Data
   const popularCategories = [
-    { id: 'animals', titleKey: 'home.categories.animals.title', altTextKey: 'home.categories.animals.alt', image: '/examples/category-animal.png' }, // Placeholder image
-    { id: 'fantasy', titleKey: 'home.categories.fantasy.title', altTextKey: 'home.categories.fantasy.alt', image: '/examples/category-fantasy.png' }, // Placeholder image
-    { id: 'vehicles', titleKey: 'home.categories.vehicles.title', altTextKey: 'home.categories.vehicles.alt', image: '/examples/category-vehicle.png' } // Placeholder image
+    { id: 'animals', titleKey: 'home.categories.animals.title', altTextKey: 'home.categories.animals.alt', image: '/images/categories/animals.jpg' },
+    { id: 'fantasy', titleKey: 'home.categories.fantasy.title', altTextKey: 'home.categories.fantasy.alt', image: '/images/categories/fantasy.jpg' },
+    { id: 'nature', titleKey: 'home.categories.nature.title', altTextKey: 'home.categories.nature.alt', image: '/images/categories/nature.jpg' }
   ];
 
   // Creation methods data
@@ -155,19 +155,19 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {examplePages.map((example) => (
               <div key={example.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                <div className="aspect-square relative group">
+                <div className="aspect-square relative group bg-gray-50">
                   <Image
                     src={example.image}
-                    alt={t(example.altTextKey)}
-                    fill // Use fill for responsive aspect ratio
+                    alt={t(example.altTextKey, 'Example AI Coloring Page')}
+                    fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-                    priority={example.id === 1}
+                    priority={example.id === 'example-dragon'}
                   />
                 </div>
                 <div className="p-5 text-center bg-gray-50 border-t border-gray-100">
                   <h3 className="font-semibold text-gray-800">
-                    {t(example.titleKey)}
+                    {t(example.titleKey, 'AI Generated Example')}
                   </h3>
                 </div>
               </div>
@@ -213,7 +213,7 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                   <Image
                     src={category.image}
-                    alt={t(category.altTextKey)}
+                    alt={t(category.altTextKey, `Coloring pages category: ${category.id}`)}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -222,7 +222,7 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-6">
                     <h3 className="text-2xl font-semibold text-white mb-1 shadow-text">
-                      {t(category.titleKey)}
+                      {t(category.titleKey, category.id.charAt(0).toUpperCase() + category.id.slice(1))}
                     </h3>
                     <span className="inline-block px-3 py-1 bg-white/20 text-white/90 rounded-full text-xs font-medium backdrop-blur-sm">
                       {t('common.viewAll', "View All")}
@@ -248,10 +248,10 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
                    <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"></path>
                  </svg>
                 <p className="text-gray-600 italic mb-6">
-                  "{t(testimonial.text)}"
+                  "{t(testimonial.text, 'A glowing review from a happy user.')}"
                 </p>
                 <p className="font-semibold text-gray-800">
-                  - {t(testimonial.author)}
+                  - {t(testimonial.author, 'Happy User')}
                 </p>
               </div>
             ))}
