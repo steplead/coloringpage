@@ -157,13 +157,11 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
               <div key={example.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
                 <div className="aspect-square relative group bg-gray-50 flex items-center justify-center">
                   {example.image.endsWith('.svg') ? (
-                    <Image
+                    <img 
                       src={example.image}
                       alt={t(example.altTextKey, 'Example AI Coloring Page')}
-                      width={300}
-                      height={300}
-                      className="object-contain transition-transform duration-300 group-hover:scale-105"
-                      priority={example.id === 'example-dragon'}
+                      className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
                     />
                   ) : (
                     <Image
