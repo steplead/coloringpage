@@ -95,39 +95,4 @@ export function getTranslationSync(
   return translation;
 }
 
-// Removed unnecessary combined export statement
-// export { getTranslationSync, getTranslation, getTranslations, clearTranslationCache }; 
-
-// Removed duplicated loadTranslations function below
-/*
-// Function to load translations from the API
-export const loadTranslations = async (locale: string): Promise<TranslationData | null> => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const apiUrl = (window as any).NEXT_PUBLIC_API_URL || '/api/i18n'; 
-  try {
-    const response = await fetch(`${apiUrl}?lang=${locale}`);
-    // ... existing code ...
-    // --- Fallback Data --- (if needed, for example during SSR or build)
-    const fallbackTranslations = {
-      // ... your fallback translations
-    };
-
-    // Export necessary functions/types
-    // We avoid assigning to module.exports directly if possible
-    // Instead, ensure functions are exported normally
-    // export { getTranslationSync }; // <-- This was incorrectly placed here
-
-    // If module.exports assignment is absolutely necessary for some reason:
-    /*
-    // eslint-disable-next-line @next/next/no-assign-module-variable
-    module.exports = {
-      getTranslationSync,
-      // loadTranslations, // If you have this function
-    };
-    * /
-  } catch (error) {
-    console.error(`Error loading translations for ${locale}:`, error);
-    return null;
-  }
-}; 
-*/ 
+// 注意：以上每个函数都已经使用export关键字导出，不需要重复导出 

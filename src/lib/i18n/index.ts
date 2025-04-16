@@ -8,6 +8,7 @@ import jaTranslations from './translations/ja.json';
 import koTranslations from './translations/ko.json';
 import ruTranslations from './translations/ru.json';
 import { SUPPORTED_LANGUAGES } from './locales';
+import { getTranslationSync as getTranslationSyncFunc } from './translations';
 
 // Map of all translations
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -118,6 +119,9 @@ export function getTranslations(language: string): any {
 export function isValidLanguage(language: string): boolean {
   return SUPPORTED_LANGUAGES.some(lang => lang.code === language);
 }
+
+// Re-export the getTranslationSync function
+export const getTranslationSync = getTranslationSyncFunc;
 
 // Removed duplicated getTranslation and loadTranslations functions below
 /*
