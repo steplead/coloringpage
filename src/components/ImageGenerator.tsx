@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/context';
 import { getTranslations, getTranslationSync } from '@/lib/i18n/translations';
-import { ArrowDownTrayIcon, LightBulbIcon, Cog6ToothIcon, ArrowPathIcon, ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon, LightBulbIcon, ArrowPathIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { SparklesIcon } from '@heroicons/react/20/solid'; // For Generate button
 
 // Style options with visual examples
@@ -50,14 +49,6 @@ const CATEGORIES = [
     icon: '🔄'
   }
 ];
-
-// Helper function to truncate prompt
-const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
-  if (!prompt) return '';
-  return prompt.length > maxLength 
-    ? `${prompt.substring(0, maxLength)}...` 
-    : prompt;
-};
 
 // Base prompt that defines a coloring page
 const BASE_PROMPT = 'black outline coloring page, clean lines, white background';

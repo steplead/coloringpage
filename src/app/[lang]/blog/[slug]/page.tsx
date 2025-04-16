@@ -12,7 +12,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getTranslations, getTranslationSync } from '@/lib/i18n/translations';
 import { SUPPORTED_LANGUAGES } from '@/lib/i18n/locales';
-import { CalendarDaysIcon, ClockIcon, TagIcon, ShareIcon } from '@heroicons/react/24/outline';
 
 // Dynamic metadata for SEO
 export async function generateMetadata({ params }: { params: { slug: string, lang: string } }): Promise<Metadata> {
