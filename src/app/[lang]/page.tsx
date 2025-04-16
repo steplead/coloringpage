@@ -41,15 +41,15 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
   // Example coloring pages data
   const examplePages = [
     { id: 'example-dragon', titleKey: 'home.examples.dragon.title', altTextKey: 'home.examples.dragon.alt', image: '/examples/dragon.png' },
-    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/cat-simple.png' },
-    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/mandala-complex.png' }
+    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/cat-simple.svg' },
+    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/mandala-complex.svg' }
   ];
 
   // Popular Categories Data
   const popularCategories = [
-    { id: 'animals', titleKey: 'home.categories.animals.title', altTextKey: 'home.categories.animals.alt', image: '/images/categories/animals.jpg' },
-    { id: 'fantasy', titleKey: 'home.categories.fantasy.title', altTextKey: 'home.categories.fantasy.alt', image: '/images/categories/fantasy.jpg' },
-    { id: 'nature', titleKey: 'home.categories.nature.title', altTextKey: 'home.categories.nature.alt', image: '/images/categories/nature.jpg' }
+    { id: 'animals', titleKey: 'home.categories.animals.title', altTextKey: 'home.categories.animals.alt', image: '/images/categories/animals.svg' },
+    { id: 'fantasy', titleKey: 'home.categories.fantasy.title', altTextKey: 'home.categories.fantasy.alt', image: '/images/categories/fantasy.svg' },
+    { id: 'nature', titleKey: 'home.categories.nature.title', altTextKey: 'home.categories.nature.alt', image: '/images/categories/nature.svg' }
   ];
 
   // Creation methods data
