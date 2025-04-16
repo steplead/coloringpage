@@ -41,8 +41,8 @@ export default async function LanguageHomePage({ params }: { params: { lang: str
   // Example coloring pages data
   const examplePages = [
     { id: 'example-dragon', titleKey: 'home.examples.dragon.title', altTextKey: 'home.examples.dragon.alt', image: '/examples/dragon.png' },
-    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/cat-simple.svg' },
-    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/mandala-complex.svg' }
+    { id: 'example-cat-books', titleKey: 'home.examples.cat.title', altTextKey: 'home.examples.cat.alt', image: '/examples/dragon.png' }, // Using dragon.png for testing 
+    { id: 'example-mandala', titleKey: 'home.examples.mandala.title', altTextKey: 'home.examples.mandala.alt', image: '/examples/dragon.png' } // Using dragon.png for testing
   ];
 
   // Popular Categories Data
