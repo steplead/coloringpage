@@ -8,6 +8,7 @@ import { Analytics } from '@vercel/analytics/react'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import { Navigation } from '@/components/Navigation'
+import { Footer } from '@/components/Footer'
 import Loading from './loading'
 
 // 动态导入调试组件
@@ -53,21 +54,25 @@ export default function LangLayout({
 
   return (
     <TranslationProvider initialLang={lang}>
-      <Suspense fallback={<Loading />}>
-        <Navigation currentLang={lang} />
-        {children}
-        <Toaster position="bottom-center" />
-      </Suspense>
-      {/* 翻译修复组件，仅在中文页面加载 */}
-      {lang === 'zh' && <FixTranslationsV10 />}
-      <Analytics />
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-        data-ad-client="ca-pub-92597486097093773"
-        strategy="lazyOnload"
-        crossOrigin="anonymous"
-      />
+      <div className="flex flex-col min-h-screen">
+        <Suspense fallback={<Loading />}>
+          <Navigation currentLang={lang} />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <Toaster position="bottom-center" />
+        </Suspense>
+        {lang === 'zh' && <FixTranslationsV10 />}
+        <Analytics />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          data-ad-client="ca-pub-92597486097093773"
+          strategy="lazyOnload"
+          crossOrigin="anonymous"
+        />
+      </div>
     </TranslationProvider>
   )
 } 

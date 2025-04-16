@@ -5,15 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n/context';
 import { getTranslations, getTranslationSync } from '@/lib/i18n/translations';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon, LightBulbIcon, Cog6ToothIcon, ArrowPathIcon, ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon } from '@heroicons/react/20/solid'; // For Generate button
 
 // Style options with visual examples
 const STYLE_OPTIONS = [
-  { id: 'simple', labelKey: 'create.styleOptions.simple', descriptionKey: 'create.styleOptions.simple.desc', icon: '🐢' },
-  { id: 'medium', labelKey: 'create.styleOptions.medium', descriptionKey: 'create.styleOptions.medium.desc', icon: '🦁' },
-  { id: 'complex', labelKey: 'create.styleOptions.complex', descriptionKey: 'create.styleOptions.complex.desc', icon: '🐉' },
-  { id: 'cartoon', labelKey: 'create.styleOptions.cartoon', descriptionKey: 'create.styleOptions.cartoon.desc', icon: '🚀' },
-  { id: 'realistic', labelKey: 'create.styleOptions.realistic', descriptionKey: 'create.styleOptions.realistic.desc', icon: '🏰' },
+  { id: 'simple', labelKey: 'create.styleOptions.simple', descriptionKey: 'create.styleOptions.simple.desc', icon: '/icons/style-simple.svg' },
+  { id: 'medium', labelKey: 'create.styleOptions.medium', descriptionKey: 'create.styleOptions.medium.desc', icon: '/icons/style-medium.svg' },
+  { id: 'complex', labelKey: 'create.styleOptions.complex', descriptionKey: 'create.styleOptions.complex.desc', icon: '/icons/style-complex.svg' },
+  { id: 'cartoon', labelKey: 'create.styleOptions.cartoon', descriptionKey: 'create.styleOptions.cartoon.desc', icon: '/icons/style-cartoon.svg' },
+  { id: 'realistic', labelKey: 'create.styleOptions.realistic', descriptionKey: 'create.styleOptions.realistic.desc', icon: '/icons/style-realistic.svg' },
 ];
 
 // Prompt suggestion categories
@@ -50,7 +51,7 @@ const CATEGORIES = [
   }
 ];
 
-// Helper function to truncate prompt text
+// Helper function to truncate prompt
 const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
   if (!prompt) return '';
   return prompt.length > maxLength 
@@ -59,7 +60,7 @@ const truncatePrompt = (prompt: string, maxLength: number = 50): string => {
 };
 
 // Base prompt that defines a coloring page
-const BASE_PROMPT = 'black outline coloring page, clean lines';
+const BASE_PROMPT = 'black outline coloring page, clean lines, white background';
 
 const MAX_RETRIES = 3;
 
@@ -73,7 +74,7 @@ export const ImageGenerator = () => {
   const [style, setStyle] = useState<string>('medium');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [lastGeneratedPrompt, setLastGeneratedPrompt] = useState<string>('');
-  const [generationHistory, setGenerationHistory] = useState<{prompt: string, imageUrl: string}[]>([]);
+  const [generationHistory, setGenerationHistory] = useState<{prompt: string, imageUrl: string, id: string}[]>([]);
   const [isAdvancedMode, setIsAdvancedMode] = useState(false);
   const [customPrompt, setCustomPrompt] = useState(BASE_PROMPT);
   const [translations, setTranslations] = useState<any>(null);
@@ -125,8 +126,7 @@ export const ImageGenerator = () => {
       if (!lang) return;
       setLoadingTranslations(true);
       try {
-        const fetchedTranslations = await getTranslations(lang);
-        setTranslations(fetchedTranslations);
+        setTranslations(await getTranslations(lang));
       } catch (err) { console.error("Failed to load translations:", err); } 
       finally { setLoadingTranslations(false); }
     };
@@ -160,27 +160,29 @@ export const ImageGenerator = () => {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAdvancedMode && !prompt.trim()) {
-      setError(t('create.errors.promptRequired', 'Please enter a description'));
+      setError(t('create.errors.promptRequired', 'Please describe the image you want.'));
       return;
     }
     if (isAdvancedMode && !customPrompt.trim()) {
-      setError(t('create.errors.customPromptRequired', 'Please enter a custom prompt'));
+      setError(t('create.errors.customPromptRequired', 'Please enter a custom generation prompt.'));
       return;
     }
     setLoading(true);
     setError(null);
+    setImage(null);
     const currentPrompt = isAdvancedMode ? customPrompt : prompt;
     setLastGeneratedPrompt(currentPrompt);
     
     let retryCount = 0;
     let success = false;
     let finalImageUrl = null;
+    let generationId = Date.now().toString();
     
     while (retryCount < MAX_RETRIES && !success) {
       try {
         if (retryCount > 0) console.log(`Retry attempt ${retryCount}...`);
         
-        const categoryName = selectedCategoryKey ? selectedCategoryKey.split('.').pop() : 'default';
+        const categoryName = selectedCategoryKey ? selectedCategoryKey.split('.').pop() : 'general';
 
         const response = await fetch('/api/generate', {
           method: 'POST',
@@ -199,6 +201,7 @@ export const ImageGenerator = () => {
         if (!data.imageUrl) throw new Error('Failed to get image URL from server');
         
         finalImageUrl = data.imageUrl;
+        generationId = data.id || generationId;
         success = true;
       } catch (err) {
         console.error(`Error in generation attempt ${retryCount + 1}:`, err);
@@ -213,7 +216,7 @@ export const ImageGenerator = () => {
     
     if (success && finalImageUrl) {
       setImage(finalImageUrl);
-      setGenerationHistory(prev => [{ prompt: currentPrompt, imageUrl: finalImageUrl }, ...prev].slice(0, 10));
+      setGenerationHistory(prev => [{ prompt: currentPrompt, imageUrl: finalImageUrl, id: generationId }, ...prev].slice(0, 10));
     }
     setLoading(false);
   }, [prompt, isAdvancedMode, customPrompt, style, selectedCategoryKey, t]);
@@ -232,244 +235,226 @@ export const ImageGenerator = () => {
   // Initial Loading state
   if (loadingTranslations) {
      return (
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-         {/* Placeholder for loading state */}
-         <div className="md:col-span-7 bg-gray-100 rounded-lg shadow-sm h-96 animate-pulse"></div>
-         <div className="md:col-span-5 bg-gray-100 rounded-lg shadow-sm h-96 animate-pulse"></div>
+       <div className="p-6 md:p-8">
+         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 animate-pulse">
+           <div className="md:col-span-7 space-y-6">
+             <div className="h-10 bg-gray-200 rounded-lg w-1/3"></div>
+             <div className="h-24 bg-gray-200 rounded-lg"></div>
+             <div className="h-10 bg-gray-200 rounded-lg w-1/2"></div>
+             <div className="h-12 bg-gray-200 rounded-lg"></div>
+             <div className="h-12 bg-gray-300 rounded-lg w-1/3 ml-auto"></div>
+           </div>
+           <div className="md:col-span-5 space-y-4">
+             <div className="aspect-square bg-gray-200 rounded-xl"></div>
+             <div className="h-6 bg-gray-200 rounded-lg w-3/4 mx-auto"></div>
+           </div>
+         </div>
        </div>
      );
    }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-      {/* Left column - Form */}
-      <div className="md:col-span-7 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-6">
-          <form onSubmit={handleSubmit}>
-            {/* Use H2 for major form sections */}
-            <section aria-labelledby="category-select-heading" className="mb-6">
-              <h2 id="category-select-heading" className="block text-xl font-semibold text-gray-800 mb-3">
-                {t('create.sections.category.title', '1. Choose a Category (Optional)')}
-              </h2>
-              <p className="text-sm text-gray-500 mb-4">
-                 {t('create.sections.category.desc', 'Selecting a category helps the AI focus. Click again to deselect.')}
-              </p>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {CATEGORIES.map(category => (
-                  <button
-                    key={category.nameKey}
-                    type="button"
-                    onClick={() => handleSelectCategory(category.nameKey)}
-                    className={`p-2 rounded-lg text-center transition-colors flex flex-col items-center justify-center border ${ selectedCategoryKey === category.nameKey ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-200' }`}
-                    aria-pressed={selectedCategoryKey === category.nameKey}
-                  >
-                    <span className="text-3xl mb-1" role="img" aria-label={t(category.nameKey)}>{category.icon}</span>
-                    <span className="text-xs font-medium">{t(category.nameKey)}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section aria-labelledby="description-heading" className="mb-6">
-              <h2 id="description-heading" className="block text-xl font-semibold text-gray-800 mb-3">
-                {t('create.sections.description.title', '2. Describe Your Image')}
-              </h2>
-              <textarea
-                id="prompt-input"
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder={t('create.sections.description.placeholder', 'e.g., A happy cartoon elephant playing with a ball in a sunny park')}
-                aria-label={t('create.sections.description.ariaLabel', 'Image description input')}
-              />
-              {/* Suggestions */}
-              {suggestions.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">
-                    {t('create.sections.suggestions.title', `Ideas for ${selectedCategoryKey ? t(selectedCategoryKey) : 'category'}:`)}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => handleSelectSuggestion(suggestion)}
-                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-xs text-gray-800 border border-gray-200"
-                      >
-                        {suggestion}
-                      </button>
+    <div className="p-1">
+       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+         {/* Left column - Form */}
+         <div className="lg:col-span-7 space-y-8">
+           <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Category Selection - Improved Styling */}
+              <section aria-labelledby="category-select-heading">
+                 <h2 id="category-select-heading" className="text-lg font-semibold text-gray-800 mb-4">{t('create.categories.title', '1. Choose a Category (Optional)')}</h2>
+                 <div className="flex flex-wrap gap-3">
+                    {CATEGORIES.map(cat => (
+                       <button
+                          key={cat.nameKey}
+                          type="button"
+                          onClick={() => handleSelectCategory(cat.nameKey)}
+                          className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200 flex items-center gap-2 ${selectedCategoryKey === cat.nameKey ? 'bg-indigo-100 text-indigo-700 border-indigo-300 ring-2 ring-indigo-200' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'}`}
+                       >
+                          <span className="text-lg">{cat.icon}</span>
+                          {t(cat.nameKey, cat.nameKey.split('.').pop())}
+                       </button>
                     ))}
-                  </div>
-                </div>
-              )}
-            </section>
-
-            <section aria-labelledby="style-select-heading" className="mb-6">
-              <h2 id="style-select-heading" className="block text-xl font-semibold text-gray-800 mb-3">
-                {t('create.sections.style.title', '3. Choose a Complexity Style')}
-              </h2>
-               <p className="text-sm text-gray-500 mb-4">
-                 {t('create.sections.style.desc', 'Style affects image complexity and overall appearance. Choose based on the desired age group or detail level.')}
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {STYLE_OPTIONS.map(option => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => handleStyleChange(option.id)}
-                    className={`p-3 rounded-lg text-center transition-colors border flex flex-col items-center justify-start ${ style === option.id ? 'bg-blue-100 text-blue-800 border-blue-300 ring-2 ring-blue-200' : 'bg-gray-50 text-gray-800 hover:bg-gray-100 border-gray-200' }`}
-                    aria-pressed={style === option.id}
-                  >
-                    <span className="text-3xl mb-2" role="img" aria-label={t(option.labelKey)}>{option.icon}</span>
-                    <span className="text-sm font-medium">{t(option.labelKey)}</span>
-                    <span className="text-xs text-gray-500 mt-1 hidden sm:block text-center">{t(option.descriptionKey)}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section aria-labelledby="advanced-toggle-heading" className="mb-6 pb-4 border-b border-gray-200">
-               <div className="flex items-center justify-between">
-                 <div>
-                   <h2 id="advanced-toggle-heading" className="text-lg font-medium text-gray-700">
-                     {t('create.sections.advanced.toggleLabel', 'Expert Mode')}
-                   </h2>
-                   <p className="text-sm text-gray-500">
-                     {t('create.sections.advanced.toggleDesc', 'For precise control over the AI prompt.')}
-                   </p>
                  </div>
-                 <div className="relative inline-block w-10 align-middle select-none">
-                   <input id="advanced-mode" type="checkbox" checked={isAdvancedMode} onChange={toggleAdvancedMode} className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
-                   <label htmlFor="advanced-mode" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                 </div>
-               </div>
-            </section>
-
-            {isAdvancedMode && (
-              <section aria-labelledby="custom-prompt-heading" className="mb-6">
-                <h2 id="custom-prompt-heading" className="block text-xl font-semibold text-gray-800 mb-3">
-                  {t('create.sections.advanced.promptTitle', 'Custom Prompt (Advanced)')}
-                </h2>
-                <textarea
-                  id="custom-prompt"
-                  rows={5}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder={t('create.sections.advanced.promptPlaceholder', 'Enter your full prompt here, e.g., detailed castle coloring page, black outline, clean lines')}
-                  aria-label={t('create.sections.advanced.promptAriaLabel', 'Custom prompt input')}
-                />
-                <p className="mt-2 text-xs text-gray-500">
-                   {t('create.sections.advanced.promptTip', 'Tip: Always include terms like "black outline coloring page" and "clean lines" for best results.')}
-                </p>
               </section>
-            )}
+              
+              {/* Prompt Input / Suggestions - Improved Styling */}
+              <section aria-labelledby="prompt-heading">
+                  <label htmlFor="prompt-input" className="block text-lg font-semibold text-gray-800 mb-3">{t('create.prompt.title', '2. Describe Your Image')}</label>
+                  <textarea
+                      id="prompt-input"
+                      rows={4}
+                      className="block w-full px-4 py-3 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm rounded-xl shadow-sm transition-colors duration-200 placeholder-gray-400"
+                      placeholder={t('create.prompt.placeholder', 'e.g., A friendly dragon reading a book under an oak tree, cartoon style')}
+                      value={prompt}
+                      onChange={(e) => { setPrompt(e.target.value); setError(null); }}
+                      disabled={loading || isAdvancedMode}
+                  />
+                 {suggestions.length > 0 && !isAdvancedMode && (
+                   <div className="mt-3">
+                     <p className="text-sm text-gray-600 mb-2 flex items-center">
+                       <LightBulbIcon className="h-4 w-4 mr-1 text-yellow-500" />
+                       {t('create.suggestions.title', 'Suggestions based on category:')}
+                     </p>
+                     <div className="flex flex-wrap gap-2">
+                       {suggestions.map(sugg => (
+                         <button
+                           key={sugg}
+                           type="button"
+                           onClick={() => handleSelectSuggestion(sugg)}
+                           className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                           disabled={loading}
+                         >
+                           {sugg}
+                         </button>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+              </section>
 
-            {/* Submit Button */}
-            <div className="mt-8">
-              <button
-                type="submit"
-                disabled={loading || loadingTranslations}
-                className={`w-full py-3 px-4 rounded-md text-white font-semibold text-lg transition-colors duration-200 flex items-center justify-center ${ (loading || loadingTranslations) ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700' }`}
-              >
-                {(loading || loadingTranslations) ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    {t('create.buttons.generating', 'Generating...')}
-                  </>
-                ) : (
-                  t('create.buttons.generate', 'Generate Coloring Page')
-                )}
-              </button>
-            </div>
-            
-            {error && (
-              <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md text-sm">
-                {error} 
+              {/* Style Selection - Improved Visuals */}
+              <section aria-labelledby="style-select-heading">
+                  <h2 id="style-select-heading" className="text-lg font-semibold text-gray-800 mb-4">{t('create.style.title', '3. Choose a Style')}</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                      {STYLE_OPTIONS.map(opt => (
+                         <button
+                             key={opt.id}
+                             type="button"
+                             onClick={() => handleStyleChange(opt.id)}
+                             disabled={loading || isAdvancedMode}
+                             title={t(opt.descriptionKey, opt.id)}
+                             className={`p-3 rounded-lg border-2 text-center transition-all duration-200 group flex flex-col items-center ${style === opt.id ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200 shadow-md' : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/50'} ${isAdvancedMode ? 'opacity-50 cursor-not-allowed' : ''}`}
+                         >
+                             {opt.icon.startsWith('/') ? (
+                                 <Image src={opt.icon} alt="" width={32} height={32} className="mb-2 opacity-80 group-hover:opacity-100" />
+                             ) : (
+                                 <span className="text-2xl mb-1.5">{opt.icon}</span> 
+                             )}
+                             <span className={`block text-xs font-medium ${style === opt.id ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
+                                 {t(opt.labelKey, opt.id.charAt(0).toUpperCase() + opt.id.slice(1))}
+                             </span>
+                         </button>
+                      ))}
+                  </div>
+              </section>
+              
+              {/* Advanced Mode - Improved Toggle & Input */}
+              <section aria-labelledby="advanced-mode-heading">
+                 <div className="flex items-center justify-between mb-4">
+                    <h2 id="advanced-mode-heading" className={`text-lg font-semibold ${isAdvancedMode ? 'text-indigo-700' : 'text-gray-800'}`}>{t('create.advanced.title', 'Advanced Mode')}</h2>
+                    <button 
+                      type="button" 
+                      onClick={toggleAdvancedMode} 
+                      disabled={loading}
+                      className={`${isAdvancedMode ? 'bg-indigo-600' : 'bg-gray-200'} relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50`}
+                    >
+                      <span className="sr-only">{t('create.advanced.toggle', 'Toggle Advanced Mode')}</span>
+                      <span aria-hidden="true" className={`${isAdvancedMode ? 'translate-x-5' : 'translate-x-0'} pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}></span>
+                    </button>
+                 </div>
+                 {isAdvancedMode && (
+                   <div className="mt-4 space-y-3 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                       <label htmlFor="custom-prompt-input" className="block text-sm font-medium text-indigo-800">{t('create.advanced.label', 'Custom Prompt (Overrides above selections)')}:</label>
+                       <textarea
+                           id="custom-prompt-input"
+                           rows={5}
+                           className="block w-full px-4 py-3 text-base border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm rounded-xl shadow-sm transition-colors duration-200 placeholder-gray-400 bg-white"
+                           placeholder={t('create.advanced.placeholder', 'e.g., detailed coloring page, thick lines, zen garden with a cat, no shading')}
+                           value={customPrompt}
+                           onChange={(e) => setCustomPrompt(e.target.value)}
+                           disabled={loading}
+                       />
+                       <p className="text-xs text-indigo-600">{t('create.advanced.hint', 'Tip: Include keywords like "coloring page", "outline", style details, and use commas.')}</p>
+                   </div>
+                 )}
+              </section>
+
+              {/* Submit Button - Enhanced Styling */}
+              <div className="pt-5 border-t border-gray-200">
+                 <button
+                     type="submit"
+                     disabled={loading || (!isAdvancedMode && !prompt.trim()) || (isAdvancedMode && !customPrompt.trim())}
+                     className="w-full inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl shadow-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-md"
+                 >
+                     {loading ? (
+                         <>
+                             <ArrowPathIcon className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                             {t('create.generating', 'Generating...')}
+                         </>
+                     ) : (
+                         <>
+                             <SparklesIcon className="-ml-1 mr-2 h-5 w-5" />
+                             {t('create.generateButton', 'Generate Coloring Page')}
+                         </>
+                     )}
+                 </button>
               </div>
-            )}
-          </form>
-        </div>
-      </div>
-
-      {/* Right column - Preview & History */}
-      <div className="md:col-span-5">
-        {/* Image Preview Section */}
-        <section aria-labelledby="preview-heading" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-           <h2 id="preview-heading" className="text-xl font-semibold text-gray-800 mb-4">
-              {t('create.sections.preview.title', 'Preview')}
-           </h2>
-           <div className="aspect-square w-full bg-gray-100 rounded-md flex items-center justify-center border border-gray-200 overflow-hidden">
-             {image ? (
-               <Image
-                 src={image}
-                 alt={t('create.sections.preview.altGenerated', `Generated coloring page based on prompt: ${lastGeneratedPrompt}`)}
-                 width={512} 
-                 height={512}
-                 className="object-contain max-w-full max-h-full"
-               />
-             ) : (
-               <div className="text-center text-gray-500 p-8">
-                 <svg className="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
-                 <p className="mt-2 text-sm">
-                    {t('create.sections.preview.placeholder', 'Your generated coloring page will appear here')}
-                 </p>
-                 <p className="text-xs mt-1">
-                    {t('create.sections.preview.tip', 'Fill out the form and click generate!')}
-                 </p>
-               </div>
-             )}
+           </form>
+         </div>
+         
+         {/* Right column - Preview & History */}
+         <div className="lg:col-span-5 space-y-6">
+           {/* Image Preview Section */}
+           <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 min-h-[300px] flex flex-col items-center justify-center">
+             <h2 className="text-lg font-semibold text-gray-800 mb-4 w-full text-center">{t('create.result.title', 'Your Generated Page')}</h2>
+              {loading && (
+                 <div className="text-center">
+                   <ArrowPathIcon className="animate-spin h-10 w-10 text-indigo-600 mx-auto mb-3" />
+                   <p className="text-gray-600 text-sm">{t('create.generating', 'Generating your masterpiece...')}</p>
+                 </div>
+               )}
+               {error && (
+                 <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg w-full">
+                    <XMarkIcon className="h-6 w-6 text-red-500 mx-auto mb-2"/>
+                    <p className="text-sm font-medium text-red-700">{t('create.errors.generationFailed', 'Generation Failed')}</p>
+                   <p className="text-xs text-red-600 mt-1">{error}</p>
+                 </div>
+               )}
+               {!loading && image && (
+                 <div className="w-full text-center">
+                   <div className="aspect-square relative w-full max-w-md mx-auto mb-4 border rounded-lg overflow-hidden bg-gray-50 shadow-inner">
+                     <Image src={image} alt={lastGeneratedPrompt || t('create.result.alt', 'Generated coloring page')} fill className="object-contain" sizes="(max-width: 1024px) 40vw, 500px" />
+                   </div>
+                   <button
+                      onClick={handleDownload}
+                      className="inline-flex items-center px-5 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all transform hover:scale-105"
+                    >
+                     <ArrowDownTrayIcon className="-ml-1 mr-2 h-5 w-5" />
+                     {t('create.downloadButton', 'Download PNG')}
+                   </button>
+                 </div>
+               )}
+               {!loading && !image && !error && (
+                 <div className="text-center text-gray-500">
+                    <svg className="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                   <p>{t('create.result.placeholder', 'Your generated image will appear here.')}</p>
+                 </div>
+               )}
            </div>
-           {image && (
-             <div className="mt-4 flex flex-wrap justify-center gap-3">
-               <button onClick={handleDownload} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium inline-flex items-center">
-                 <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
-                 {t('create.buttons.download', 'Download PNG')}
-               </button>
-                <Link href={`/${lang}/gallery/${generationHistory[0]?.imageUrl?.split('/').pop()?.split('.')[0] || ''}`} 
-                      className={`px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium inline-flex items-center ${!generationHistory[0]?.imageUrl ? 'hidden' : ''}`}>
-                   {t('create.buttons.viewInGallery', 'View in Gallery')}
-                </Link>
+
+           {/* Generation History */}
+           {generationHistory.length > 0 && (
+             <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+               <h3 className="text-lg font-semibold text-gray-800 mb-4">{t('create.history.title', 'Recent Creations')}</h3>
+               <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                 {generationHistory.map((item, index) => (
+                   <li key={item.id || index} className="flex items-center gap-3 p-2 border border-gray-100 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                     <div className="flex-shrink-0 w-12 h-12 relative rounded-md overflow-hidden border border-gray-200 bg-white">
+                       <Image src={item.imageUrl} alt="" fill className="object-contain" sizes="48px"/>
+                     </div>
+                     <p className="text-xs text-gray-600 flex-grow truncate" title={item.prompt}>{
+                       item.prompt.length > 70 ? item.prompt.substring(0, 70) + '...' : item.prompt
+                     }</p>
+                     <button onClick={() => setImage(item.imageUrl)} className="text-indigo-500 hover:text-indigo-700 p-1 rounded-full hover:bg-indigo-100 transition-colors" title={t('create.history.view', 'View this image')}>
+                        <ChevronUpIcon className="h-4 w-4" />
+                     </button>
+                   </li>
+                 ))}
+               </ul>
              </div>
            )}
-           {lastGeneratedPrompt && (
-             <p className="mt-4 text-xs text-gray-500 text-center italic">
-               {t('create.sections.preview.lastPrompt', `Based on prompt: ${truncatePrompt(lastGeneratedPrompt, 60)}`)}
-             </p>
-           )}
-        </section>
-
-        {/* Generation History Section */}
-        {generationHistory.length > 0 && (
-          <section aria-labelledby="history-heading" className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 id="history-heading" className="text-xl font-semibold text-gray-800 mb-4">
-               {t('create.sections.history.title', 'Recent Creations')}
-            </h2>
-            <ul className="space-y-3">
-              {generationHistory.map((item, index) => (
-                <li key={index} className="flex items-center gap-3 p-2 border rounded-md bg-gray-50 hover:bg-gray-100">
-                  <Image 
-                    src={item.imageUrl} 
-                    alt={t('create.sections.history.alt', `Previously generated image for: ${item.prompt}`)}
-                    width={48} 
-                    height={48} 
-                    className="rounded border border-gray-200 bg-white"
-                  />
-                  <p className="text-xs text-gray-600 flex-1 truncate" title={item.prompt}>{item.prompt}</p>
-                  <button 
-                    onClick={() => setPrompt(item.prompt)} 
-                    className="text-xs text-blue-600 hover:underline whitespace-nowrap"
-                    title={t('create.sections.history.reusePromptTooltip', 'Reuse this prompt')}
-                   >
-                    {t('create.sections.history.reuseButton', 'Reuse')}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-      </div>
-    </div>
+         </div>
+       </div>
+     </div>
   );
 }; 
