@@ -8,7 +8,7 @@ This document provides information about the API used in the AI Coloring Page ap
 - **Purpose**: AI-based image generation for coloring pages
 - **Endpoint**: `https://api.siliconflow.cn/v1/images/generations`
 - **Model**: `Kwai-Kolors/Kolors`
-- **API Key**: `sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah`
+- **API Key**: `sk-lglylfszounxeiisibvjhjqbapvedzcdsqpvulycjfhtlphc`
 
 ### Request Parameters
 ```json

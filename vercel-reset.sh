@@ -14,7 +14,8 @@ npx vercel env rm SILICONFLOW_MODEL production -y || true
 
 # Add the exact API variables from local .env.local
 echo "Adding identical SiliconFlow API variables..."
-npx vercel env add SILICONFLOW_API_KEY production <<< "sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah"
+echo "Adding SILICONFLOW_API_KEY..."
+npx vercel env add SILICONFLOW_API_KEY production <<< "sk-lglylfszounxeiisibvjhjqbapvedzcdsqpvulycjfhtlphc"
 npx vercel env add SILICONFLOW_API_URL production <<< "https://api.siliconflow.cn/v1/images/generations"
 echo "Adding SILICONFLOW_MODEL..."
 npx vercel env add SILICONFLOW_MODEL production <<< "Kwai-Kolors/Kolors"

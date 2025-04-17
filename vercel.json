@@ -2,7 +2,7 @@
   "env": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://hjmwtgqvmqaontbjebpi.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhqbXd0Z3F2bXFhb250YmplYnBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM1NjA0NzIsImV4cCI6MjA1OTEzNjQ3Mn0.M0JVWdQk14MPtTbL-q9zyPjl36kYotRTw7L-aF9iK_A",
-    "SILICONFLOW_API_KEY": "sk-frjnkxrmiaajoxjziaqgwmyorlermfnpbctcchsvazrlxeah",
+    "SILICONFLOW_API_KEY": "sk-lglylfszounxeiisibvjhjqbapvedzcdsqpvulycjfhtlphc",
     "SILICONFLOW_API_URL": "https://api.siliconflow.cn/v1/images/generations",
     "SILICONFLOW_MODEL": "Kwai-Kolors/Kolors",
     "GEMINI_API_KEY": "AIzaSyBSo6E7uZR7IvaRfiNZSdpgGwg8uzE6xow",
