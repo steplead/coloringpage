@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&family=Gaegu:wght@300;400;700&family=Nunito:wght@300;400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 吉卜力主色调 - 增强对比度和吸引力 */
+  --ghibli-primary-light: 98, 167, 228;    /* 亮天空蓝 */
+  --ghibli-primary: 74, 143, 221;         /* 天空蓝 */
+  --ghibli-primary-dark: 58, 123, 201;    /* 深天空蓝 */
+  
+  --ghibli-secondary-light: 159, 217, 94;  /* 亮绿色 */
+  --ghibli-secondary: 140, 193, 82;       /* 托托罗绿 */
+  --ghibli-secondary-dark: 121, 173, 65;  /* 深绿色 */
+  
+  --ghibli-accent-light: 255, 215, 97;     /* 亮黄色 */
+  --ghibli-accent: 252, 187, 66;          /* 魔女黄 */
+  --ghibli-accent-dark: 233, 169, 48;     /* 深黄色 */
+  
+  /* 中性色 - 增强温暖感和层次 */
+  --ghibli-warm-white-lighter: 255, 251, 239;  /* 更亮的温暖白 */
+  --ghibli-warm-white: 248, 244, 227;          /* 温暖白 */
+  --ghibli-warm-white-darker: 238, 233, 213;   /* 较深的温暖白 */
+  
+  --ghibli-pale-blue-lighter: 240, 247, 255;   /* 更亮的淡蓝 */
+  --ghibli-pale-blue: 228, 238, 251;           /* 淡蓝 */
+  --ghibli-pale-blue-darker: 208, 227, 247;    /* 较深的淡蓝 */
+  
+  --ghibli-light-brown-lighter: 224, 201, 167; /* 更亮的浅棕 */
+  --ghibli-light-brown: 210, 180, 140;         /* 浅棕 */
+  --ghibli-light-brown-darker: 196, 166, 117;  /* 较深的浅棕 */
+  
+  --ghibli-dark-brown-lighter: 134, 100, 74;   /* 较亮的深棕 */
+  --ghibli-dark-brown: 115, 85, 58;            /* 深棕 */
+  --ghibli-dark-brown-darker: 95, 69, 48;      /* 更深的深棕 */
+  
+  /* 强调色 - 更精确的色调变化 */
+  --ghibli-red-light: 242, 105, 119;       /* 亮红色 */
+  --ghibli-red: 237, 85, 101;              /* 红色点缀 */
+  --ghibli-red-dark: 217, 68, 82;          /* 深红色 */
+  
+  --ghibli-orange-light: 253, 130, 102;    /* 亮橙色 */
+  --ghibli-orange: 252, 110, 81;           /* 橙色 */
+  --ghibli-orange-dark: 234, 91, 61;       /* 深橙色 */
+  
+  --ghibli-purple-light: 167, 139, 228;    /* 亮紫色 */
+  --ghibli-purple: 150, 122, 220;          /* 紫色 */
+  --ghibli-purple-dark: 130, 105, 194;     /* 深紫色 */
+  
+  /* 状态色 - 用于反馈信息 */
+  --ghibli-success-light: 159, 217, 94;    /* 亮成功绿 */
+  --ghibli-success: 140, 193, 82;          /* 成功绿 */
+  --ghibli-success-dark: 121, 173, 65;     /* 深成功绿 */
+  
+  --ghibli-warning-light: 255, 215, 97;    /* 亮警告黄 */
+  --ghibli-warning: 252, 187, 66;          /* 警告黄 */
+  --ghibli-warning-dark: 233, 169, 48;     /* 深警告黄 */
+  
+  --ghibli-error-light: 242, 105, 119;     /* 亮错误红 */
+  --ghibli-error: 237, 85, 101;            /* 错误红 */
+  --ghibli-error-dark: 217, 68, 82;        /* 深错误红 */
+  
+  --ghibli-info-light: 98, 167, 228;       /* 亮信息蓝 */
+  --ghibli-info: 74, 143, 221;             /* 信息蓝 */
+  --ghibli-info-dark: 58, 123, 201;        /* 深信息蓝 */
+}
+
+@layer base {
+  body {
+    @apply bg-ghibli-warm-white font-body text-ghibli-dark-brown;
+    padding: 0;
+    margin: 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-ghibli text-ghibli-dark-brown;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl font-bold;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl font-semibold;
+  }
+  
+  a {
+    @apply text-ghibli-primary transition-colors hover:text-ghibli-primary-dark;
+    text-decoration: none;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  button {
+    font-family: inherit;
+  }
+  
+  /* 表单元素增强样式 */
+  input, textarea, select {
+    @apply bg-ghibli-warm-white-lighter border-2 border-ghibli-light-brown/30 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ghibli-primary/50 focus:border-ghibli-primary transition-all duration-200;
+  }
+}
+
+@layer components {
+  /* 卡片样式增强 */
+  .ghibli-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-ghibli-md border-2 border-ghibli-light-brown/20 transition-all duration-300 hover:shadow-ghibli-lg;
+  }
+  
+  .ghibli-card-gradient {
+    @apply bg-gradient-to-br from-white/90 to-ghibli-warm-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-ghibli-md border-2 border-ghibli-light-brown/20 transition-all duration-300 hover:shadow-ghibli-lg;
+  }
+  
+  /* 输入框样式增强 */
+  .ghibli-input {
+    @apply rounded-xl border-2 border-ghibli-light-brown/30 bg-ghibli-warm-white-lighter focus:ring-2 focus:ring-ghibli-accent/50 focus:border-ghibli-accent shadow-ghibli-inner transition-all duration-200;
+  }
+  
+  /* 按钮样式系列 */
+  .ghibli-button {
+    @apply rounded-full bg-ghibli-primary hover:bg-ghibli-primary-dark text-ghibli-warm-white-lighter border-2 border-white/20 shadow-ghibli-button transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ghibli-primary-light/50;
+  }
+  
+  .ghibli-button-secondary {
+    @apply rounded-full bg-ghibli-secondary hover:bg-ghibli-secondary-dark text-ghibli-warm-white-lighter border-2 border-white/20 shadow-ghibli-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ghibli-secondary-light/50;
+  }
+  
+  .ghibli-button-accent {
+    @apply rounded-full bg-ghibli-accent hover:bg-ghibli-accent-dark text-ghibli-dark-brown border-2 border-white/20 shadow-ghibli-md transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ghibli-accent-light/50;
+  }
+  
+  .ghibli-button-outline {
+    @apply rounded-full bg-transparent hover:bg-ghibli-primary/10 text-ghibli-primary border-2 border-ghibli-primary/50 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ghibli-primary/30;
+  }
+  
+  /* 工具按钮 */
+  .ghibli-tool-button {
+    @apply p-2 rounded-lg transition-colors bg-ghibli-light-brown/20 text-ghibli-dark-brown hover:bg-ghibli-light-brown/30 focus:outline-none focus:ring-2 focus:ring-ghibli-light-brown/50;
+  }
+  
+  .ghibli-tool-button-active {
+    @apply p-2 rounded-lg transition-colors bg-ghibli-primary text-white hover:bg-ghibli-primary-dark focus:outline-none focus:ring-2 focus:ring-ghibli-primary-light/50;
+  }
+  
+  /* 标签样式 */
+  .ghibli-tag {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ghibli-primary/20 text-ghibli-primary-dark;
+  }
+  
+  /* 状态指示器 */
+  .ghibli-status-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ghibli-success/20 text-ghibli-success-dark;
+  }
+  
+  .ghibli-status-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ghibli-warning/20 text-ghibli-warning-dark;
+  }
+  
+  .ghibli-status-error {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ghibli-error/20 text-ghibli-error-dark;
+  }
+  
+  .ghibli-status-info {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-ghibli-info/20 text-ghibli-info-dark;
+  }
+  
+  /* 动画效果 */
+  .ghibli-float {
+    @apply animate-float;
+  }
+}
+
+@layer utilities {
+  /* 自定义背景模糊效果 */
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+  
+  /* 内容卡片边框效果 */
+  .ghibli-border {
+    @apply border-2 border-ghibli-light-brown/20;
+  }
+  
+  /* 渐变文本 */
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ghibli-primary to-ghibli-purple;
+  }
+  
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ghibli-accent to-ghibli-orange;
+  }
+}
+
+/* 保证非Tailwind元素的默认样式 */
+h1, h2, h3, h4, h5, h6 {
+  color: rgb(var(--ghibli-dark-brown)); /* 使用RGB格式保证兼容性 */
+  margin-top: 0;
+} 

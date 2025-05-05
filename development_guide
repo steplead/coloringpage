@@ -1,0 +1,1717 @@
+# AI Coloring Page Application Development Plan (Updated)
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)
+2. [Architecture Design](#2-architecture-design)
+3. [Module Planning](#3-module-planning)
+4. [Development Roadmap](#4-development-roadmap)
+5. [Module Testing Mechanism](#5-module-testing-mechanism)
+6. [SEO and Content Strategy](#6-seo-and-content-strategy)
+7. [Technology Stack](#7-technology-stack)
+8. [Development Process and Standards](#8-development-process-and-standards)
+9. [Performance Optimization Strategy](#9-performance-optimization-strategy)
+10. [Maintenance and Iteration Plan](#10-maintenance-and-iteration-plan)
+11. [吉卜力风格UI设计指南](#11-吉卜力风格UI设计指南)
+12. [Shadcn/UI实践指南](#12-shadcn-ui实践指南)
+
+---
+
+## 1. Project Overview
+
+### 1.1 Project Objectives
+
+Develop an AI-powered coloring page application (AI Coloring Page) suitable for both adults and children, using a modular, progressive development approach that ensures clean, loosely coupled, reusable, and maintainable code.
+
+### 1.2 Core Principles
+
+- Follow the "Premium Tool Page" design philosophy (Tool Page + Landing Page + Result Display Page)
+- Adopt the "One Keyword = One Page" SEO strategy
+- Optimize user behavior metrics (low bounce rate + high time-on-site + high pages-per-visit)
+- Modular development with independent testing for each module
+- Leverage AI technology for enhanced coloring experiences
+
+### 1.3 Target Users
+
+- Children (3-12 years): Simple and fun AI-assisted coloring experience
+- Teenagers (13-18 years): More complex patterns and creative AI tools
+- Adults: Relaxing and artistic AI coloring experience for stress relief
+- Artists: Advanced AI-powered coloring and image enhancement tools
+
+### 1.4 Development Phase Update (2024 Update)
+
+The current development focus is on building core functionality and basic user experience. User account system and paid features will be implemented later when the application has established a significant user base and traffic. The application will prioritize improving the following features:
+
+- AI Line Art Generation: Allow users to describe scenes and generate colorable line art
+- Basic Coloring Tools: Provide rich and easy-to-use coloring features
+- AI Assistance: Smart color suggestions, auto-coloring, and other AI enhancements
+- Public Gallery: Users can directly save their work to the public gallery
+- Local Saving: Support saving artwork to local devices
+
+---
+
+## 2. Architecture Design
+
+### 2.1 Overall Architecture
+
+Frontend-focused architecture with AI backend support:
+
+```
+Client Layer → Business Logic Layer → AI Processing Layer → Data Persistence Layer
+```
+
+### 2.2 Page Structure Design
+
+Based on V2.0 model of premium tool pages:
+
+```
+┌─────────────────────────────┐
+│ Navigation Bar              │
+├─────────────────────────────┤
+│ First Screen: AI Tool Area  │
+│ - Coloring Canvas           │
+│ - AI Toolbar                │
+│ - Smart Color Picker        │
+├─────────────────────────────┤
+│ Second Screen: Landing Page │
+│ - Keyword-related Content   │
+│ - AI Features Guide         │
+│ - Related Recommendations   │
+├─────────────────────────────┤
+│ Third Screen: User Gallery  │
+│ - AI-Enhanced Artworks      │
+│ - Category Browsing         │
+├─────────────────────────────┤
+│ Footer                      │
+└─────────────────────────────┘
+```
+
+### 2.3 Modular Structure (Updated)
+
+```
+AI Coloring Page Application
+├── Core Modules (Priority Development)
+│   ├── Canvas Engine Module
+│   ├── AI Tool Module
+│   └── Rendering Module
+├── Feature Modules (Essential Features)
+│   ├── Content Management Module
+│   ├── User Interface Module
+│   ├── Data Storage Module (Local Storage Only)
+│   └── Public Gallery Module (Instead of User Accounts)
+├── Extension Modules (Later Development)
+│   ├── Social Sharing Module
+│   ├── AI Enhancement Module
+│   └── Commercialization Module (After Traffic Milestone)
+└── Infrastructure Modules
+    ├── Event Bus
+    ├── Logging System
+    ├── Error Handling
+    └── Performance Monitoring
+```
+
+---
+
+## 3. Module Planning
+
+### 3.1 Core Modules
+
+#### 3.1.1 Canvas Engine Module
+
+**Responsibility**: Manage drawing canvas, handle user input, implement basic drawing functions
+
+**Components**:
+- Canvas Manager
+- Input Handler
+- Rendering Engine
+- Layer Manager
+
+**Interface**:
+```typescript
+interface CanvasEngine {
+  initialize(container: HTMLElement, options: CanvasOptions): void;
+  resize(width: number, height: number): void;
+  loadImage(src: string): Promise<void>;
+  getContext(): CanvasRenderingContext2D;
+  addEventListener(event: string, callback: Function): void;
+  removeEventListener(event: string, callback: Function): void;
+}
+```
+
+#### 3.1.2 AI Tool Module
+
+**Responsibility**: Provide AI-powered drawing tools such as smart brush, auto-fill, magic eraser, etc.
+
+**Components**:
+- AI Tool Manager
+- Smart Brush Tool
+- Auto-Fill Tool
+- Magic Eraser Tool
+- AI Selection Tool
+
+**Interface**:
+```typescript
+interface AITool {
+  name: string;
+  icon: string;
+  activate(): void;
+  deactivate(): void;
+  handleMouseDown(event: MouseEvent): void;
+  handleMouseMove(event: MouseEvent): void;
+  handleMouseUp(event: MouseEvent): void;
+  getOptions(): AIToolOptions;
+  setOptions(options: AIToolOptions): void;
+}
+```
+
+#### 3.1.3 Rendering Module
+
+**Responsibility**: Handle image rendering, including line art, color filling, AI effects, etc.
+
+**Components**:
+- Rendering Manager
+- Line Art Renderer
+- Color Renderer
+- AI Effect Renderer
+
+**Interface**:
+```typescript
+interface Renderer {
+  render(canvas: HTMLCanvasElement, state: AppState): void;
+  applyAIEffect(effect: AIEffect, params: EffectParams): Promise<void>;
+  exportImage(format: string, quality: number): Promise<Blob>;
+}
+```
+
+### 3.2 Feature Modules (Updated)
+
+#### 3.2.1 Content Management Module
+
+**Responsibility**: Manage AI coloring templates, user artworks, and content categories
+
+**Components**:
+- Template Manager
+- Artwork Manager
+- Category Manager
+- AI Search Engine
+
+**Interface**:
+```typescript
+interface ContentManager {
+  loadTemplates(category?: string, page?: number): Promise<Template[]>;
+  getTemplate(id: string): Promise<Template>;
+  saveArtwork(artwork: Artwork): Promise<string>;
+  getPublicArtworks(page?: number): Promise<Artwork[]>; // 替代用户专属画廊
+  searchContent(query: string): Promise<SearchResult>;
+  getAIRecommendations(artwork: Artwork): Promise<Template[]>;
+}
+```
+
+#### 3.2.2 User Interface Module
+
+**Responsibility**: Provide user interface components and interaction elements
+
+**Components**:
+- UI Manager
+- Component Library
+- Theme Manager
+- Layout Manager
+
+**Interface**:
+```typescript
+interface UIManager {
+  renderComponent(component: string, props: any): HTMLElement;
+  showModal(content: HTMLElement | string): void;
+  hideModal(): void;
+  showToast(message: string, type: string): void;
+  applyTheme(theme: Theme): void;
+  getAIAssistantUI(): HTMLElement;
+}
+```
+
+#### 3.2.3 Data Storage Module (Updated)
+
+**Responsibility**: 处理本地存储和公共画廊
+
+**Components**:
+- Storage Manager
+- Local Storage
+- Public Gallery
+- File System Manager
+
+**Interface**:
+```typescript
+interface StorageManager {
+  saveLocal(key: string, data: any): Promise<void>;
+  loadLocal(key: string): Promise<any>;
+  removeLocal(key: string): Promise<void>;
+  saveToPublicGallery(artwork: Artwork): Promise<string>; // 新增：保存到公共画廊
+  getPublicGallery(page?: number): Promise<Artwork[]>; // 新增：获取公共画廊作品
+  storeAIModel(modelId: string, modelData: ArrayBuffer): Promise<void>;
+}
+```
+
+#### 3.2.4 Public Gallery Module (新增，替代用户账户模块)
+
+**Responsibility**: 管理公共画廊的作品展示、浏览和交互
+
+**Components**:
+- Gallery Manager
+- Artwork Display
+- Category Filter
+- Sorting System
+
+**Interface**:
+```typescript
+interface PublicGalleryManager {
+  getAllArtworks(page?: number): Promise<Artwork[]>;
+  getArtworkById(id: string): Promise<Artwork>;
+  saveArtwork(artwork: Artwork): Promise<string>;
+  getFeaturedArtworks(): Promise<Artwork[]>;
+  filterByCategory(category: string): Promise<Artwork[]>;
+  sortArtworks(criterion: string): Promise<Artwork[]>;
+}
+```
+
+### 3.3 Extension Modules (Later Development)
+
+#### 3.3.1 Social Sharing Module
+
+**Responsibility**: Provide artwork sharing and social interaction features
+
+**Components**:
+- Sharing Manager
+- Social Platform Connector
+- Interaction Manager
+- Notification System
+
+**Interface**:
+```typescript
+interface SocialManager {
+  shareArtwork(artwork: Artwork, platform: string): Promise<string>;
+  likeArtwork(artworkId: string): Promise<void>;
+  commentArtwork(artworkId: string, comment: string): Promise<void>;
+  getNotifications(): Promise<Notification[]>;
+  getAITrendingArtworks(): Promise<Artwork[]>;
+}
+```
+
+#### 3.3.2 AI Enhancement Module
+
+**Responsibility**: Provide advanced AI features for coloring and image enhancement
+
+**Components**:
+- AI Manager
+- Smart Coloring
+- AI Style Transfer
+- Image Enhancement
+- Background Removal
+
+**Interface**:
+```typescript
+interface AIEnhancement {
+  suggestColors(artwork: Artwork): Promise<ColorSuggestion[]>;
+  autoColor(artwork: Artwork, style: string): Promise<Artwork>;
+  applyStyle(artwork: Artwork, style: string): Promise<Artwork>;
+  enhanceImage(artwork: Artwork, parameters: EnhanceParameters): Promise<Artwork>;
+  removeBackground(artwork: Artwork): Promise<Artwork>;
+}
+```
+
+#### 3.3.3 Commercialization Module (After Traffic Milestone)
+
+**Responsibility**: Handle paid features, subscriptions, and advertisements
+
+**Components**:
+- Payment Manager
+- Subscription Manager
+- Advertisement Manager
+- Product Manager
+
+**Interface**:
+```typescript
+interface CommercialManager {
+  purchaseItem(itemId: string, paymentMethod: string): Promise<Purchase>;
+  subscribe(plan: string, paymentMethod: string): Promise<Subscription>;
+  showAd(placement: string): Promise<void>;
+  getAvailableItems(): Promise<Item[]>;
+  getAIPremiumFeatures(): Promise<AIFeature[]>;
+}
+```
+
+### 3.4 Infrastructure Modules
+
+#### 3.4.1 Event Bus
+
+**Responsibility**: Provide event mechanism for inter-module communication
+
+**Interface**:
+```typescript
+interface EventBus {
+  subscribe(event: string, callback: Function): void;
+  unsubscribe(event: string, callback: Function): void;
+  publish(event: string, data?: any): void;
+}
+```
+
+#### 3.4.2 Logging System
+
+**Responsibility**: Record application runtime logs to assist debugging
+
+**Interface**:
+```typescript
+interface Logger {
+  debug(message: string, data?: any): void;
+  info(message: string, data?: any): void;
+  warn(message: string, data?: any): void;
+  error(message: string, data?: any): void;
+  logAIOperation(operation: string, parameters: any): void;
+}
+```
+
+#### 3.4.3 Error Handling
+
+**Responsibility**: Uniformly handle application errors and exceptions
+
+**Interface**:
+```typescript
+interface ErrorHandler {
+  handleError(error: Error): void;
+  setErrorStrategy(strategy: ErrorStrategy): void;
+  getErrorStats(): ErrorStats;
+  handleAIModelError(modelError: AIModelError): void;
+}
+```
+
+#### 3.4.4 Performance Monitoring
+
+**Responsibility**: Monitor application performance metrics
+
+**Interface**:
+```typescript
+interface PerformanceMonitor {
+  startMonitoring(): void;
+  stopMonitoring(): void;
+  getMetrics(): PerformanceMetrics;
+  reportIssue(issue: PerformanceIssue): void;
+  monitorAIProcessingTime(operation: string): void;
+}
+```
+
+---
+
+## 4. Development Roadmap (Updated)
+
+### 4.1 Phase One: Core Functionality (Current Stage)
+
+**Goal**: Build core AI coloring functionality and public gallery
+
+**Timeline**: 1-2 months
+
+**Modules**:
+- Canvas Engine Module (Basic Version)
+- AI Tool Module (Basic Version)
+- Content Management Module (Basic Version)
+- User Interface Module (Basic Version)
+- Data Storage Module (Local Storage)
+- Public Gallery Module (Basic Version)
+
+**Milestones**:
+1. ✅ Complete basic canvas engine
+2. ✅ Implement basic AI coloring functionality
+3. ✅ Provide 5-10 basic line art templates
+4. ✅ Complete simple user interface and AI elements
+5. ✅ Implement local saving functionality
+6. ✅ Implement public gallery functionality
+7. ✅ Implement AI line art generation
+
+### 4.2 Phase Two: AI Experience Enhancement (Next Focus)
+
+**Goal**: Improve AI user experience, add more intelligent tools and content
+
+**Timeline**: 2-3 months
+
+**Modules**:
+- Canvas Engine Module (Enhanced Version)
+- AI Tool Module (Multiple Intelligent Tools)
+- Content Management Module (Classification System)
+- User Interface Module (Enhanced Version)
+- Rendering Module (AI Effects)
+- Public Gallery Module (Enhanced Version)
+
+**Milestones**:
+1. Implement multiple AI brush types
+2. Add intelligent undo/redo functionality
+3. Establish template classification system and support AI tags
+4. Optimize user interface for enhanced AI interaction
+5. Implement basic AI effects
+6. Complete public gallery browsing and filtering functionality
+
+### 4.3 Phase Three: Advanced Experience & Community (After Traffic Milestone)
+
+**Goal**: Add advanced AI features and community features
+
+**Timeline**: 2-3 months
+
+**Modules**:
+- Rendering Module (Advanced AI Effects)
+- AI Enhancement Module
+- Social Sharing Module
+- Public Gallery Module (Community Features)
+
+**Milestones**:
+1. Implement AI layer system
+2. Add advanced AI assisted coloring functionality
+3. Introduce community interaction features
+4. Establish user work sharing mechanism
+5. Implement AI recommendation system
+
+### 4.4 Phase Four: Commercialization (After Traffic Milestone)
+
+**Goal**: Add user account system and commercialization features
+
+**Timeline**: 3-4 months
+
+**Modules**:
+- User Account Module (New)
+- Data Storage Module (Cloud Storage)
+- Commercialization Module
+- Performance Monitoring Module
+
+**Milestones**:
+1. Implement user registration and login system
+2. Add cloud storage and synchronization functionality
+3. Establish advanced AI template system
+4. Implement subscription mode and AI advanced features
+5. Optimize AI performance and compatibility
+
+---
+
+## 5. Module Testing Mechanism
+
+### 5.1 Testing Types
+
+#### 5.1.1 Unit Testing
+Test whether individual module functions work properly in isolation
+
+#### 5.1.2 Integration Testing
+Test whether interactions between multiple modules work properly
+
+#### 5.1.3 AI Performance Testing
+Test AI module performance under different loads and with various inputs
+
+#### 5.1.4 Compatibility Testing
+Test module compatibility across different browsers and devices
+
+#### 5.1.5 Security Testing
+Test module security and data protection capabilities, especially for AI models
+
+### 5.2 Module Testing Process
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│  Write Test  │ ──→ │  Develop    │ ──→ │  Run Auto   │
+│  Cases       │     │  Module     │     │  Tests      │
+└─────────────┘     └─────────────┘     └──────┬──────┘
+                                                │
+┌─────────────┐     ┌─────────────┐     ┌──────▼──────┐
+│  Deploy &    │ ←── │  Code       │ ←── │  Manual     │
+│  Monitor     │     │  Review     │     │  Validation │
+└─────────────┘     └─────────────┘     └─────────────┘
+```
+
+### 5.3 Module Testing Checklist
+
+Each module must pass the following test items:
+
+#### 5.3.1 Functionality Testing
+- All expected functions work properly
+- AI features produce expected results
+- Boundary conditions are handled correctly
+- Error handling mechanisms are effective
+
+#### 5.3.2 Performance Testing
+- Response time is within acceptable range
+- AI processing time is optimized
+- Memory usage is reasonable
+- CPU usage is reasonable
+
+#### 5.3.3 Code Quality Testing
+- Code complies with coding standards
+- No obvious code smells
+- Test coverage meets standards
+- AI model integration is clean and maintainable
+
+#### 5.3.4 Compatibility Testing
+- Works properly in mainstream browsers
+- AI features function across devices
+- Displays correctly on different devices and screen sizes
+- Available under different network conditions
+
+#### 5.3.5 Security Testing
+- No obvious security vulnerabilities
+- AI model data is protected
+- Sensitive data protection measures are effective
+- Input validation mechanisms are effective
+
+---
+
+## 6. SEO and Content Strategy (Enhanced)
+
+### 6.1 Keyword Strategy
+
+#### 6.1.1 The Six-Character Formula: "Categorize, List, and Present"
+
+Our SEO strategy follows the proven "Categorize, List, and Present" formula, which involves:
+- Organizing content into clear categories
+- Creating hierarchical structures with properly tagged headings
+- Presenting content in a systematic, searchable manner
+
+This approach not only improves search engine visibility but also enhances user experience through intuitive navigation.
+
+#### 6.1.2 Core Keywords
+
+- ai coloring page
+- ai coloring book
+- ai coloring tool
+- ai drawing colorizer
+- online coloring pages
+
+#### 6.1.3 Long-tail Keywords
+
+- animal ai coloring pages
+- ai mandala coloring pages
+- ai portrait coloring pages
+- ai coloring pages for kids
+- ai landscape coloring pages
+- anime ai coloring pages
+- disney ai coloring pages
+- christmas ai coloring pages
+- halloween ai coloring pages
+
+#### 6.1.4 Keyword-Page Mapping
+
+Following the "One Keyword = One Page" principle, each page will focus on a single primary keyword to maximize SEO impact:
+
+```
+Homepage: ai coloring page (main focus)
+Category pages: animal ai coloring pages, landscape ai coloring pages
+Subcategory pages: dog ai coloring pages, cat ai coloring pages
+Specific pages: cute dog ai coloring pages, fantasy castle ai coloring pages
+```
+
+Each page passes its authority back to the homepage, creating a strong internal linking structure that benefits the site's overall SEO performance.
+
+### 6.2 Page Structure Optimization
+
+#### 6.2.1 HTML Structure
+
+Each page will follow this hierarchical structure, with clear heading relationships:
+
+```html
+<h1>AI Coloring Page</h1>
+<p>Introduction to our AI-powered coloring tool with primary keyword mentions...</p>
+
+<!-- AI Tool Functionality Area -->
+
+<h2>Animal AI Coloring Pages</h2>
+  <p>Introduction to animal coloring pages category...</p>
+  
+  <h3>Dog AI Coloring Pages</h3>
+    <!-- Image Gallery with AI Features -->
+    <p>Descriptions containing relevant keywords...</p>
+  
+  <h3>Cat AI Coloring Pages</h3>
+    <!-- Image Gallery with AI Features -->
+    <p>Descriptions containing relevant keywords...</p>
+
+<h2>Landscape AI Coloring Pages</h2>
+  <p>Introduction to landscape coloring pages category...</p>
+  
+  <h3>Mountain AI Coloring Pages</h3>
+    <!-- Image Gallery with AI Features -->
+    <p>Descriptions containing relevant keywords...</p>
+  
+  <h3>Beach AI Coloring Pages</h3>
+    <!-- Image Gallery with AI Features -->
+    <p>Descriptions containing relevant keywords...</p>
+```
+
+The structure provides:
+- H1 tag for main topic (used only once per page)
+- H2 tags for main categories (directly support the H1)
+- H3 tags for subcategories (directly support their parent H2)
+- Content between headings that reinforces keyword relevance
+
+#### 6.2.2 Content Quality Requirements
+
+- Original AI-enhanced content with unique value
+- Keyword-optimized text without keyword stuffing
+- Clear categorization following the six-character formula
+- High-quality images with optimized alt text
+- Comprehensive descriptions of AI coloring features
+
+#### 6.2.3 Internal Linking Strategy
+
+Each page will maintain strategic internal links:
+- Category pages link to relevant subcategories
+- Subcategory pages link to specific pages and back to category pages
+- All pages include a link back to the homepage
+- Related content is cross-linked where appropriate
+
+This creates a "authority funnel" where individual page authority flows back to the main site, strengthening the overall domain presence for primary keywords.
+
+### 6.3 User Behavior Data Optimization
+
+#### 6.3.1 Reducing Bounce Rate
+- Load AI tool functionality in the first screen
+- Clear navigation system with AI feature highlights
+- Related AI-powered recommended content
+- Engaging call-to-action elements throughout the page
+
+#### 6.3.2 Increasing Time on Site
+- Integration of AI tools and content
+- Interactive AI-enhanced experience
+- Gallery of user-generated content to browse
+- Progressive disclosure of features based on user engagement
+
+#### 6.3.3 Increasing Page Visits
+- AI-powered content recommendations
+- Smart category navigation
+- Featured artwork showcase
+- New and trending content highlights
+
+### 6.4 SEO Implementation Phases
+
+#### 6.4.1 Phase 1: Foundation
+- Implement proper HTML structure with heading hierarchy
+- Optimize meta tags and page titles
+- Create XML sitemap and submit to search engines
+- Set up basic analytics tracking
+
+#### 6.4.2 Phase 2: Content Expansion
+- Develop category and subcategory pages based on keyword research
+- Create template-based pages for specific keywords
+- Implement internal linking strategy
+- Begin content creation calendar
+
+#### 6.4.3 Phase 3: Refinement
+- Analyze user behavior data and refine content strategy
+- Optimize underperforming pages
+- Expand content in high-performing categories
+- Implement advanced schema markup for rich results
+
+---
+
+## 7. Technology Stack
+
+### 7.1 Frontend Technologies
+
+#### 7.1.1 Core Framework
+- React/Next.js: Build user interface
+- TypeScript: Provide type safety
+
+#### 7.1.2 Drawing Technologies
+- Canvas API: Core drawing functionality
+- WebGL: Advanced AI rendering effects
+- SVG: Part static graphics and icons
+
+#### 7.1.3 Styling Solutions
+- Tailwind CSS: Quick UI development
+
+#### 7.1.4 State Management
+- React Hooks: Component state management
+- React Context: Local state management
+
+### 7.2 AI and backend technologies
+
+#### 7.2.1 AI Processing
+- TensorFlow.js/ONNX Runtime: Client-side AI model
+- Fal.ai API: Server-side AI processing
+
+#### 7.2.2 Server
+- Node.js: JavaScript runtime environment
+- Next.js API Routes: Web framework
+
+#### 7.2.3 Data storage solution (Updated)
+
+#### 7.2.3.1 Current stage: File system storage
+- **File system**: Store user-generated images and public gallery artworks
+- **JSON file**: Store public gallery metadata
+- **localStorage**: Store user preferences and temporary data
+
+**Data model**:
+- artworks: User-created and saved to public gallery coloring artworks
+- templates: System-provided templates
+
+**Storage structure**:
+- public/artworks: Store user artwork images
+- public/gallery.json: Store gallery metadata
+
+#### 7.2.3.2 Future plan: Supabase (After Traffic Milestone)
+- **PostgreSQL database**: Store user data, content management, and application state
+- **Supabase Auth**: Handle user registration, login, and identity verification
+- **Supabase Storage**: Store user-generated images and templates
+- **Real-time subscription**: Support real-time notifications and collaboration
+
+---
+
+## 8. Development Process and Standards
+
+### 8.1 Development Process
+
+#### 8.1.1 Module Development Process
+1. Requirement analysis and module design
+2. Write test cases including AI test scenarios
+3. Implement module functionality
+4. Run module testing including AI model validation
+5. Code review
+6. Integration testing
+7. Documentation
+8. Release and deployment
+
+#### 8.1.2 Git Workflow
+- Main branch: master/main (stable version)
+- Development branch: develop (in-development version)
+- Feature branches: feature/* (new feature development)
+- AI branches: ai-feature/* (AI feature development)
+- Bugfix branches: bugfix/* (issue fixes)
+- Release branches: release/* (version release preparation)
+
+#### 8.1.3 Version Control
+- Semantic versioning: major.minor.patch
+- Changelog: Detailed record of changes in each version
+- AI model versioning: Tracking AI model versions separately
+
+### 8.2 Coding Standards
+
+#### 8.2.1 JavaScript/TypeScript Standards
+- Follow ESLint rules
+- Use Prettier for code formatting
+- Follow TypeScript best practices
+- AI model integration patterns
+
+#### 8.2.2 CSS Standards
+- Use Tailwind utility classes
+- Modular CSS
+- Responsive design principles
+- AI-friendly UI components
+
+#### 8.2.3 Documentation Standards
+- JSDoc comments
+- README documentation
+- API documentation
+- AI model documentation
+
+#### 8.2.4 Commit Standards
+- Use Conventional Commits
+- Run lint and tests before committing
+- Include AI model version in relevant commits
+
+---
+
+## 9. Performance Optimization Strategy
+
+### 9.1 Frontend Performance Optimization
+
+#### 9.1.1 Loading Optimization
+- Code splitting
+- Lazy loading
+- Resource compression
+- AI model progressive loading
+
+#### 9.1.2 Rendering Optimization
+- Virtual DOM optimization
+- Reduce reflows and repaints
+- Use Web Workers for AI calculations
+- Canvas rendering optimization
+
+#### 9.1.3 Resource Optimization
+- Image optimization (WebP format, responsive images)
+- Font optimization
+- Preload critical resources
+- AI model size optimization
+
+### 9.2 AI Performance Optimization
+
+#### 9.2.1 Model Optimization
+- Model quantization
+- Model pruning
+- WebGL acceleration
+- WebAssembly compilation
+
+#### 9.2.2 Processing Optimization
+- Batch processing
+- Progressive enhancement
+- Adaptive quality based on device capability
+- Client/server processing balance
+
+### 9.3 API Performance Optimization
+
+#### 9.3.1 API Optimization
+- Data pagination
+- Caching mechanism
+- Request batching
+- AI result caching
+
+#### 9.3.2 Resource optimization (Updated)
+- Image size optimization (Using more economical size)
+- API call throttling
+- Local caching
+- Reduce unnecessary network requests
+
+### 9.4 Performance Monitoring and Analysis
+
+#### 9.4.1 Performance Metrics
+- First Contentful Paint (FCP)
+- Largest Contentful Paint (LCP)
+- First Input Delay (FID)
+- Cumulative Layout Shift (CLS)
+- AI Processing Time (APT)
+
+#### 9.4.2 Monitoring Tools
+- Web Vitals
+- Performance API
+- User experience monitoring
+- AI processing monitoring
+
+---
+
+## 10. Maintenance and Iteration Plan
+
+### 10.1 Routine Maintenance
+
+#### 10.1.1 Bug Fixing Process
+1. Issue reporting and classification
+2. Priority assessment
+3. Fix development
+4. Test verification
+5. Release fix
+
+#### 10.1.2 Performance Monitoring
+- Regular performance audits
+- Performance regression analysis
+- Performance optimization implementation
+- AI model performance tracking
+
+#### 10.1.3 Security Maintenance
+- Regular security scans
+- Dependency updates
+- Security patch application
+- AI model security audits
+
+### 10.2 Feature Iteration
+
+#### 10.2.1 Iteration Cycle
+- Small iterations: 2 weeks
+- Medium iterations: 1-2 months
+- Large iterations: 3-6 months
+- AI model updates: As needed
+
+#### 10.2.2 User Feedback Collection
+- In-app feedback channel
+- User research
+- Data analysis
+- AI result quality feedback
+
+#### 10.2.3 Feature Priority Assessment
+- User demand frequency
+- Development complexity
+- Business value
+- Technical debt impact
+- AI enhancement potential
+
+### 10.3 Long-term Planning (Updated)
+
+#### 10.3.1 Current Priority
+1. Enhance basic AI experience
+2. Complete public gallery functionality
+3. Improve AI generation quality
+4. Optimize mobile experience
+5. Increase more line art templates
+
+#### 10.3.2 Mid-term Goal (After Traffic Milestone)
+1. Add more AI creative tools
+2. Introduce community interaction features
+3. Support more painting styles
+4. Optimize overall performance
+5. Internationalization and localization
+
+#### 10.3.3 Long-term Goal (Mature Stage)
+1. Establish user account system
+2. Introduce commercialization mode
+3. Add AI advanced features paid service
+4. Develop API and extension platform
+5. Establish partner plan
+
+---
+
+## 11. 吉卜力风格UI设计指南
+
+### 11.1 Design Concept and Principles
+
+#### 11.1.1 Ghibli Style Core Elements
+- Natural and magical harmony
+- Soft, warm color combination
+- Detailed hand-drawn texture and details
+- Full of fairytale feeling interface elements
+- Rich foreground and background layers
+- Dynamic, organic animation design
+
+#### 11.1.2 Design Basic Principles
+- **Simple and Warm**: Interface design simple but not losing warmth, avoid excessive decoration
+- **Organic and Natural**: Element edges tend to be rounded, avoid overly sharp angles
+- **Hand-drawn Style**: Buttons, icons, etc. elements have hand-drawn feel, avoid overly geometric
+- **Soft Colors**: Natural tone as main, such as grass green, sky blue, earth yellow, cloud white, etc.
+- **Dynamic Layers**: Interface has foreground, middle ground, background layers, creating space feel
+- **Detail Rich**: Small decorative elements decorate interface, enhancing immersion
+
+### 11.2 Color Scheme
+
+#### 11.2.1 Main Color Palette
+```css
+:root {
+  /* Main color */
+  --ghibli-primary: #4a8fdd;      /* Sky blue */
+  --ghibli-secondary: #8cc152;    /* Totoro green */
+  --ghibli-accent: #fcbb42;       /* Witch yellow */
+  
+  /* Neutral color */
+  --ghibli-warm-white: #f8f4e3;   /* Warm white */
+  --ghibli-pale-blue: #e4eefb;    /* Light blue */
+  --ghibli-light-brown: #d2b48c;  /* Light brown */
+  --ghibli-dark-brown: #73553a;   /* Dark brown */
+  
+  /* Highlight color */
+  --ghibli-red: #ed5565;          /* Red highlight */
+  --ghibli-orange: #fc6e51;       /* Orange */
+  --ghibli-purple: #967adc;       /* Purple */
+}
+```
+
+#### 11.2.2 Gradient Scheme
+```css
+.ghibli-sky-gradient {
+  background: linear-gradient(to bottom, #7bb2e3 0%, #d9ecff 100%);
+}
+
+.ghibli-meadow-gradient {
+  background: linear-gradient(to bottom, #8cc152 0%, #a0d468 100%);
+}
+
+.ghibli-sunset-gradient {
+  background: linear-gradient(to bottom, #ffce54 0%, #fcbb42 60%, #fc6e51 100%);
+}
+```
+
+### 11.3 Component Style and Shadcn/UI Customization
+
+#### 11.3.1 Shadcn/UI Theme Customization
+Create a Ghibli theme style configuration file:
+
+```typescript
+// lib/themes/ghibli-theme.ts
+export const ghibliTheme = {
+  colors: {
+    // Use the defined colors
+    primary: 'var(--ghibli-primary)',
+    secondary: 'var(--ghibli-secondary)',
+    // ... Other color configurations
+  },
+  
+  borderRadius: {
+    sm: '0.375rem',
+    md: '0.75rem',
+    lg: '1.5rem',
+    full: '9999px',
+  },
+  
+  // Shadow effect, simulating hand-drawn style
+  shadows: {
+    sm: '0 1px 3px rgba(115, 85, 58, 0.1), 0 1px 2px rgba(115, 85, 58, 0.06)',
+    md: '0 4px 6px rgba(115, 85, 58, 0.1), 0 2px 4px rgba(115, 85, 58, 0.06)',
+    lg: '0 10px 15px rgba(115, 85, 58, 0.1), 0 4px 6px rgba(115, 85, 58, 0.05)',
+  },
+  
+  // Text style
+  typography: {
+    fontFamily: '"Studio Ghibli", "Totoro", sans-serif',
+    heading: {
+      fontWeight: '600',
+      lineHeight: '1.2',
+    },
+    body: {
+      fontWeight: '400',
+      lineHeight: '1.5',
+    },
+  }
+};
+```
+
+#### 11.3.2 Component Style Customization Guide
+
+**Button (Button)**
+```tsx
+// Customize Shadcn/UI Button component
+<Button
+  className="rounded-full bg-ghibli-primary hover:bg-ghibli-primary/90 text-ghibli-warm-white border-2 border-white/20 shadow-md transition-all duration-300 transform hover:scale-105"
+>
+  开始创作
+</Button>
+```
+
+**Input (Input)**
+```tsx
+// Customize Shadcn/UI Input component
+<Input
+  className="border-2 border-ghibli-light-brown/30 rounded-xl bg-ghibli-warm-white/90 focus:ring-2 focus:ring-ghibli-accent/50 focus:border-ghibli-accent shadow-inner"
+  placeholder="描述你想要的场景..."
+/>
+```
+
+**Card (Card)**
+```tsx
+// Customize Shadcn/UI Card component
+<Card className="rounded-xl border-2 border-ghibli-light-brown/20 bg-ghibli-warm-white/95 shadow-md backdrop-blur-sm">
+  <CardHeader>
+    <CardTitle className="text-ghibli-dark-brown font-hand">魔法画布</CardTitle>
+    <CardDescription className="text-ghibli-light-brown">创造你的吉卜力艺术</CardDescription>
+  </CardHeader>
+  <CardContent>
+    {/* Content */}
+  </CardContent>
+</Card>
+```
+
+### 11.4 Background and Decorative Elements
+
+#### 11.4.1 Background Layer Design
+```tsx
+// Multi-layer background component
+const GhibliBackground = () => (
+  <div className="fixed inset-0 overflow-hidden -z-10">
+    {/* Far sky layer */}
+    <div className="absolute inset-0 ghibli-sky-gradient"></div>
+    
+    {/* Mid sky layer - Parallax effect */}
+    <motion.div 
+      className="absolute inset-0 w-full h-full"
+      style={{ y: scrollY * 0.1 }}
+    >
+      <img src="/backgrounds/clouds.svg" className="w-full h-full object-cover opacity-70" alt="" />
+    </motion.div>
+    
+    {/* Near background elements - Basic stationary */}
+    <div className="absolute bottom-0 left-0 right-0">
+      <img src="/backgrounds/foreground.svg" className="w-full object-bottom" alt="" />
+    </div>
+    
+    {/* Floating elements - Random position leaves/magic particles */}
+    <FloatingElements />
+  </div>
+);
+```
+
+#### 11.4.2 Decorative Elements
+Create a series of reusable decorative elements:
+
+- Floating leaves/petals
+- Small animal icons
+- Magic dots
+- Hand-drawn borders
+- Rainbow/clouds
+
+### 11.5 Animation Design
+
+#### 11.5.1 Recommended Animation Library
+Besides Shadcn/UI, recommend using the following animation plugins:
+
+1. **Framer Motion**: Create smooth, organic interface transition effects
+   ```bash
+   npm install framer-motion
+   ```
+
+2. **React Spring**: Physical animation effects, useful for creating natural, elastic animations
+   ```bash
+   npm install react-spring
+   ```
+
+3. **AutoAnimate**: Simplify animation creation, automatically add entrance/exit animations to elements
+   ```bash
+   npm install @formkit/auto-animate
+   ```
+
+#### 11.5.2 Ghibli Style Animation Example
+
+**Floating Effect**
+```tsx
+// Use Framer Motion to create a slight floating effect
+import { motion } from 'framer-motion';
+
+const FloatingElement = ({ children }) => (
+  <motion.div
+    animate={{ 
+      y: [0, -10, 0],
+      rotate: [0, 2, 0, -2, 0],
+    }}
+    transition={{ 
+      duration: 6, 
+      ease: "easeInOut", 
+      repeat: Infinity,
+      repeatType: "mirror"
+    }}
+  >
+    {children}
+  </motion.div>
+);
+```
+
+**Page Transition Effect**
+```tsx
+// Ghibli style transition during page switching
+const pageVariants = {
+  initial: { opacity: 0, scale: 0.98 },
+  animate: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { 
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] // Special ease curve
+    }
+  },
+  exit: { 
+    opacity: 0,
+    scale: 1.02,
+    transition: { duration: 0.4 }
+  }
+};
+
+// Use in page component
+<motion.main
+  variants={pageVariants}
+  initial="initial"
+  animate="animate"
+  exit="exit"
+>
+  {/* Page content */}
+</motion.main>
+```
+
+### 11.6 UI/UX Recommended Plugin and Tool
+
+#### 11.6.1 Core UI Library
+- **Shadcn/UI** (Already installed): Basic component library
+- **TailwindCSS**: CSS framework for Shadcn/UI
+  ```bash
+  npm install -D tailwindcss postcss autoprefixer
+  npx tailwindcss init -p
+  ```
+
+#### 11.6.2 Helper Plugins
+1. **Radix UI**: Accessible headless component library, can be used with Shadcn/UI
+   ```bash
+   npm install @radix-ui/react-icons @radix-ui/colors
+   ```
+
+2. **Lucide React**: Hand-drawn style icon library
+   ```bash
+   npm install lucide-react
+   ```
+
+3. **Next Themes**: Theme manager
+   ```bash
+   npm install next-themes
+   ```
+
+4. **Tailwind CSS Animate**: Tailwind animation preset
+   ```bash
+   npm install tailwindcss-animate
+   ```
+
+5. **React Confetti**: Add interactivity and celebration effects
+   ```bash
+   npm install react-confetti
+   ```
+
+#### 11.6.3 Graphic and SVG Tools
+1. **React-SVG**: Easily integrate SVG files
+   ```bash
+   npm install react-svg
+   ```
+
+2. **SVG Backgrounds**: Hand-drawn style background
+   ```
+   https://www.svgbackgrounds.com/
+   ```
+
+3. **Haikei**: Generate organic, wave-like background
+   ```
+   https://app.haikei.app/
+   ```
+
+### 11.7 Implementation Steps
+
+#### 11.7.1 Preparation
+1. Create Ghibli style resource folder
+   ```
+   /public
+     /ghibli-assets
+       /backgrounds
+       /decorations
+       /icons
+       /characters
+   ```
+
+2. Set up global styles and theme
+   ```
+   /styles
+     /globals.css      - Global styles
+     /ghibli-theme.js  - Theme configuration
+   ```
+
+3. Create component library extension
+   ```
+   /components
+     /ui               - Basic UI components (Shadcn)
+     /ghibli           - Ghibli style extension components
+     /layouts          - Page layout components
+     /animations       - Animation components
+   ```
+
+#### 11.7.2 Layout Implementation
+Start from page layout, gradually build Ghibli style interface:
+
+1. Design basic page layout
+2. Add multi-layer background
+3. Customize basic component styles
+4. Add decorative elements
+5. Implement responsive adjustments
+6. Add page transition effects
+7. Optimize interaction experience
+
+### 11.8 Usability and Performance Consideration
+
+#### 11.8.1 Usability Principles
+- Keep operation simple and clear
+- Ensure enough contrast and readability
+- Decorative elements should not interfere with core functionality
+- Maintain responsive design, adapt to different devices
+- Provide clear feedback mechanisms
+
+#### 11.8.2 Performance Optimization
+- Optimize image resources (WebP format, suitable size)
+- Use CSS animations instead of JavaScript animations (if possible)
+- Lazy load non-critical resources
+- Layer rendering, avoid unnecessary repaints
+- Avoid too many semi-transparent overlays
+
+### 11.9 Practical Example: Ghibli Style Coloring Page Application
+
+#### 11.9.1 First Screen Design
+```tsx
+// pages/index.js
+import { motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import GhibliBackground from "@/components/ghibli/background";
+import FloatingElements from "@/components/ghibli/floating-elements";
+
+export default function Home() {
+  // ...Existing logic
+  
+  return (
+    <div className="min-h-screen">
+      <GhibliBackground />
+      
+      <main className="container mx-auto px-4 py-8 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold text-ghibli-dark-brown mb-4">
+            童话涂色世界
+          </h1>
+          <p className="text-lg md:text-xl text-ghibli-dark-brown/80 max-w-2xl mx-auto">
+            描述你心中的场景，AI将为你创造一个充满魔法的涂色画，踏上属于你的创意旅程
+          </p>
+        </motion.div>
+        
+        <div className="max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border-2 border-ghibli-light-brown/20">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="relative">
+              <FloatingElements count={3} />
+              <textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="描述你想要的场景，例如：森林中的小屋、海边的城堡..."
+                className="w-full h-32 p-4 rounded-2xl border-2 border-ghibli-light-brown/30 bg-ghibli-warm-white/90 focus:ring-2 focus:ring-ghibli-accent/50 focus:border-ghibli-accent shadow-inner resize-none"
+                rows={4}
+              />
+            </div>
+            
+            <Button 
+              type="submit"
+              disabled={loading}
+              className="w-full py-6 rounded-full bg-ghibli-primary hover:bg-ghibli-primary/90 text-ghibli-warm-white border-2 border-white/20 shadow-md transition-all duration-300 transform hover:scale-105"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  正在创造魔法...
+                </span>
+              ) : '创造我的涂色画'}
+            </Button>
+          </form>
+        </div>
+        
+        {/* Result Display Area */}
+        {imageUrl && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mt-12 max-w-4xl mx-auto"
+          >
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-lg border-2 border-ghibli-light-brown/20">
+              <h2 className="text-2xl font-bold text-ghibli-dark-brown mb-4">你的魔法涂色画</h2>
+              <div className="relative">
+                <img 
+                  src={imageUrl} 
+                  alt="生成的涂色画" 
+                  className="w-full rounded-xl shadow-md" 
+                />
+                <div className="absolute bottom-4 right-4 flex space-x-2">
+                  <Button variant="outline" className="rounded-full bg-white">
+                    保存图片
+                  </Button>
+                  <Button variant="outline" className="rounded-full bg-white">
+                    打印
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </main>
+    </div>
+  );
+}
+```
+
+#### 11.9.2 Background Component Example
+```tsx
+// components/ghibli/background.js
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+
+export default function GhibliBackground() {
+  const [scrollY, setScrollY] = useState(0);
+  
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
+  return (
+    <div className="fixed inset-0 overflow-hidden -z-10">
+      {/* Sky background */}
+      <div className="absolute inset-0 ghibli-sky-gradient"></div>
+      
+      {/* Far sky layer - Parallax effect */}
+      <motion.div 
+        className="absolute inset-0 w-full h-full"
+        style={{ y: scrollY * 0.1 }}
+      >
+        <img src="/ghibli-assets/backgrounds/distant-clouds.svg" className="w-full h-full object-cover opacity-70" alt="" />
+      </motion.div>
+      
+      {/* Mid sky layer - Parallax effect */}
+      <motion.div 
+        className="absolute inset-0 w-full h-full"
+        style={{ y: scrollY * 0.2 }}
+      >
+        <img src="/ghibli-assets/backgrounds/mid-clouds.svg" className="w-full h-full object-cover opacity-80" alt="" />
+      </motion.div>
+      
+      {/* Far mountain layer - Parallax effect */}
+      <motion.div 
+        className="absolute inset-0 w-full h-full"
+        style={{ y: scrollY * 0.3 }}
+      >
+        <img src="/ghibli-assets/backgrounds/hills.svg" className="w-full h-full object-cover" alt="" />
+      </motion.div>
+      
+      {/* Near background elements - Basic stationary */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <img src="/ghibli-assets/backgrounds/foreground.svg" className="w-full object-bottom" alt="" />
+      </div>
+      
+      {/* Decorative elements - Random floating */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <motion.img
+            key={i}
+            src={`/ghibli-assets/decorations/leaf-${(i % 5) + 1}.svg`}
+            className="absolute w-6 h-6 opacity-70"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, Math.random() * 30 + 10, 0],
+              x: [0, Math.random() * 20 - 10, 0],
+              rotate: [0, Math.random() * 360, 0],
+            }}
+            transition={{
+              duration: Math.random() * 10 + 15,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            alt=""
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### 11.10 Design Resources
+
+#### 11.10.1 Recommended Design Resources
+- [Ghibli Color Palettes](https://www.pinterest.com/search/pins/?q=ghibli%20color%20palette)
+- [Studio Ghibli Inspired Design Assets](https://www.vecteezy.com/free-vector/studio-ghibli)
+- [Hand-drawn SVG backgrounds](https://www.svgbackgrounds.com/set/hand-drawn-svg-backgrounds/)
+- [Organic Shape Generators](https://app.haikei.app/)
+
+#### 11.10.2 Font Recommendation
+- "Ghibli" (Similar to the handwriting used in Studio Ghibli movies)
+- "Comic Neue" (Open source alternative)
+- "Nunito" (Smooth and friendly sans-serif font)
+- "Gaegu" (Handwriting style)
+
+To add these fonts to your project, you can use Google Fonts:
+
+```css
+/* In globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;400;700&family=Gaegu:wght@300;400;700&family=Nunito:wght@300;400;600;700&display=swap');
+
+:root {
+  --font-ghibli: 'Gaegu', 'Comic Neue', cursive;
+  --font-body: 'Nunito', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, .ghibli-font {
+  font-family: var(--font-ghibli);
+}
+```
+
+---
+
+*Ghibli Style UI Design Part Updated: 2025-06-01*
+
+---
+
+*Document Version: 1.3.0*
+*Last Updated: 2024-08-20*
+
+## 12. Shadcn/UI Practice Guide
+
+### 12.1 Component Usage Strategy
+
+#### Basic Components Adoption
+- Prioritize using shadcn/ui basic components like `Button`, `Input`, `Card`, etc., these components have good accessibility and interaction experience
+- Create `components/ui` directory in the project specifically for these basic components
+- Use by importing: `import { Button } from "@/components/ui/button"`
+
+#### Component Extension Strategy
+- Create `components/ghibli` directory, for storing Ghibli style extension components
+- These extension components should be based on shadcn/ui components, but add specific styles and effects
+- Example structure:
+  ```
+  /components
+    /ui          # shadcn/ui basic components
+    /ghibli      # Ghibli style extension components
+      /button.js # Ghibli style Button
+      /card.js   # Ghibli style Card
+    /layouts     # Page layout components
+    /animations  # Animation components
+  ```
+
+### 12.2 Theme Customization Method
+
+#### Global Theme Setting
+```js
+// lib/themes/shadcn-ghibli-theme.js
+// Override shadcn/ui default theme
+const shadcnGhibliTheme = {
+  light: {
+    background: "hsl(var(--ghibli-warm-white))",
+    foreground: "hsl(var(--ghibli-dark-brown))",
+    primary: "hsl(var(--ghibli-primary))",
+    "primary-foreground": "hsl(var(--ghibli-warm-white))",
+    secondary: "hsl(var(--ghibli-secondary))",
+    "secondary-foreground": "hsl(var(--ghibli-dark-brown))",
+    // Other colors...
+  }
+};
+```
+
+#### Component Level Customization
+```tsx
+// Component level style customization example
+<Button
+  className="rounded-full bg-ghibli-primary hover:bg-ghibli-primary/90 
+             text-ghibli-warm-white border-2 border-white/20 
+             shadow-md transition-all duration-300 transform hover:scale-105"
+>
+  生成我的涂色画
+</Button>
+```
+
+### 12.3 Practical Combination Pattern
+
+#### Card and Form Combination
+```tsx
+// Ghibli style input card
+<Card className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border-2 border-ghibli-light-brown/20">
+  <CardHeader>
+    <CardTitle className="font-ghibli text-2xl text-ghibli-dark-brown">创造你的魔法世界</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <form onSubmit={handleSubmit}>
+      <div className="space-y-4">
+        <div className="relative">
+          <Label htmlFor="prompt" className="text-ghibli-dark-brown/80">描述你想要的场景</Label>
+          <Textarea 
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="例如：森林中的小屋、海边的城堡..."
+            className="rounded-xl border-2 border-ghibli-light-brown/30 bg-ghibli-warm-white/90"
+          />
+        </div>
+        <Button type="submit" className="w-full">创造魔法</Button>
+      </div>
+    </form>
+  </CardContent>
+</Card>
+```
+
+#### Result Display Area
+```tsx
+// Generate result display
+<AnimatePresence>
+  {imageUrl && (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="mt-8"
+    >
+      <Card className="bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden">
+        <CardContent className="p-0">
+          <div className="relative">
+            <img src={imageUrl} alt="生成的涂色画" className="w-full" />
+            
+            <div className="absolute bottom-4 right-4 flex space-x-2">
+              <Button variant="ghibli-secondary" size="sm" onClick={handleDownload}>
+                <Download className="mr-2 h-4 w-4" /> 保存
+              </Button>
+              
+              <Button variant="ghibli-primary" size="sm" onClick={handlePrint}>
+                <Printer className="mr-2 h-4 w-4" /> 打印
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+### 12.4 Performance Optimization Suggestion
+
+#### Component Lazy Loading
+```tsx
+// Dialog etc. re-component lazy loading example
+import dynamic from 'next/dynamic';
+
+const Dialog = dynamic(() => import('@/components/ui/dialog'), {
+  loading: () => <p>加载中...</p>,
+  ssr: false // If component has issues in server-side rendering
+});
+```
+
+#### Style Reuse Scheme
+Create common classes for commonly used Ghibli style combinations:
+
+```js
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      // Extend configuration...
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+  // Custom classes
+  corePlugins: {
+    preflight: false,
+  },
+  // Add custom classes
+  extend: {
+    '.ghibli-card': {
+      '@apply bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg border-2 border-ghibli-light-brown/20': {}
+    },
+    '.ghibli-input': {
+      '@apply rounded-xl border-2 border-ghibli-light-brown/30 bg-ghibli-warm-white/90 focus:ring-2 focus:ring-ghibli-accent/50': {}
+    },
+    '.ghibli-button': {
+      '@apply rounded-full bg-ghibli-primary hover:bg-ghibli-primary/90 text-ghibli-warm-white border-2 border-white/20 shadow-md': {}
+    }
+  }
+}
+```
+
+### 12.5 Practical Steps Suggestion
+
+1. **Initial Component Setup**
+   - Use shadcn-ui CLI to add required components:
+     ```bash
+     npx shadcn-ui@latest add button
+     npx shadcn-ui@latest add card
+     npx shadcn-ui@latest add input
+     # Add other required components...
+     ```
+
+2. **Theme Configuration**
+   - First configure global CSS variables (11.2 section color scheme)
+   - Create shadcn theme file for override
+
+3. **Component Customization Process**
+   - First use native shadcn components to ensure functionality
+   - Then apply Ghibli style class names
+   - Finally add animation and interaction enhancements
+
+4. **Layout Implementation**
+   - First implement GhibliBackground (11.9.2 section)
+   - Then build page layout based on shadcn/ui
+   - Finally add decorative elements and details
+
+Through this method, you can fully utilize shadcn/ui functionality and accessibility foundation, while implementing unique Ghibli style user interface.
+
+---
+
+*Shadcn/UI Practice Guide Updated: 2025-06-01*

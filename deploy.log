@@ -1,0 +1,73 @@
+[2025-05-05T09:14:27.115Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:14:27.117Z] [ERROR] 缺少环境变量 FAL_API_KEY
+[2025-05-05T09:14:52.081Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:14:52.084Z] [INFO] 环境变量加载完成
+[2025-05-05T09:14:52.084Z] [INFO] 初始化API客户端...
+[2025-05-05T09:14:52.084Z] [INFO] API客户端初始化完成
+[2025-05-05T09:14:52.084Z] [INFO] 🚀 开始自动部署流程...
+[2025-05-05T09:14:52.085Z] [INFO] 📋 运行预部署检查...
+[2025-05-05T09:14:52.114Z] [INFO] 预部署检查通过
+[2025-05-05T09:14:52.114Z] [INFO] 📤 推送代码到GitHub...
+[2025-05-05T09:16:15.653Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:16:15.656Z] [INFO] 环境变量加载完成
+[2025-05-05T09:16:15.656Z] [INFO] 初始化API客户端...
+[2025-05-05T09:16:15.657Z] [INFO] API客户端初始化完成
+[2025-05-05T09:16:15.657Z] [INFO] 🚀 开始自动部署流程...
+[2025-05-05T09:16:15.657Z] [INFO] 📋 运行预部署检查...
+[2025-05-05T09:16:15.685Z] [INFO] 预部署检查通过
+[2025-05-05T09:16:15.685Z] [INFO] 📤 推送代码到GitHub...
+[2025-05-05T09:17:00.850Z] [ERROR] GitHub推送失败
+[2025-05-05T09:17:00.852Z] [ERROR] 部署错误: {
+  "message": "Command failed: git push origin main",
+  "stack": "Error: Command failed: git push origin main\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:101:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:65:18)",
+  "timestamp": "2025-05-05T09:17:00.852Z"
+}
+[2025-05-05T09:17:00.853Z] [ERROR] 部署过程中出现错误
+[2025-05-05T09:17:00.853Z] [ERROR] 部署错误: {
+  "message": "Command failed: git push origin main",
+  "stack": "Error: Command failed: git push origin main\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:101:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:65:18)",
+  "timestamp": "2025-05-05T09:17:00.853Z"
+}
+[2025-05-05T09:17:51.290Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:17:51.293Z] [INFO] 环境变量加载完成
+[2025-05-05T09:17:51.293Z] [INFO] 初始化API客户端...
+[2025-05-05T09:17:51.294Z] [INFO] API客户端初始化完成
+[2025-05-05T09:17:51.294Z] [INFO] 🚀 开始自动部署流程...
+[2025-05-05T09:17:51.295Z] [INFO] 📋 运行预部署检查...
+[2025-05-05T09:17:51.358Z] [INFO] 预部署检查通过
+[2025-05-05T09:17:51.360Z] [INFO] 📤 推送代码到GitHub...
+[2025-05-05T09:17:51.439Z] [ERROR] GitHub推送失败
+[2025-05-05T09:17:51.439Z] [ERROR] 部署错误: {
+  "message": "Command failed: git commit -m \"自动部署: 更新代码\"",
+  "stack": "Error: Command failed: git commit -m \"自动部署: 更新代码\"\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:100:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:65:18)",
+  "timestamp": "2025-05-05T09:17:51.439Z"
+}
+[2025-05-05T09:17:51.440Z] [ERROR] 部署过程中出现错误
+[2025-05-05T09:17:51.440Z] [ERROR] 部署错误: {
+  "message": "Command failed: git commit -m \"自动部署: 更新代码\"",
+  "stack": "Error: Command failed: git commit -m \"自动部署: 更新代码\"\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:100:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:65:18)",
+  "timestamp": "2025-05-05T09:17:51.440Z"
+}
+[2025-05-05T09:26:35.680Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:26:35.682Z] [ERROR] 缺少环境变量 FAL_API_KEY
+[2025-05-05T09:29:45.478Z] [INFO] 已从 deploy-env.js 加载环境变量配置
+[2025-05-05T09:29:45.481Z] [INFO] 正在加载环境变量...
+[2025-05-05T09:29:45.481Z] [INFO] 环境变量加载完成
+[2025-05-05T09:29:45.481Z] [INFO] 初始化API客户端...
+[2025-05-05T09:29:45.481Z] [INFO] API客户端初始化完成
+[2025-05-05T09:29:45.481Z] [INFO] 🚀 开始自动部署流程...
+[2025-05-05T09:29:45.482Z] [INFO] 📋 运行预部署检查...
+[2025-05-05T09:29:45.510Z] [INFO] 预部署检查通过
+[2025-05-05T09:29:45.511Z] [INFO] 📤 推送代码到GitHub...
+[2025-05-05T09:30:09.855Z] [ERROR] GitHub推送失败
+[2025-05-05T09:30:09.856Z] [ERROR] 部署错误: {
+  "message": "Command failed: git push origin main",
+  "stack": "Error: Command failed: git push origin main\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:120:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:84:18)",
+  "timestamp": "2025-05-05T09:30:09.856Z"
+}
+[2025-05-05T09:30:09.857Z] [ERROR] 部署过程中出现错误
+[2025-05-05T09:30:09.857Z] [ERROR] 部署错误: {
+  "message": "Command failed: git push origin main",
+  "stack": "Error: Command failed: git push origin main\n    at genericNodeError (node:internal/errors:983:15)\n    at wrappedFn (node:internal/errors:537:14)\n    at checkExecSyncError (node:child_process:882:11)\n    at execSync (node:child_process:954:15)\n    at AutoDeployer.pushToGithub (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:120:7)\n    at AutoDeployer.deploy (/Users/bruno2025/Documents/iProjects/coloringpage3/auto-deploy.js:84:18)",
+  "timestamp": "2025-05-05T09:30:09.857Z"
+}
