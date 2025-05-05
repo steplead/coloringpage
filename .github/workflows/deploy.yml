@@ -1,9 +1,12 @@
 name: Deploy to Vercel
 
 on:
-  push:
-    branches:
-      - main  # 设置触发部署的分支
+  workflow_dispatch:  # 只在手动触发时运行
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
