@@ -40,3 +40,4 @@ yarn-error.log*
 2
 3
 4 
+.env*.local
